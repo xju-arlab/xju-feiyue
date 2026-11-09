@@ -21,6 +21,11 @@ DB_PATH = REPO_ROOT / "backend" / "labnotes.db"
 # https://winbeau.top/uploads/... URLs into these, so they must be restored to
 # the same path or images 404 after a DB restore.
 UPLOADS_DIR = REPO_ROOT / "backend" / "uploads"
+# Homework files are private and served through authenticated endpoints only.
+# A custom HOMEWORK_UPLOAD_DIR must also be passed to the sync process.
+HOMEWORKS_DIR = Path(os.environ.get("HOMEWORK_UPLOAD_DIR", "private/homeworks"))
+if not HOMEWORKS_DIR.is_absolute():
+    HOMEWORKS_DIR = REPO_ROOT / "backend" / HOMEWORKS_DIR
 SECRETS_PATHS = [
     Path("backend/.env.local"),
     Path("frontend/.env.local"),
@@ -63,6 +68,7 @@ ALERT_FILE = Path.home() / ".cache" / "labnotes-sync.alert"
 STATE_PREFIX = "state"
 DATASET_DB_PATH = "state/labnotes.db"
 DATASET_UPLOADS_PATH = "state/uploads.tar"
+DATASET_HOMEWORKS_PATH = "state/homeworks.tar"
 DATASET_SECRETS_PATH = "state/secrets.age"
 DATASET_MANIFEST_PATH = "state/manifest.json"
 MANIFEST_SCHEMA_VERSION = 1
@@ -92,6 +98,7 @@ class Artifact:
 ARTIFACTS: list[Artifact] = [
     Artifact("db", "db_snapshot", DATASET_DB_PATH, DB_PATH),
     Artifact("uploads", "dir_tar", DATASET_UPLOADS_PATH, UPLOADS_DIR),
+    Artifact("homeworks", "dir_tar", DATASET_HOMEWORKS_PATH, HOMEWORKS_DIR),
     Artifact("secrets", "encrypted_tar", DATASET_SECRETS_PATH, None),
 ]
 

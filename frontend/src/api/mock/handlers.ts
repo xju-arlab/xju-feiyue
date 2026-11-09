@@ -13,6 +13,7 @@ import notesFixture from './notes.json'
 import './schools'
 import './conferences'
 import './classes'
+import './homeworks'
 
 // ============== auth ==============
 

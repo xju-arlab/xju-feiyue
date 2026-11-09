@@ -37,6 +37,7 @@ __pycache__/
 # Backend file-uploads (avatars etc.) — not tracked; deploy syncs them
 # via the HF state-sync (or remount the volume in prod).
 backend/uploads/
+backend/private/
 
 # Schools advisor reference data — large (~20MB sqlite), regenerable by
 # supervisor-claw, synced out-of-band to the xju-feiyue-data HF dataset
@@ -52,3 +53,7 @@ backend/data/conferences/
 
 # Microsoft Office 锁/临时文件（~$开头）
 ~$*
+
+# AOCI agent host integration (machine-bound; do not commit)
+.codex/config.toml
+.codex/config.toml.backup.*

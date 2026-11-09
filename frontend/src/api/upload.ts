@@ -32,6 +32,7 @@ export type UploadProgress = {
 }
 
 type XhrUploadOpts<T> = {
+  method?: 'POST' | 'PUT'
   url: string
   form: FormData
   /** 鉴权等 header；**不要**包含 Content-Type（FormData 自动带 boundary）。 */
@@ -63,7 +64,7 @@ export function xhrUpload<T>(opts: XhrUploadOpts<T>): Promise<T> {
     }
 
     const xhr = new XMLHttpRequest()
-    xhr.open('POST', url)
+    xhr.open(opts.method ?? 'POST', url)
 
     // 逐个加 header（鉴权）。绝不设 Content-Type：FormData 自动带 boundary。
     if (headers) {

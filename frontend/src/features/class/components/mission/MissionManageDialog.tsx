@@ -15,11 +15,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 
-import {
-  useCreateMission,
-  useDeleteMission,
-  useUpdateMission,
-} from '../../hooks/useMissions'
+import { useCreateMission, useDeleteMission, useUpdateMission } from '../../hooks/useMissions'
 
 type Props = {
   open: boolean
@@ -55,7 +51,7 @@ export function MissionManageDialog({ open, onOpenChange, missions }: Props) {
         <DialogHeader>
           <DialogTitle>分组任务</DialogTitle>
           <DialogDescription>
-            设置正在进行的分组任务；全班成员进入班级空间时以它为顶层。
+            设置正在进行的分组任务；全班成员进入分组任务时以它为顶层。
           </DialogDescription>
         </DialogHeader>
 

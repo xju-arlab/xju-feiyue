@@ -28,10 +28,11 @@ def check(cond: bool, msg: str) -> None:
 
 
 # ---- registry / namespacing sanity ----
-check(len(config.ARTIFACTS) == 3, "3 artifacts registered")
+check(len(config.ARTIFACTS) == 4, "4 artifacts registered")
 check({a.kind for a in config.ARTIFACTS} == {"db_snapshot", "dir_tar", "encrypted_tar"}, "all kinds present")
 check(config.DATASET_DB_PATH == "state/labnotes.db", "db under state/ namespace")
 check(config.DATASET_UPLOADS_PATH == "state/uploads.tar", "uploads under state/ namespace")
+check(config.DATASET_HOMEWORKS_PATH == "state/homeworks.tar", "private homeworks under state/ namespace")
 check(config.STATE_PREFIX == "state" and config.SCHOOLS_PREFIX == "schools", "prefixes set")
 
 with tempfile.TemporaryDirectory() as td:

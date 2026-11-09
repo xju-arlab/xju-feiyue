@@ -54,6 +54,9 @@ class Settings(BaseSettings):
     # don't block boot — /schools/* simply returns 503 until present.
     schools_data_dir: str = "data/schools"
     conferences_data_dir: str = "data/conferences"
+    # Private assignment files, served only by authenticated homework endpoints.
+    # Include this directory in runtime backups alongside the database.
+    homework_upload_dir: str = "private/homeworks"
 
     # Conference deadline crawler — background loop that checks due conferences,
     # fetches homepages, and asks DeepSeek to extract CFP info. Interval is how

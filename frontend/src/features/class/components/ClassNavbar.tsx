@@ -11,13 +11,14 @@ import { useAuthStore } from '@/stores/authStore'
  * /class 空间的顶层导航栏 —— 取代旧的「返回 Feiyue」极简链接。
  *
  * AppShell 之外的独立页面（ClassPage / GroupSpacePage）共用本栏：左侧回主站，
- * 中间是班级级 section 链接（概览 / 点名 / 成员），可选传入面包屑尾节点（如
+ * 中间是班级级 section 链接（概览 / 作业 / 点名 / 成员），可选传入面包屑尾节点（如
  * 当前小组名），右侧是登录用户。sticky 顶部、全宽、内容居中约束到 max-w-5xl。
  */
 
 /** 班级级 section —— 全都落在 /class 概览页（layer 2），以 ?tab= 切换。 */
 const SECTIONS = [
   { key: 'groups', label: '概览', to: '/class?tab=groups' },
+  { key: 'homeworks', label: '作业', to: '/class?tab=homeworks' },
   { key: 'rollcall', label: '点名', to: '/class?tab=rollcall' },
   { key: 'members', label: '成员', to: '/class?tab=members' },
 ] as const
@@ -55,10 +56,10 @@ export function ClassNavbar({ crumb }: Props) {
           className="inline-flex items-center gap-1.5 text-sm font-medium text-text"
         >
           <GraduationCap size={16} strokeWidth={1.75} aria-hidden />
-          <span className="hidden sm:inline">班级空间</span>
+          <span className="hidden sm:inline">分组任务</span>
         </Link>
 
-        {/* section 链接 —— 概览 / 点名 / 成员 */}
+        {/* section 链接 —— 概览 / 作业 / 点名 / 成员 */}
         <div className="ml-3 flex items-center gap-0.5">
           {SECTIONS.map((s) => (
             <Link

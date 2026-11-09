@@ -1,0 +1,915 @@
+#AOCI-CODE-VOLUME: 1
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/===
+.gitattributes[FC5T]: F:固定文本检出为LF以稳定源码指纹 | R:- | A:text=auto,eol=lf | S:二进制保持原始字节
+.gitignore[FS6T]: F:排除本地凭据、用户数据、私有作业文件和开发缓存 | R:- | A:Git忽略规则 | S:课程配图是PNG通配忽略的例外；机器绑定的Codex配置不提交
+AGENTS.md[SC6S]: F:规定AOCI认知加载、模型创作与增量维护纪律 | R:- | A:aoci_rules,aoci_overview,aoci_maintain | S:压缩恢复必须重新加载完整认知
+BACKEND_SPEC.md[SN6M]: F:定义初版前后端HTTP契约与从mock切换方案 | R:code:frontend/src/api/index.ts | A:JWT鉴权,游标分页,camelCase JSON | S:这是早期契约，当前路由以实现为准
+CONTRIBUTING.md[SG6M]: F:说明开发启动、内容写作、质量门槛与数据同步流程 | R:code:Makefile,code:README.md | A:uv,pnpm,make sync-* | S:运行状态经HF同步，禁止直接覆盖另一台机器
+LICENSE[SG4T]: F:授予MIT许可并保留版权与免责声明 | R:- | A:MIT License | S:-
+Makefile[OV6T]: F:统一运行状态、院校和会议数据同步命令 | R:code:scripts/sync/push.py,code:scripts/sync/pull.py,code:scripts/sync/schools.py,code:scripts/sync/conferences.py | A:sync-*,schools-*,conf-*,data-push,data-pull | S:同步脚本使用独立uv项目环境
+README.md[SG6M]: F:介绍飞跃学生笔记站的产品、架构、部署和贡献入口 | R:code:CONTRIBUTING.md,code:deploy.sh | A:feiyue.selab.top,本地启动说明 | S:-
+deploy.sh[OV8S]: F:拉取主分支后同步依赖、迁移、重启并构建前端 | R:code:Makefile,code:backend/alembic/env.py,code:frontend/package.json | A:./deploy.sh,--dry-run,--pull-data | S:2026-11-08核验生产在huawei2:/home/winbeau/xju-feiyue，服务feiyue-backend.service；dry-run仍可能git pull；默认不拉HF；8001健康通过才构建前端
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/.github/===
+PULL_REQUEST_TEMPLATE.md[SQ4T]: F:规定PR变更说明与前端验证清单 | R:code:CONTRIBUTING.md | A:Summary,Changes,Verification | S:-
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/.github/workflows/===
+deploy-pages.yml[OV6T]: F:发布site目录为GitHub Pages | R:code:site/index.html | A:main推送,workflow_dispatch | S:只允许团队库执行，site无需构建
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/archive/design-refs/===
+README.md[SU3T]: F:说明冻结设计稿与正式前端实现的迁移对应 | R:- | A:原型目录说明 | S:归档不参与前端构建
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/archive/design-refs/components/===
+ai-drawer.jsx[AU3L]: F:演示写作AI抽屉、差异选择和浮动工具栏 | R:code:archive/design-refs/components/icons.jsx | A:AIDrawer,FloatingToolbar,diffTokens,buildHunks,applyDecisions,getMockResult | S:使用演示结果
+conferences-data.jsx[DB3L]: F:保存CCF会议原型的领域与会议种子数据 | R:code:archive/design-refs/pages/conferences.html | A:CCF_FIELDS,CCF_CONFS | S:周期日期为人工整理参考值
+icons.jsx[CU3M]: F:为原型共享图标与七类笔记元信息 | R:- | A:Icon,CATS,CAT_ORDER,CatIcon,ArrowRight | S:-
+mega-menu.jsx[AU3M]: F:演示浏览导航的分类下拉与热门内容 | R:code:archive/design-refs/components/icons.jsx | A:MegaMenu,BrowseTabWithMenu | S:统计值为固定演示数据
+schools-data.jsx[DB3L]: F:为高校原型提供学校分组与导师示例资料 | R:code:archive/design-refs/pages/schools.html | A:SCHOOL_GROUPS,SCHOOLS,ADVISORS,schoolDepts,formatRelTime | S:导师内容是mock数据
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/archive/design-refs/pages/===
+app.html[EU3S]: F:通过hash路由和iframe串联原型页面 | R:code:archive/design-refs/pages/home.html | A:App,hash导航 | S:冻结演示壳
+browse.html[EU3L]: F:演示笔记筛选、分页和访客交互限制 | R:code:archive/design-refs/components/icons.jsx | A:浏览原型页面 | S:-
+conferences.html[EU3L]: F:演示CCF会议领域筛选、表格与时间线 | R:code:archive/design-refs/components/conferences-data.jsx | A:会议原型页面 | S:页面今日日期为固定演示值
+design-system.html[SU3L]: F:展示设计令牌、排版与组件样式基线 | R:code:archive/design-refs/stylesheets/styles.css | A:静态设计系统展示 | S:-
+home.html[EU3L]: F:演示首页问候、七类入口、内容流与热门笔记 | R:code:archive/design-refs/components/mega-menu.jsx | A:首页原型 | S:-
+login.html[EU3M]: F:演示双栏品牌与账号登录表单 | R:code:archive/design-refs/components/icons.jsx | A:BrandPane,LoginForm | S:冻结视觉原型
+schools.html[EU3L]: F:演示高校导师筛选排序与详情抽屉 | R:code:archive/design-refs/components/schools-data.jsx | A:高校信息原型 | S:-
+write.html[EU3L]: F:演示Markdown写作预览、AI辅助与发布对话框 | R:code:archive/design-refs/components/ai-drawer.jsx | A:写作原型页面 | S:发布操作仅模拟跳转
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/archive/design-refs/stylesheets/===
+styles.css[FU3L]: F:保存原型设计令牌、正文排版与AI交互样式 | R:- | A:CSS变量,prose-claude样式 | S:-
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/backend/===
+.env.example[FC5T]: F:列举数据库、JWT、DeepSeek和CORS配置样例 | R:code:backend/app/settings.py | A:DATABASE_URL,JWT_SECRET,DEEPSEEK_MODEL,CORS_ORIGINS | S:占位凭据须替换
+.gitignore[FS5T]: F:排除后端本地环境、数据库与Python构建缓存 | R:- | A:Git忽略规则 | S:-
+.python-version[FC4T]: F:声明后端Python解释器版本为3.11 | R:code:backend/pyproject.toml | A:3.11 | S:-
+README.md[SG4S]: F:记录初版后端脚手架启动、迁移和测试方法 | R:code:BACKEND_SPEC.md | A:uvicorn,pytest,ruff | S:文档标明仅对应Phase1脚手架
+alembic.ini[FC5T]: F:配置迁移目录、日志和生成脚本格式化 | R:code:backend/alembic/env.py | A:alembic配置,ruff post-write hook | S:数据库URL由环境脚本注入
+pyproject.toml[FV6T]: F:声明后端依赖、Python版本与测试检查配置 | R:code:backend/uv.lock | A:uv sync,pytest,ruff | S:项目不作为Python包安装
+uv.lock[FV5L]: F:锁定后端运行与开发依赖版本及分发校验值 | R:code:backend/pyproject.toml | A:uv锁文件格式 | S:-
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/backend/alembic/===
+env.py[PD6T]: F:从应用配置装配异步数据库迁移环境 | R:code:backend/app/db/models.py,code:backend/app/settings.py | A:run_migrations_offline,run_migrations_online | S:导入models才能注册完整metadata
+script.py.mako[XV4T]: F:生成包含版本关系和升降级函数的迁移脚本 | R:code:backend/alembic.ini | A:upgrade,downgrade | S:-
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/backend/alembic/versions/===
+0001_init.py[PD6S]: F:创建账号、笔记、草稿、点赞与评论基础表 | R:code:backend/app/db/models.py | A:0001_init,upgrade,downgrade | S:用户学号为自然主键，内容外键级联删除
+0002_avatar_thumb.py[PD5T]: F:为用户增加服务器生成的头像缩略图地址 | R:code:backend/scripts/backfill_avatar_thumbs.py | A:0002_avatar_thumb | S:已有头像需单独脚本回填
+0003_login_events.py[PD5T]: F:增加成功登录审计表及账号时间索引 | R:code:backend/app/routes/admin.py | A:0003_login_events | S:-
+0004_comment_anchor.py[PD5T]: F:增加评论引用文本与起止偏移字段 | R:code:backend/app/db/models.py | A:0004_comment_anchor | S:偏移基于渲染DOM文本流
+0005_draft_summary.py[PD5T]: F:为草稿增加可在发布前编辑的摘要 | R:code:backend/app/routes/drafts.py | A:0005_draft_summary | S:-
+0006_materials.py[PD6S]: F:创建资料资源及递归文件目录表 | R:code:backend/app/services/materials.py | A:0006_materials | S:根目录名称唯一性由服务实现，SQLite空parent不能靠唯一约束防重
+0007_preferred_name.py[PD5T]: F:为用户添加首页称呼字段 | R:code:backend/app/services/greeting.py | A:0007_preferred_name | S:旧账号保持NULL并运行时派生称呼
+0008_user_role.py[PI6T]: F:添加三级账号角色并回填引导超级管理员 | R:code:backend/app/services/auth.py,code:backend/app/settings.py | A:0008_user_role | S:配置admin_sid的运行时超级权限不依赖存储角色
+0009_material_notice.py[PD5T]: F:建立资料页致谢公告单例并填入初始内容 | R:code:backend/app/services/materials.py | A:0009_material_notice | S:隐藏保留单例行以便恢复
+0010_classes.py[PD8M]: F:创建班级、点名、小组及组内文件任务结构 | R:code:backend/app/db/base.py,code:backend/app/db/models.py | A:0010_classes | S:禁止重建users表，否则外键级联会清空内容；存量users.class_id不补表级外键
+0010_community_growth_collections.py[PD7M]: F:扩展社区互动、举报屏蔽、合集及历史成长表 | R:code:backend/app/db/models.py | A:0010_community_growth_collections | S:实际前序是0012_class_missions；评论加外键使用SQLite batch重建
+0011_committee_title.py[PD5T]: F:增加班委职务展示字段 | R:code:backend/app/routes/admin.py | A:0011_committee_title | S:职务文字不承担权限判断
+0012_class_missions.py[PD6T]: F:创建班级顶层分组任务表 | R:code:backend/app/services/classes.py | A:0012_class_missions | S:每班单个活跃任务由服务保证，切换任务不重新分组
+0013_drop_growth_checkin.py[PD7T]: F:删除签到、经验事件与用户成长字段 | R:code:backend/alembic/versions/0010_classes.py | A:0013_drop_growth_checkin | S:users采用原生DROP COLUMN，禁止batch重建触发内容级联删除
+0014_lab_member.py[PI6T]: F:增加供ICTHub消费的实验室成员身份标记 | R:code:backend/app/routes/auth.py,code:backend/app/routes/admin.py | A:0014_lab_member | S:Feiyue持有身份真源；SQLite只做ADD COLUMN避免users级联风险
+0015_homeworks.py[PD7T]: F:新增班级单人作业与每人当前提交表 | R:code:backend/app/db/models.py | A:0015_homeworks,upgrade,downgrade | S:仅新建两表和班级索引，不重建users避免触发级联删除
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/backend/app/db/===
+base.py[PD8T]: F:提供ORM声明基类并启用SQLite外键执行 | R:code:backend/app/db/models.py | A:Base | S:监听全局Engine连接，迁移和测试也会触发外键级联
+conferences_engine.py[PD7S]: F:管理会议参考库只读连接和mtime热重载 | R:code:backend/app/main.py,code:backend/app/services/conferences_query.py | A:ConferencesEngineHolder,init_holder,get_holder | S:使用ro与immutable及query_only三重只读；数据缺失不阻止主应用启动
+models.py[PD9L]: F:定义账号内容、社区互动、资料、班级协作与单人作业ORM | R:code:backend/app/db/base.py | A:User,Note,Group,ClassMission,Homework,HomeworkSubmission | S:StringList按库选择ARRAY或JSON；作业提交以作业与学号复合主键保留当前文件；分组任务不隔离小组
+schools_engine.py[PD7S]: F:管理院校导师参考库只读连接、manifest缓存与热重载 | R:code:backend/app/main.py,code:backend/app/services/schools_query.py | A:SchoolsEngineHolder,init_holder,get_holder | S:连接使用ro和immutable并启用query_only；数据缺失时请求失败但启动继续
+session.py[PD7T]: F:创建主数据库异步引擎与请求级会话工厂 | R:code:backend/app/settings.py,code:backend/app/deps.py | A:engine,AsyncSessionLocal,get_session | S:禁用autoflush与提交后过期，业务需显式写入事务
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/backend/app/===
+deps.py[MI8T]: F:提供数据库、JWT用户和管理员鉴权依赖 | R:code:backend/app/services/auth.py,code:backend/app/db/session.py | A:get_db,get_current_user,get_optional_user,require_admin,require_superadmin,client_ip | S:普通用户访问管理端返回404；XFF信任最左IP依赖唯一可信反代
+main.py[EG8S]: F:装配FastAPI路由、公开上传挂载和后台维护生命周期 | R:code:backend/app/routes/homeworks.py,code:backend/app/services/author_sync.py,code:backend/app/services/conferences_crawler.py | A:app,/health,/uploads,lifespan | S:作业文件仅经鉴权路由下载；公开文档下载头仍依赖nginx；有密钥才启动爬取
+ratelimit.py[MS7T]: F:按用户与操作桶执行滑动窗口写入限流 | R:code:backend/app/deps.py,code:backend/app/settings.py | A:rate_limit,SlidingWindowLimiter,LIMITS | S:仅记录获准请求；内存计数仅适用于单worker部署
+settings.py[FC7T]: F:统一读取数据库、鉴权、AI、后台任务和数据目录配置 | R:code:backend/app/main.py,code:backend/app/services/homeworks.py | A:Settings,settings,cors_origin_list,homework_upload_dir | S:.env.local覆盖.env；生产替换默认JWT；私有作业默认private/homeworks须纳入备份
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/backend/app/routes/===
+admin.py[EI8L]: F:提供账号角色、班级管理与登录活动统计后台接口 | R:code:backend/app/deps.py,code:backend/app/services/auth.py,code:backend/app/services/materials.py,code:backend/app/services/groups.py | A:/admin/users,/admin/stats,/admin/classes | S:禁止API改动超级管理员权限或密码；删除用户先清磁盘后级联行；统计按上海自然日聚合
+ai.py[EA6T]: F:提供AI改写、SSE输出与个性化问候接口 | R:code:backend/app/services/ai_compose.py,code:backend/app/services/greeting.py | A:/ai/compose,/ai/compose/stream,/ai/greetings | S:流内错误用error事件表达，并关闭nginx缓冲
+auth.py[EI7M]: F:处理登录、个人资料、密码与头像上传 | R:code:backend/app/services/auth.py,code:backend/app/services/uploads_common.py | A:/auth/login,/auth/me,/auth/logout | S:头像解码失败删除已写原图；成功登录记录IP审计
+blocks.py[ES6T]: F:管理当前用户单向静默屏蔽关系 | R:code:backend/app/services/blocks.py | A:POST /blocks/{sid},DELETE /blocks/{sid},GET /blocks | S:重复拉黑与解除幂等，禁止拉黑自己
+classes.py[EB7M]: F:暴露本班信息、成员、分组任务、点名和小组导出 | R:code:backend/app/services/classes.py,code:backend/app/services/class_export.py | A:/classes/me,/classes/me/missions,/classes/me/rollcalls,/classes/me/groups/export | S:班级身份来自JWT用户而非URL；未分班返回200空对象
+collections.py[EB6M]: F:管理用户笔记合集、排序与详情侧栏上下文 | R:code:backend/app/schemas/collection.py,code:backend/app/db/models.py | A:/collections,/notes/{note_id}/collection | S:写入校验合集所有权
+conferences.py[EB6T]: F:读取会议目录并提供管理员重载与抓取入口 | R:code:backend/app/db/conferences_engine.py,code:backend/app/services/conferences_crawler.py | A:/conferences/list,/admin/conferences/reload,/admin/conferences/crawl | S:参考库缺失仅此域返回503，抓取在线程中执行
+drafts.py[EB7S]: F:维护个人草稿并将其原子发布为笔记 | R:code:backend/app/services/ai_compose.py,code:backend/app/services/notes.py | A:/notes/drafts,/notes/drafts/{draft_id}/publish | S:他人草稿返回404；发布删草稿与建笔记同事务，AI摘要失败仍可发布
+groups.py[EB7L]: F:提供小组生命周期、申请、文件与甘特任务接口 | R:code:backend/app/services/groups.py,code:backend/app/services/uploads_common.py | A:/classes/me/groups,/groups/{gid},/groups/{gid}/files,/groups/{gid}/tasks | S:组员可创建修改任务，删除须创建者或管理者；部分日期更新按合并区间验证
+interactions.py[EB7L]: F:处理笔记赞踩收藏、评论回复与评论表态 | R:code:backend/app/ratelimit.py,code:backend/app/services/comments.py | A:/notes/{id}/like,/notes/{id}/dislike,/notes/{id}/favorite,/notes/{id}/comments | S:隐藏内容在互动写入口也返回404，赞踩相互排斥
+materials.py[EB7L]: F:提供共享资料资源、树形文件操作和致谢公告接口 | R:code:backend/app/services/materials.py,code:backend/app/services/uploads_common.py | A:/materials/resources,/materials/notice | S:修改资源需所有者或管理权限；公告删除仅隐藏单例内容
+notes.py[EB7M]: F:提供笔记检索、热门最新内容及作者修改删除入口 | R:code:backend/app/services/notes.py,code:backend/app/services/ai_compose.py | A:/notes,/notes/hot,/notes/latest,/notes/{note_id} | S:修改与删除只准作者，匿名列表仍可读且无个人互动状态
+reports.py[ES7S]: F:创建举报并支持管理员隐藏、删除或驳回处理 | R:code:backend/app/services/moderation.py,code:backend/app/ratelimit.py | A:/reports,举报管理接口 | S:删除目标前先断开举报外键，保留举报快照防止审计被级联抹除
+schools.py[EB6S]: F:查询院校元数据、导师列表详情并叠加站内内容 | R:code:backend/app/services/schools_query.py,code:backend/app/services/schools_overlay.py | A:/schools/meta,/schools/list,/schools/{advisor_id},/admin/schools/reload | S:此域使用snake_case；只读库与主库会话分离
+transcript.py[EI7T]: F:中转教务书签上传的成绩PDF供本人轮询取回 | R:code:backend/app/deps.py | A:POST /notes/transcript-stash,GET /notes/transcript-stash | S:POST无认证，GET仅本人且取后即删；单进程内存5分钟有效
+uploads.py[ES7T]: F:上传笔记图片与文档附件并返回公开地址 | R:code:backend/app/services/uploads_common.py,code:backend/app/main.py | A:/notes/images,/notes/files | S:图片真实解码防MIME伪装；文档由共享管线流式限额与魔数校验
+homeworks.py[EB7S]: F:暴露单人作业发布、上传、收件记录与鉴权下载 | R:code:backend/app/services/homeworks.py,code:backend/app/services/classes.py | A:/classes/me/homeworks,submission,submissions,export | S:班级由JWT推导，发布记录导出限管理者；本人可下载自己的文件，响应禁止缓存并强制下载
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/backend/app/schemas/===
+_base.py[CN7T]: F:统一JSON字段命名和UTC时间序列化 | R:- | A:CamelModel,SnakeModel,UtcDateTime | S:SQLite返回无时区时间按UTC处理；参考资料域保留snake_case
+admin.py[FI5S]: F:定义后台账号、班级、权限和统计数据契约 | R:code:backend/app/routes/admin.py | A:AdminUserRow,AdminStats,UserCreateIn,SetRoleIn | S:超级管理员角色不能通过赋权输入指定
+ai.py[FA5T]: F:定义AI编辑模式、差异片段与问候数据 | R:code:backend/app/routes/ai.py | A:AIComposeIn,AIComposeOut,DiffSegment,GreetingsOut | S:-
+classes.py[FB5S]: F:定义班级成员、任务与点名收发结构 | R:code:frontend/src/api/schemas/class.ts | A:ClassMeOut,MissionOut,RollCallDetailOut,MemberCommitteeIn | S:点名关闭仅作标记，不禁止继续修正记录
+collection.py[FB5T]: F:定义合集增改、全量排序和笔记侧栏上下文 | R:code:backend/app/routes/collections.py | A:CollectionOut,CollectionReorderIn,NoteCollectionContextOut | S:-
+conference.py[FB5T]: F:定义CCF会议、数据manifest与抓取结果结构 | R:code:backend/app/routes/conferences.py | A:ConferenceRow,ConferencesOut,CrawlResult | S:采用snake_case保持导出数据格式
+draft.py[FB5T]: F:定义草稿部分更新与完整读取结构 | R:code:backend/app/routes/drafts.py | A:DraftIn,DraftOut | S:-
+group.py[FB6S]: F:定义小组申请、成员、文件及任务校验契约 | R:code:backend/app/services/groups.py | A:GroupOut,GroupDetailOut,GroupTaskOut,TaskCreateIn,TaskUpdateIn | S:任务日期是含首尾纯日期，部分更新需服务层验证合并日期
+interaction.py[FB6T]: F:约束评论回复、图片、引用锚点与表态输出 | R:code:backend/app/routes/interactions.py | A:CommentIn,CommentOut,PaginatedComments | S:偏移必须成对且终点大于起点，replyToSid仅用于楼内回复
+material.py[FB6S]: F:定义资料资源、递归文件树与公告数据 | R:code:backend/app/services/materials.py | A:FileOut,ResourceOut,ResourceUpdateIn,NoticeOut | S:文件树由普通字典构建，不能触发ORM懒加载；tag显式null用于清除
+note.py[FB5T]: F:定义七类笔记、作者安全信息和游标列表契约 | R:code:backend/app/routes/notes.py | A:NoteOut,NoteAuthorOut,ListNotesQuery,PaginatedNotes | S:公开作者数据不含联系方式
+report.py[FS5T]: F:定义举报原因、处置动作、审计与屏蔽输出 | R:code:backend/app/routes/reports.py,code:backend/app/routes/blocks.py | A:ReportCreateIn,ReportResolveIn,ReportOut,BlockOut | S:-
+school.py[FB5S]: F:定义院校导师、招生名额、评价与采集追踪数据 | R:code:backend/app/routes/schools.py | A:AdvisorRow,AdvisorDetail,SchoolsMeta,PaginatedAdvisors | S:使用snake_case与参考库前端契约一致
+uploads.py[FN5T]: F:定义图片地址和文档附件上传结果 | R:code:backend/app/routes/uploads.py | A:UploadedImage,UploadedFile | S:附件预览由扩展名判断，响应不提供MIME
+user.py[FI6S]: F:定义登录、本人资料、密码修改与权限展示字段 | R:code:backend/app/services/auth.py | A:UserOut,LoginIn,LoginOut,UserMeUpdate,PasswordChangeIn | S:联系方式仅用于本人资料，公开作者使用NoteAuthorOut
+homeworks.py[FB6T]: F:定义作业发布、提交结果和收件名单的JSON契约 | R:code:backend/app/schemas/_base.py | A:HomeworkCreateIn,HomeworkOut,HomeworkRecordsOut,SubmissionOut | S:输入截止时间必须带时区，输出UTC；班级命名片段拒绝路径字符，文本按NFC归一化
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/backend/app/services/===
+ai_compose.py[IA7S]: F:将写作操作转换为DeepSeek请求并计算文本差异 | R:code:backend/app/services/diff.py,code:backend/app/settings.py | A:compose,stream_chunks,summarize_or_fallback,build_prompt | S:dry-run回显原文；自动摘要失败回退本地摘要；流式响应限300 tokens
+auth.py[DI8T]: F:实现bcrypt密码校验、HS256令牌和三级角色判断 | R:code:backend/app/settings.py | A:hash_password,verify_password,create_access_token,decode_token,effective_role,is_admin | S:配置admin_sid始终拥有超级权限，未知角色降为普通用户
+author_sync.py[AD7S]: F:扫描Markdown作者意图并修复数据库作者外键漂移 | R:code:backend/scripts/seed.py,code:backend/app/main.py | A:scan,repair,SyncReport | S:只改数据库author_sid，不改Markdown；纯数据库笔记不参与修复
+blocks.py[DS5T]: F:查询查看者主动屏蔽的用户集合 | R:code:backend/app/db/models.py | A:blocked_sids | S:匿名查看者返回空集合
+class_export.py[IB6M]: F:将班级分组及成员渲染为课程选题汇总Word表格 | R:code:backend/app/services/groups.py,code:backend/app/routes/classes.py | A:build_class_groups_docx | S:组简介作为论文题目；坏Logo跳过，中文仿宋需同时设置eastAsia字体
+classes.py[DB7M]: F:实现本班权限、单活跃分组任务与点名名册快照 | R:code:backend/app/db/models.py,code:backend/app/services/auth.py | A:ensure_in_class,ensure_committee,create_mission,update_mission,create_rollcall | S:点名先flush父记录再插名册；新成员不会自动算入历史缺席
+comments.py[DB6T]: F:按时间和ID游标查询可见评论并过滤屏蔽作者 | R:code:backend/app/services/blocks.py | A:list_comments | S:多取一行判断后页，时间相同用ID稳定排序
+conferences_crawler.py[IB7L]: F:从CCFDDL优先采集会议日程，回退网页搜索与AI抽取 | R:code:backend/app/db/conferences_engine.py,code:backend/app/settings.py | A:crawl_sync | S:在SQLite副本更新后原子替换以支持immutable连接热重载；closed会议跳过常规巡检
+conferences_query.py[PB5T]: F:按种子行顺序读取完整会议数据 | R:code:backend/app/db/conferences_engine.py | A:list_conferences | S:筛选排序交由前端处理
+diff.py[KA5T]: F:将文本差异转为equal/add/del片段 | R:code:backend/app/schemas/ai.py | A:compute_diff_segments | S:-
+greeting.py[AA6M]: F:结合称呼、上海时段和乌鲁木齐天气生成首页问候 | R:code:backend/app/services/ai_compose.py | A:familiar_name,compose_greetings,is_valid_greeting | S:逐用户缓存3小时；模型失败或退化文本回退本地模板
+groups.py[DB8L]: F:实现小组权限、入组审批、文件存储与甘特任务数据编排 | R:code:backend/app/services/classes.py,code:backend/app/services/materials.py | A:ensure_group_member,ensure_group_manager,create_group,approve_request,validate_assignees,tasks_out | S:一人每班仅一个活跃组；批准同时拒绝同班其他申请；软删仍物理清理文件
+materials.py[DB8L]: F:组装共享资料树并治理命名、移动、排序和删除 | R:code:backend/app/db/models.py,code:backend/app/services/auth.py | A:build_file_tree,ensure_owner,clean_name,public_url,storage_rel_path | S:禁止ORM懒加载遍历；根级重名需应用校验；移动防祖先环；删除子树同步清磁盘
+moderation.py[AS6S]: F:对举报快照执行AI预审并标记高置信违规 | R:code:backend/app/services/ai_compose.py,code:backend/app/db/session.py | A:classify,review_report,ModerationResult | S:失败降为unknown且不自动处罚；仅pending状态可自动标记
+notes.py[DB7M]: F:查询可见笔记、聚合互动计数并组装摘要与分页 | R:code:backend/app/services/blocks.py,code:backend/app/schemas/note.py | A:list_notes,to_note_out,summary_from,read_minutes_from | S:标签筛选、排序和分页仍在内存执行，大规模数据需另行优化
+schools_overlay.py[DB4T]: F:为导师响应提供站内笔记数与收藏状态扩展占位 | R:code:backend/app/routes/schools.py | A:overlay_ugc,overlay_ugc_detail | S:当前仅填0和false，未实现真实关联
+schools_pinyin.py[KB6T]: F:构建导师全拼与首字母内存搜索索引 | R:code:backend/app/services/schools_query.py | A:PinyinIndex,get_pinyin_index | S:缓存绑定参考库mtime；纯中文查询交回FTS与LIKE
+schools_query.py[PB7L]: F:执行导师过滤、融合搜索、分页及详情多表聚合 | R:code:backend/app/services/schools_pinyin.py,code:backend/app/db/schools_engine.py | A:AdvisorFilters,SortSpec,query_advisor_rows,query_advisor_detail,query_schools_meta | S:FTS、LIKE和拼音命中取并集；unknown口碑包括NULL；所有用户值参数绑定
+uploads_common.py[CS8M]: F:提供上传限额、格式魔数校验、缩略图与安全名称处理 | R:code:backend/app/main.py | A:save_upload,sniff_magic,safe_display_name,make_thumbnail,normalize_ext | S:拒绝浏览器可执行扩展；任何失败删除部分文件；OOXML检验缓存至上限；生产下载头还依赖nginx
+homeworks.py[DB8M]: F:编排私有作业存储、命名验证、提交替换、统计与打包 | R:code:backend/app/db/models.py,code:backend/app/services/classes.py,code:backend/app/services/uploads_common.py | A:save_submission,validate_filename,collection,build_archive | S:20MB流式限额与格式校验；完整文件主名按NFC比较；CAS冲突或失败清理新文件，提交成功后才删旧文件；统计只含当前班成员
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/backend/scripts/===
+add_user.py[OI6M]: F:按学号交互或批量导入账号并分配班级 | R:code:backend/app/services/auth.py,code:backend/app/services/greeting.py | A:--sid,--name,--batch,--class-full,--class-short | S:已有用户保留密码，只更新姓名昵称与指定班级
+backfill_avatar_thumbs.py[OD5T]: F:回填旧用户头像缩略图并报告缺失原图 | R:code:backend/app/routes/auth.py | A:main | S:导入的_make_thumbnail在当前auth路由不存在，脚本直接执行会失败
+list_logged_in.py[OO4T]: F:按学号前缀列出已登录账号次数与最近时间 | R:code:backend/app/db/models.py | A:prefix命令行参数 | S:-
+reset_db.py[OD6T]: F:按当前ORM元数据删除并重建全部表 | R:code:backend/app/db/models.py | A:main | S:仅用于本地开发，生产必须用迁移，执行即清空数据
+reset_password.py[OI6T]: F:按学号重置账号密码 | R:code:backend/app/services/auth.py | A:--sid,--password | S:终端输出含新密码，不应进入共享日志
+seed.py[OD7M]: F:从Markdown导入演示账号班级和笔记种子 | R:code:backend/app/db/models.py,code:backend/app/services/auth.py | A:parse_md,main | S:每次执行先删除重建全部表，不能对生产直接运行；未知作者回退默认账号
+sync_authors.py[OD6T]: F:以命令行检查或修复Markdown与数据库作者对应 | R:code:backend/app/services/author_sync.py | A:--fix,--json | S:默认仅检查；存在漂移或修复后仍不可解析时非零退出
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/content/notes/===
+anyrouter-claude.md[SB2T]: F:保留anyrouter-Claude笔记的导入元数据占位 | R:- | A:frontmatter | S:正文为空
+baoyan-gzt.md[SB3M]: F:收录国防科大推免经验、院校面试和竞赛建议 | R:- | A:Markdown笔记 | S:录取规则与经历限定作者当年情况
+baoyan-xqw.md[SB3L]: F:收录推免流程、黑话、六校面经与套磁策略 | R:- | A:Markdown笔记 | S:-
+claude-code-install.md[SV3T]: F:记录Claude Code安装、环境配置与排错命令 | R:- | A:Markdown笔记 | S:-
+cuda-install.md[SH3S]: F:记录NVIDIA驱动与多个CUDA版本安装切换 | R:- | A:Markdown笔记 | S:-
+dl-jupyter.md[SB2T]: F:提供可复现深度学习Jupyter环境仓库入口 | R:- | A:外部仓库链接 | S:-
+docker-container-setup.md[SV3L]: F:记录GPU容器、Jupyter端口及Zsh和Vim开发环境配置 | R:- | A:Markdown笔记 | S:-
+docker-gpu-missing.md[SR3S]: F:说明Docker重建环境及宿主挂载遮盖配置的排查办法 | R:- | A:Markdown笔记 | S:-
+docker-install-general.md[SV3S]: F:记录Ubuntu与ARM设备Docker安装、用户权限和双层代理 | R:- | A:Markdown笔记 | S:-
+esp32s3-board-dev.md[SH3T]: F:记录ESP32S3经usbipd接入WSL及PlatformIO编译烧录 | R:- | A:Markdown笔记 | S:-
+flash-attn-install-fail.md[SV3T]: F:记录使用匹配CUDA与PyTorch的wheel安装flash-attn | R:- | A:uv安装命令 | S:wheel限定Python和CUDA ABI
+frp-tunnel.md[SN3M]: F:记录FRP服务端与客户端穿透及systemd部署排错 | R:- | A:Markdown笔记 | S:-
+git-docker-https-tokens.md[SI3T]: F:说明容器内Git HTTPS凭据持久化与提交约定 | R:- | A:Markdown笔记 | S:store方式把凭据写入明文文件
+google-studio.md[SB2T]: F:保留Google Studio笔记导入元数据 | R:- | A:frontmatter | S:正文为空
+hp-printer-stable.md[SH3T]: F:说明固定打印机IP和Windows TCP端口绑定 | R:- | A:Markdown笔记 | S:-
+l40-tinystories.md[SA3T]: F:保留TinyStories在GPU上训练的参数实验命令 | R:- | A:训练CLI示例 | S:-
+matlab.md[SB2T]: F:收录Matlab配色和绘图库占位链接说明 | R:- | A:Markdown笔记 | S:内嵌Notion数据库未导出
+neovim-install.md[SV3M]: F:记录Ubuntu安装Neovim和LazyVim及快捷键 | R:- | A:Markdown笔记 | S:-
+nginx.md[SN3S]: F:说明Nginx主配置、站点启用与重载检查 | R:- | A:配置示例 | S:-
+node-pnpm-install.md[SV3S]: F:记录nvm和Corepack安装Node及pnpm的流程 | R:- | A:Markdown笔记 | S:-
+raspberry-pi.md[SH3S]: F:记录树莓派控制台字体、Emoji与中文Locale配置 | R:- | A:Markdown笔记 | S:-
+rpi5-ai-hat-hailo8.md[SH3M]: F:记录树莓派Hailo-8部署和YOLOv8推理结果解析 | R:- | A:HailoRT示例 | S:-
+rpi5-alphadog-hotspot.md[SN3S]: F:说明树莓派连接机器狗与Windows共享网络的双网配置 | R:- | A:Markdown笔记 | S:HTTP代理不能用于ICMP连通性判断
+rpi5-hailo8-driver.md[SH3M]: F:记录树莓派PCIe、Hailo内核驱动与运行时搭建验证 | R:- | A:Markdown笔记 | S:-
+rpi5-hailo8-usb-camera.md[SH3M]: F:记录USB摄像头经Hailo推理并通过X11远程显示 | R:- | A:实时视觉示例 | S:远程Qt显示需禁用X11共享内存
+rpi5-lidar.md[SH3S]: F:记录容器接入激光雷达与ROS到PyQt显示链路 | R:- | A:Markdown笔记 | S:UI更新必须经主线程信号槽
+self-forcing-code-handover.md[SV3T]: F:说明Self-Forcing容器复制、挂载与独立Git身份交接 | R:- | A:交接操作说明 | S:-
+server-setup.md[SV3T]: F:记录SSH保活、GPU驱动重装和服务器清理 | R:- | A:Markdown笔记 | S:-
+spring-boot-deploy.md[SV3T]: F:说明Spring Boot以systemd运行的环境与重启配置 | R:- | A:服务单元示例 | S:此为KnoHub示例而非飞跃部署配置
+sql-postgresql.md[SD2T]: F:区分SQL数据修改与结构修改并保留Notion视图占位 | R:- | A:Markdown笔记 | S:-
+ssh-docker-jupyter.md[SN2T]: F:保留WSL连接容器Jupyter的主题提纲 | R:- | A:Markdown标题 | S:尚无具体操作正文
+systemctl-restart.md[SV2T]: F:保留systemctl重启笔记元数据 | R:- | A:frontmatter | S:正文为空
+tailscale-install.md[SN3S]: F:记录Tailscale部署、句柄限制与UDP直连优化 | R:- | A:Markdown笔记 | S:-
+tailscale-lan.md[SN3T]: F:说明无TUN模式运行Tailscale及SSH端口转发 | R:- | A:Markdown笔记 | S:转发目标需使用SSH真实监听端口
+tmp.md[SA3T]: F:描述视频注意力按head采用stride、cyclic和merge缓存策略 | R:- | A:算法研究草稿 | S:若干公式变量在导出中缺失
+token-and-password.md[SS8T]: F:保存历史账号凭据与恢复信息的敏感笔记 | R:code:scripts/notion_raw/token-and-password.json | A:敏感内容载体 | S:不得复制其中的凭据到索引或日志；不可作为公开学习内容发布
+ubuntu-add-pubkey.md[SI2T]: F:保留Ubuntu添加公钥笔记的导入元数据 | R:- | A:frontmatter | S:正文为空
+uv-install.md[SV3T]: F:记录Windows安装uv并保留功能学习提纲 | R:- | A:安装命令 | S:-
+vim-vimrc-detail.md[SC3L]: F:解析vimrc编辑设置、映射、语言支持与插件管理 | R:- | A:Markdown笔记 | S:-
+vps-node-setup.md[SN3L]: F:记录VPS部署Xray Reality和BBR、时间同步及防火墙调优 | R:- | A:Markdown笔记 | S:-
+vue.md[SB2T]: F:保留Vue项目启动与介绍提纲 | R:- | A:Markdown标题 | S:尚无具体正文
+wip-placeholder.md[SB2T]: F:记录飞跃早期开发待办与仓库链接 | R:- | A:开发笔记 | S:待办属于历史记录
+wsl-git-ssh-cheatsheet.md[SV3S]: F:汇总WSL下Git、SSH代理和HTTPS备用操作 | R:- | A:命令速查表 | S:SSH代理不继承HTTP代理变量
+wsl-usb-passthrough.md[SH3S]: F:说明Windows USB设备绑定并挂载到WSL的步骤 | R:- | A:usbipd操作指南 | S:-
+xju-algorithm.md[SB3S]: F:收录算法复杂度、设计策略和图搜索课程笔记 | R:- | A:Markdown学习材料 | S:-
+xju-android-dev.md[SB3L]: F:收录Android界面、组件、多媒体与网络通信复习笔记 | R:- | A:Markdown学习材料 | S:-
+xju-assembly-language.md[SB3L]: F:收录8086寻址指令、汇编程序和宏输入输出复习笔记 | R:- | A:Markdown学习材料 | S:-
+xju-circuits-analog-electronics.md[SB3T]: F:记录电路与模电课程评价及外部学习资源 | R:- | A:课程参考链接 | S:-
+xju-compile-theory.md[SB3L]: F:汇总编译原理文法、词法、语法分析与代码生成知识 | R:- | A:Markdown学习材料 | S:-
+xju-computer-operating-system.md[SB3L]: F:汇总进程调度、同步、存储、文件管理与进程创建实验 | R:- | A:Markdown学习材料 | S:-
+xju-database.md[SB3M]: F:汇总数据库概念、关系理论、SQL与并发恢复知识 | R:- | A:Markdown学习材料 | S:-
+xju-discrete-math.md[SB3M]: F:收录逻辑、集合、关系、图与树的离散数学复习知识 | R:- | A:Markdown学习材料 | S:-
+xju-emb-linux.md[SB3T]: F:提供嵌入式Linux与ARM课程复习问题提纲 | R:- | A:Markdown学习材料 | S:-
+xju-linear-algebra.md[SB3M]: F:收录矩阵、向量、方程组、特征值和二次型复习笔记 | R:- | A:Markdown学习材料 | S:-
+xju-linux.md[SB3L]: F:收录Linux命令、Shell脚本和课程实验示例 | R:- | A:Markdown学习材料 | S:-
+xju-mao-mind.md[SB3L]: F:收录毛概理论章节、重点回顾与速记草稿 | R:- | A:Markdown学习材料 | S:-
+xju-principles-of-computer-composition.md[SB3L]: F:汇总运算器、存储器、指令、CPU、总线及IO知识 | R:- | A:Markdown学习材料 | S:-
+xju-python.md[SB3T]: F:记录Python课程程序填空、编程和图表考点 | R:- | A:考试范围记录 | S:对应2024年考试
+xju-signal-analysis.md[SB3L]: F:汇总信号系统、傅里叶与拉普拉斯变换及滤波器知识 | R:- | A:Markdown学习材料 | S:-
+xju-software-engineering.md[SB3L]: F:汇总软件生命周期、需求设计、实现测试和项目管理知识 | R:- | A:Markdown学习材料 | S:-
+xju-xi-mind.md[SB3L]: F:整理习概章节重点、问答与记忆提示 | R:- | A:Markdown学习材料 | S:-
+xray.md[SN3L]: F:记录Xray服务端客户端、证书及nftables端口配置 | R:- | A:Markdown笔记 | S:-
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/docs/===
+architecture.md[SG6S]: F:规定前端单向数据流、组件分层、状态管理与性能预算 | R:code:frontend/src/api/client.ts,code:frontend/src/styles/tokens.css | A:架构约定 | S:文档以早期mock架构为背景
+design-decisions.md[SC5S]: F:记录前端版本锁定、令牌命名、mock边界与差异交互决策 | R:code:docs/architecture.md | A:架构决策记录 | S:早期集成结论需对照现有代码
+plan-conferences.md[SB4M]: F:规划CCF会议独立SQLite、页面接入与三级采集更新 | R:code:backend/app/services/conferences_crawler.py | A:会议模块实现计划 | S:计划中的年度重置不等于已实现
+plan-file-upload.md[SU4S]: F:规划编辑器附件上传、多格式预览与备份 | R:code:docs/plan-materials-integration.md | A:附件集成方案 | S:顶部统一决议覆盖下方旧容量及预览选型
+plan-materials-integration.md[SB4S]: F:规划资料库分类树、上传预览、拖拽及共享权限 | R:code:backend/app/services/materials.py | A:资料库迁移方案 | S:历史开放决策需以当前实现为准
+plan-schools-integration.md[SD4L]: F:规划院校快照只读查询、热重载与前端接入 | R:code:backend/app/db/schools_engine.py | A:院校数据接入计划 | S:爬虫为离线生产者，不直接对公网提供HTTP接口
+笔记系统与社区互动-答辩文档.html[SB3S]: F:呈现笔记社区模块专业答辩讲稿与问答 | R:- | A:HTML答辩材料 | S:交付边界是历史说明
+笔记系统与社区互动-通俗版.html[SB3S]: F:用通俗语言说明笔记社区模块及答辩边界 | R:code:docs/笔记系统与社区互动-答辩文档.html | A:HTML讲解材料 | S:-
+运维与部署-PPT参考.html[SV3S]: F:提供部署运维四页幻灯布局和讲解参考 | R:code:scripts/gen_ops_figures.py | A:HTML演示参考 | S:-
+运维与部署-答辩讲稿.html[SV3S]: F:提供部署运维答辩讲稿、术语和问答 | R:code:docs/运维与部署-PPT参考.html | A:HTML讲稿 | S:旧仓库与规模数字需复核
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/docs/coursework/===
+README.md[SG4T]: F:说明课程论文分章草稿、配图生成和Word合并流程 | R:code:scripts/update_coursework_docx.py,code:scripts/figlib.py | A:配图与章节清单 | S:治理功能的交付描述是历史快照
+_tmp_format_docx_dump.txt[SC3M]: F:保存新疆大学论文格式规范的编号段落提取文本 | R:- | A:论文规范文本 | S:-
+_tmp_target_docx_dump.txt[SG3L]: F:保存飞跃课程论文的编号段落与表格提取快照 | R:- | A:论文检查文本 | S:不是可编辑Word源文档
+ch4-需求分析-笔记系统与社区互动.md[SB4M]: F:描述笔记与互动增量需求、数据流和用例 | R:code:docs/coursework/ch5-概要设计-笔记系统与社区互动.md | A:需求章节草稿 | S:举报与拉黑按当时规划描述
+ch5-概要设计-笔记系统与社区互动.md[SB4L]: F:描述笔记互动模块架构、接口、数据库与容错设计 | R:code:docs/coursework/ch6-详细设计-笔记系统与社区互动.md | A:概要设计章节 | S:部分成长与治理设计已与现状有差异
+ch6-详细设计-笔记系统与社区互动.md[SB4M]: F:描述笔记互动的程序、界面、顺序及状态设计 | R:code:docs/coursework/ch7-系统测试-笔记系统与社区互动.md | A:详细设计章节 | S:部分界面明确为规划项
+ch7-系统测试-笔记系统与社区互动.md[SQ4S]: F:记录笔记互动与合集测试覆盖、结果和限制 | R:code:backend/app/routes/notes.py | A:测试报告章节 | S:测试数量与耗时是历史执行记录
+template-outline.txt[SC3M]: F:保存论文模板章节和表格字段的定位提纲 | R:- | A:编号文本提纲 | S:-
+全量增量二与合集-实现设计.md[SB4L]: F:规划社区互动扩展表、接口、前端接入和测试实施顺序 | R:code:backend/app/db/models.py | A:增量二设计说明 | S:需结合现有实现判断历史规划是否仍适用
+期中答辩-3分钟讲稿.md[SB3T]: F:提供笔记社区模块三分钟及一分钟答辩讲稿 | R:- | A:答辩讲稿 | S:实现范围为期中快照
+期中答辩-笔记系统与社区互动.md[SB3M]: F:整理笔记社区阶段成果、幻灯结构、演示顺序和问答 | R:- | A:答辩参考文档 | S:-
+期中答辩-速记与问答.md[SB3S]: F:汇总笔记社区架构术语、边界和高频答辩问题 | R:- | A:速记问答手册 | S:历史测试数量不代表当前状态
+笔记系统与社区互动-实现审查清单.md[SQ4L]: F:按功能需求核对笔记互动实现并列出补齐优先级 | R:code:docs/coursework/ch4-需求分析-笔记系统与社区互动.md | A:实现审查清单 | S:结论绑定2026年7月6日代码状态
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/docs/coursework/figures/===
+T-ch4-fig1-system-flow.drawio[SG3T]: F:绘制浏览器、nginx、分层后端、数据库与AI的数据流 | R:code:scripts/gen_ch4.py | A:可编辑系统流程图 | S:-
+T-ch4-fig1-system-flow.svg[SG3T]: F:渲染系统请求与AI及备份流程 | R:code:docs/coursework/figures/T-ch4-fig1-system-flow.drawio | A:SVG插图 | S:-
+T-ch4-fig2-dfd-top.drawio[SB3T]: F:绘制访客用户与笔记互动子系统顶层数据交换 | R:code:scripts/gen_ch4.py | A:可编辑DFD | S:-
+T-ch4-fig2-dfd-top.svg[SB3T]: F:渲染笔记互动顶层参与者和存储流向 | R:code:docs/coursework/figures/T-ch4-fig2-dfd-top.drawio | A:SVG插图 | S:-
+T-ch4-fig3-dfd-publish.drawio[SB3S]: F:绘制草稿编辑、发布校验、摘要降级和建笔记流程 | R:code:scripts/gen_ch4.py | A:可编辑发布DFD | S:-
+T-ch4-fig3-dfd-publish.svg[SB3T]: F:渲染草稿到笔记的发布数据流 | R:code:docs/coursework/figures/T-ch4-fig3-dfd-publish.drawio | A:SVG插图 | S:-
+T-ch4-fig4-dfd-interaction.drawio[SB3S]: F:绘制浏览、表态、评论、合集与签到数据流 | R:code:scripts/gen_ch4.py | A:可编辑互动DFD | S:-
+T-ch4-fig4-dfd-interaction.svg[SB3T]: F:渲染社区互动处理与存储关系 | R:code:docs/coursework/figures/T-ch4-fig4-dfd-interaction.drawio | A:SVG插图 | S:-
+T-ch4-fig5-usecase.drawio[SB3S]: F:绘制访客、用户、作者与AI参与的笔记社区用例 | R:code:scripts/gen_ch4.py | A:可编辑用例图 | S:-
+T-ch4-fig5-usecase.svg[SB3T]: F:渲染笔记写作浏览互动及合集用例 | R:code:docs/coursework/figures/T-ch4-fig5-usecase.drawio | A:SVG插图 | S:-
+T-ch5-fig1-module-structure.drawio[SG3S]: F:绘制前端页面到后端路由服务与数据库的分层结构 | R:code:scripts/gen_ch5.py | A:可编辑模块图 | S:-
+T-ch5-fig1-module-structure.svg[SG3T]: F:渲染React与FastAPI及外部AI和备份的模块关系 | R:code:docs/coursework/figures/T-ch5-fig1-module-structure.drawio | A:SVG插图 | S:-
+T-ch5-fig2-class-domain.drawio[SD4L]: F:保存笔记互动领域实体类图的编辑源 | R:code:scripts/gen_class_diagrams.py | A:drawio源文件 | S:含未解决的Git冲突标记，当前XML无法正常解析
+T-ch5-fig2-class-domain.svg[SD3S]: F:渲染用户笔记评论、合集及成长治理实体关系 | R:code:docs/coursework/figures/T-ch5-fig2-class-domain.drawio | A:SVG领域类图 | S:部分实体反映历史规划
+T-ch6-fig1-class-program.drawio[SG3L]: F:绘制页面、API契约、路由、服务及模型的ECB结构 | R:code:scripts/gen_class_diagrams.py | A:可编辑程序类图 | S:-
+T-ch6-fig1-class-program.svg[SG3S]: F:渲染笔记社区程序分层和接口调用关系 | R:code:docs/coursework/figures/T-ch6-fig1-class-program.drawio | A:SVG程序类图 | S:-
+T-ch6-fig10-seq-collection.drawio[SB3S]: F:绘制笔记查询合集归属和上下文的调用顺序 | R:code:scripts/gen_ch6.py | A:可编辑顺序图 | S:-
+T-ch6-fig10-seq-collection.svg[SB3T]: F:渲染合集上下文查询与无归属返回分支 | R:code:docs/coursework/figures/T-ch6-fig10-seq-collection.drawio | A:SVG顺序图 | S:-
+T-ch6-fig11-state-note.drawio[SB3T]: F:绘制草稿发布、笔记可见隐藏与删除状态 | R:code:scripts/gen_ch6.py | A:可编辑状态图 | S:隐藏恢复在图中为规划
+T-ch6-fig11-state-note.svg[SB3T]: F:渲染笔记生命周期与规划治理分支 | R:code:docs/coursework/figures/T-ch6-fig11-state-note.drawio | A:SVG状态图 | S:-
+T-ch6-fig12-state-comment.drawio[SB3T]: F:绘制评论可见隐藏与作者删除状态 | R:code:scripts/gen_ch6.py | A:可编辑状态图 | S:-
+T-ch6-fig12-state-comment.svg[SB3T]: F:渲染评论创建删除及待实现治理状态 | R:code:docs/coursework/figures/T-ch6-fig12-state-comment.drawio | A:SVG状态图 | S:-
+T-ch6-fig13-state-report.drawio[SB3T]: F:绘制举报工单待处理、AI标记、处置与驳回状态 | R:code:scripts/gen_ch6.py | A:可编辑状态图 | S:历史治理规划
+T-ch6-fig13-state-report.svg[SB3T]: F:渲染举报工单的规划状态迁移 | R:code:docs/coursework/figures/T-ch6-fig13-state-report.drawio | A:SVG状态图 | S:-
+T-ch6-fig14-activity-browse.drawio[SB3T]: F:绘制分类搜索筛选和游标追加加载活动 | R:code:scripts/gen_ch6.py | A:可编辑活动图 | S:-
+T-ch6-fig14-activity-browse.svg[SB3T]: F:渲染信息流筛选排序分页活动 | R:code:docs/coursework/figures/T-ch6-fig14-activity-browse.drawio | A:SVG活动图 | S:-
+T-ch6-fig15-activity-ai.drawio[SA3S]: F:绘制AI摘要SSE、一次请求与静态兜底降级活动 | R:code:scripts/gen_ch6.py | A:可编辑活动图 | S:-
+T-ch6-fig15-activity-ai.svg[SA3T]: F:渲染AI摘要三层降级分支 | R:code:docs/coursework/figures/T-ch6-fig15-activity-ai.drawio | A:SVG活动图 | S:-
+T-ch6-fig2-ui-write.drawio[SU3T]: F:绘制写作页草稿、AI差异对照与发布界面 | R:code:scripts/gen_ch6_ui.py | A:可编辑界面原型 | S:-
+T-ch6-fig2-ui-write.svg[SU3T]: F:渲染Markdown写作与AI辅助原型 | R:code:docs/coursework/figures/T-ch6-fig2-ui-write.drawio | A:SVG界面图 | S:-
+T-ch6-fig3-ui-browse.drawio[SU3T]: F:绘制信息流分类搜索、笔记卡片与加载更多界面 | R:code:scripts/gen_ch6_ui.py | A:可编辑界面原型 | S:-
+T-ch6-fig3-ui-browse.svg[SU3T]: F:渲染笔记浏览筛选界面原型 | R:code:docs/coursework/figures/T-ch6-fig3-ui-browse.drawio | A:SVG界面图 | S:-
+T-ch6-fig4-ui-detail.drawio[SU3T]: F:绘制笔记正文、锚点引用和评论详情页 | R:code:scripts/gen_ch6_ui.py | A:可编辑界面原型 | S:部分操作标为尚未接入
+T-ch6-fig4-ui-detail.svg[SU3T]: F:渲染笔记详情与引用评论界面 | R:code:docs/coursework/figures/T-ch6-fig4-ui-detail.drawio | A:SVG界面图 | S:-
+T-ch6-fig5-ui-collection.drawio[SU3T]: F:绘制个人中心合集列表与条目维护规划界面 | R:code:scripts/gen_ch6_ui.py | A:可编辑界面原型 | S:-
+T-ch6-fig5-ui-collection.svg[SU3T]: F:渲染合集创建、移除与排序规划界面 | R:code:docs/coursework/figures/T-ch6-fig5-ui-collection.drawio | A:SVG界面图 | S:-
+T-ch6-fig6-ui-report.drawio[SU3T]: F:绘制管理员举报队列、AI结论与人工裁决规划界面 | R:code:scripts/gen_ch6_ui.py | A:可编辑界面原型 | S:-
+T-ch6-fig6-ui-report.svg[SU3T]: F:渲染举报工单治理规划界面 | R:code:docs/coursework/figures/T-ch6-fig6-ui-report.drawio | A:SVG界面图 | S:-
+T-ch6-fig7-ui-checkin.drawio[SU3T]: F:绘制每日签到、经验奖励与连续签到弹窗 | R:code:scripts/gen_ch6_ui.py | A:可编辑界面原型 | S:对应已移除的历史成长设计
+T-ch6-fig7-ui-checkin.svg[SU3T]: F:渲染签到经验弹窗设计 | R:code:docs/coursework/figures/T-ch6-fig7-ui-checkin.drawio | A:SVG界面图 | S:-
+T-ch6-fig8-seq-publish.drawio[SB3M]: F:绘制草稿发布、AI摘要兜底和事务保存的顺序 | R:code:scripts/gen_ch6.py | A:可编辑顺序图 | S:-
+T-ch6-fig8-seq-publish.svg[SB3T]: F:渲染草稿发布完整调用顺序 | R:code:docs/coursework/figures/T-ch6-fig8-seq-publish.drawio | A:SVG顺序图 | S:-
+T-ch6-fig9-seq-report.drawio[SB3S]: F:绘制举报受理、异步AI审核与管理员裁决规划 | R:code:scripts/gen_ch6.py | A:可编辑顺序图 | S:-
+T-ch6-fig9-seq-report.svg[SB3T]: F:渲染举报至人工处置的规划调用顺序 | R:code:docs/coursework/figures/T-ch6-fig9-seq-report.drawio | A:SVG顺序图 | S:-
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/docs/ppt-figures/===
+s13-deploy-flow.svg[SV3T]: F:展示拉代码、依赖、迁移、重启、探活和前端构建顺序 | R:code:deploy.sh | A:SVG部署流程图 | S:-
+s13-topology.svg[SV3T]: F:展示华为云nginx、前端静态资源、后端与AI拓扑 | R:code:scripts/gen_ops_figures.py | A:SVG部署拓扑图 | S:-
+s14-pipeline.svg[SV3T]: F:展示代码提交、Pages与服务器部署分流 | R:code:scripts/gen_ops_figures.py | A:SVG交付流程图 | S:图中保留旧部署仓库名称
+s15-backup.svg[SR3T]: F:展示运行状态与参考库经私有HF数据集备份恢复 | R:code:Makefile | A:SVG灾备图 | S:-
+s16-perf.svg[SP3T]: F:展示首屏、典型页与编辑器压缩体积对比 | R:- | A:SVG性能图 | S:数值是历史测量结果
+s16-security.svg[SS3T]: F:展示鉴权、上传拒绝名单与响应加固层次 | R:code:backend/app/services/uploads_common.py | A:SVG安全示意图 | S:-
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/docs/reverse-engineering/===
+00-架构逆向总览.md[SG5M]: F:还原全栈平台模块、数据流及文档滞后差异 | R:code:backend/app/main.py,code:frontend/src/api/client.ts | A:架构逆向报告 | S:分析结论绑定历史源码快照
+01-问题定义报告.md[SB4M]: F:从已上线功能还原业务问题、边界与服务对象 | R:code:docs/reverse-engineering/00-架构逆向总览.md | A:问题定义报告 | S:-
+02-可行性研究报告.md[SG4M]: F:从技术成本操作及隐私维度论证平台可行性 | R:code:docs/reverse-engineering/00-架构逆向总览.md | A:可行性研究报告 | S:运行规模为2026年6月历史口径
+03-软件需求规格说明书SRS.md[SB5L]: F:从实现反推平台功能、非功能与外部接口需求 | R:code:docs/reverse-engineering/00-架构逆向总览.md | A:需求规格说明书 | S:R1对应2026年6月代码基线
+04-概要设计说明书.md[SG5M]: F:还原平台分层架构、模块接口、存储域与容错安全设计 | R:code:docs/reverse-engineering/00-架构逆向总览.md | A:概要设计说明书 | S:-
+05-详细设计说明书.md[SG5L]: F:还原鉴权发布、AI和会议采集服务及关键算法 | R:code:backend/app/services/ai_compose.py,code:backend/app/services/conferences_crawler.py | A:详细设计说明书 | S:-
+06-编码实现与代码规范报告.md[SQ4L]: F:归纳前后端语言规范、设计模式、依赖与质量工具链 | R:code:backend/pyproject.toml,code:frontend/package.json | A:编码实现规范报告 | S:-
+07-测试计划与核心测试用例集.md[SQ4M]: F:还原已有测试策略、核心用例与覆盖盲区 | R:code:backend/pyproject.toml | A:测试计划与用例集 | S:数量和安全缺口是历史快照
+08-运行维护与部署手册.md[SV5M]: F:说明部署、三域数据同步、灾备与运维风险 | R:code:deploy.sh,code:scripts/sync/config.py | A:运维部署手册 | S:服务名及路径以实际部署脚本为准
+README.md[SG4T]: F:导航架构逆向总览与软件生命周期八阶段文书 | R:- | A:文档集目录 | S:-
+feiyue-doc-引言与可行性.md[SB4M]: F:编写飞跃平台引言、问题背景与系统可行性论文内容 | R:- | A:论文前两章草稿 | S:包含待填团队及成本字段
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/docs/superpowers/specs/===
+2026-07-07-互动完善与治理-design.md[SR5T]: F:规划互动防刷限流与后续前端治理接入 | R:code:backend/app/ratelimit.py | A:滑动窗口限流设计 | S:测试默认关闭限流以隔离既有用例
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/extension/===
+README.md[SE4T]: F:说明浏览器扩展安装与教务成绩单回传流程 | R:code:extension/manifest.json,code:extension/content.js | A:Chrome与Edge加载扩展说明 | S:文档自动开页描述可能滞后于当前实现
+content.js[IE6S]: F:在教务页导出PDF并回传飞跃，向主站声明导入器已安装 | R:code:extension/manifest.json,code:frontend/src/features/credits/lib/stash.ts | A:feiyue:importer-ready,transcript-stash POST | S:仅顶层框架注入；no-cors回传后提示用户手动切回飞跃
+manifest.json[FE5T]: F:声明成绩导入扩展匹配域名与页面脚本注入方式 | R:code:extension/content.js | A:Manifest v3,content_scripts | S:脚本使用MAIN世界以复用教务页面上下文
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/===
+.editorconfig[FC3T]: F:统一UTF-8、LF和两空格缩进 | R:- | A:编辑器格式约定 | S:Markdown保留行尾空格
+.env.local.example[FC4T]: F:示范用API基址连接真实后端 | R:code:frontend/src/api/client.ts | A:VITE_API_BASE | S:-
+.gitignore[FS4T]: F:排除前端依赖、构建产物、测试缓存和本地环境文件 | R:- | A:Git忽略规则 | S:-
+.nvmrc[FC3T]: F:指定Node Iron长期支持版本 | R:- | A:lts/iron | S:-
+.prettierignore[FC3T]: F:排除生成产物和UI原语的自动格式化 | R:- | A:Prettier忽略清单 | S:-
+.prettierrc[FC3T]: F:定义无分号、单引号和百字符行宽格式 | R:- | A:Prettier配置 | S:-
+INTEGRATION_REPORT.md[SQ4M]: F:记录早期五轮前端交付、验证结果与遗留事项 | R:code:frontend/README.md | A:交付记录与mock切换说明 | S:属于历史快照
+README.md[SG4S]: F:说明前端启动、脚本、目录和开发验证约定 | R:code:frontend/package.json,code:BACKEND_SPEC.md | A:pnpm dev,build,test,e2e | S:部分mock阶段说明属于早期版本
+commitlint.config.js[FQ3T]: F:配置传统提交消息校验及百字符标题上限 | R:- | A:commitlint配置 | S:不限制标题与scope大小写
+components.json[FU4T]: F:配置shadcn的stone主题、TSX和路径别名 | R:code:frontend/tailwind.config.ts,code:frontend/src/styles/globals.css | A:new-york组件生成配置 | S:-
+eslint.config.js[FQ5T]: F:组合TypeScript、React hooks与刷新规则的静态检查 | R:- | A:ESLint flat config | S:生成UI原语不参与检查；下划线前缀允许未使用参数
+index.html[EU4T]: F:提供React挂载点与浏览器页面入口 | R:code:frontend/src/main.tsx,code:frontend/public/favicon.svg | A:root DOM节点 | S:-
+package.json[FV6S]: F:声明前端依赖与构建、校验、测试命令 | R:code:frontend/pnpm-lock.yaml,code:frontend/vite.config.ts | A:dev,build,typecheck,lint,test,e2e | S:build先执行TypeScript项目引用检查
+playwright.config.ts[FQ5T]: F:配置Chromium端到端测试与Vite服务生命周期 | R:code:frontend/package.json | A:Playwright配置 | S:CI禁止only且单worker重试两次，本地允许复用服务
+pnpm-lock.yaml[FV5L]: F:锁定前端完整依赖图和CodeMirror补丁摘要 | R:code:frontend/package.json,code:frontend/pnpm-workspace.yaml | A:pnpm lockfile v9 | S:-
+pnpm-workspace.yaml[FV5T]: F:允许esbuild安装构建并绑定CodeMirror补丁 | R:code:frontend/patches/@codemirror__view.patch | A:allowBuilds,patchedDependencies | S:-
+postcss.config.js[FV3T]: F:配置Tailwind与Autoprefixer样式处理 | R:code:frontend/tailwind.config.ts | A:PostCSS plugins | S:-
+tailwind.config.ts[FC6S]: F:配置Tailwind扫描范围并把主题token映射为业务和基础组件工具类 | R:code:frontend/src/styles/tokens.css,code:frontend/src/styles/globals.css | A:Tailwind Config | S:业务色直接使用hex或rgba变量，shadcn槽位使用可透明度混合的HSL桥接
+tsconfig.app.json[FV5T]: F:配置浏览器应用的严格TypeScript校验与源码别名 | R:code:frontend/tsconfig.json | A:@/*别名,ES2022目标,react-jsx | S:启用未检查索引与精确可选属性，bundler解析且不输出JS
+tsconfig.json[FV4T]: F:以项目引用组织应用和Node配置的TypeScript构建检查 | R:code:frontend/tsconfig.app.json,code:frontend/tsconfig.node.json | A:tsc项目引用 | S:根配置自身不收集源文件
+tsconfig.mock.json[FV3T]: F:为模拟数据提供继承应用配置的独立编译范围 | R:code:frontend/tsconfig.app.json,code:frontend/tsconfig.json | A:mock目录TypeScript配置 | S:当前不在根引用链中，放宽未检查索引以服务固定fixture
+tsconfig.node.json[FV4T]: F:为Vite和Playwright配置启用Node类型与严格编译检查 | R:code:frontend/vite.config.ts,code:frontend/playwright.config.ts | A:ES2023,Node类型 | S:仅收集工具配置文件并禁用输出，不包含浏览器源码
+vite.config.ts[FV6T]: F:配置React开发服务、源码别名及jsdom单元测试运行环境 | R:code:frontend/src/test/setup.ts | A:Vite config,Vitest config,@别名 | S:单元测试仅收集src下test文件以排除Playwright；5173被占用可自动换端口
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/.husky/===
+commit-msg[XQ4T]: F:提交时从frontend运行commitlint检查消息 | R:code:frontend/commitlint.config.js | A:commit-msg hook | S:-
+pre-commit[XQ4T]: F:提交前在前端目录运行暂存文件质量检查 | R:code:frontend/package.json | A:pre-commit hook | S:Git根位于frontend上级
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/patches/===
+@codemirror__view.patch[LU7T]: F:修复桌面Chromium中文输入与错误Unicode正则 | R:code:frontend/pnpm-workspace.yaml,code:frontend/src/features/editor/MarkdownEditor.tsx | A:CodeMirror DOMObserver与EditContext补丁 | S:桌面开启EditContext并保留Chrome126之前的反向选区保护
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/public/===
+favicon.svg[SU2T]: F:提供笔记本形状的网站图标 | R:code:frontend/index.html | A:32像素SVG图标 | S:-
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/scripts/===
+ime-repro.cjs[TU5S]: F:通过Chromium CDP重现中文拼音与全角标点输入 | R:code:frontend/patches/@codemirror__view.patch | A:BASE,CHROME,失败退出码2 | S:运行前注入测试登录状态并检查EditContext生效
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/===
+App.tsx[AG6T]: F:组装查询缓存、路由和通知并恢复登录身份 | R:code:frontend/src/router.tsx,code:frontend/src/stores/authStore.ts | A:App | S:查询默认30秒过期、重试一次且不随窗口聚焦刷新
+main.tsx[EU6T]: F:加载全局样式并在根DOM中以StrictMode启动React应用 | R:code:frontend/src/App.tsx,code:frontend/src/styles/globals.css,code:frontend/index.html | A:#root应用入口 | S:缺少root节点立即报错，StrictMode会重复执行开发期效果检查
+router.tsx[EU7M]: F:注册懒加载页面与访问守卫并为加载和路由异常提供兜底 | R:code:frontend/src/components/layout/AppShell.tsx,code:frontend/src/components/layout/RequireAccess.tsx | A:router | S:班级页独立于主站外壳；浏览与笔记详情公开，写作和资料等须登录，后台另有角色守卫
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/api/===
+client.ts[IN8S]: F:统一mock分派、HTTP请求、错误转换与响应校验 | R:code:frontend/src/api/mock/handlers.ts | A:request,ApiError,registerMock,resolveAssetUrl,getApiBase,isMockMode | S:DEV且无API基址才启用mock；资源URL丢弃原域名改用API源；缺失mock直接501
+index.ts[AD8L]: F:汇总查询hooks与笔记、评论、合集的缓存更新策略 | R:code:frontend/src/api/endpoints/notes.ts,code:frontend/src/api/endpoints/interactions.ts,code:frontend/src/api/mock/handlers.ts | A:useNotes,useToggleLike,useCreateComment,useMyFavorites,useMyDrafts,useDeleteDraft | S:乐观交互同时修改详情和各列表快照，失败回滚并在结束后失效查询
+upload.ts[IN7S]: F:以XHR执行支持进度、取消和POST或PUT的multipart上传 | R:code:frontend/src/api/client.ts | A:xhrUpload,UploadProgress | S:默认POST保持兼容；不手设Content-Type；字节发送完仅processing，2xx与schema通过才done
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/api/endpoints/===
+admin.ts[II5S]: F:封装管理员用户、角色、班级与统计请求 | R:code:frontend/src/api/schemas/admin.ts | A:listAdminUsers,getAdminStats,createAdminUser,setUserLabMember,deleteAdminUser,setUserCommittee | S:删除用户是硬删除并涉及级联数据
+ai.ts[IA6S]: F:封装AI问候、整段写作和SSE增量输出 | R:code:frontend/src/api/schemas/ai.ts,code:frontend/src/api/client.ts | A:getGreetings,compose,composeStream | S:mock或首块超时回退整段请求并合成打字输出
+auth.ts[II5T]: F:封装登录、个人资料、密码、收藏与头像接口 | R:code:frontend/src/api/schemas/user.ts | A:login,logout,me,updateMe,changePassword,uploadAvatar | S:-
+blocks.ts[IS4T]: F:封装屏蔽用户与解除屏蔽请求 | R:code:frontend/src/api/schemas/report.ts | A:blockUser,unblockUser,listBlocks | S:-
+classes.ts[IB6M]: F:封装本人班级、分组任务、点名和分组文档导出 | R:code:frontend/src/api/schemas/class.ts | A:getClassMe,listClassMembers,listMissions,classAuthHeaders,triggerBlobDownload | S:班级作用域由JWT推导；导出使用带鉴权原生fetch
+collections.ts[IB5S]: F:封装个人笔记合集及条目排序管理 | R:code:frontend/src/api/schemas/collection.ts | A:listMine,getDetail,create,addEntry,reorderEntries,getNoteCollection | S:-
+conferences.ts[IB4T]: F:获取带清单元数据的CCF会议集合 | R:code:frontend/src/api/schemas/conference.ts | A:getConferences | S:-
+drafts.ts[IB5T]: F:定义草稿结构并封装保存删除与发布接口 | R:code:frontend/src/api/schemas/note.ts | A:DraftSchema,listDrafts,createDraft,updateDraft,deleteDraft,publishDraft | S:-
+groups.ts[IB6M]: F:封装小组生命周期、成员申请、文件和甘特任务 | R:code:frontend/src/api/schemas/class.ts,code:frontend/src/api/upload.ts,code:frontend/src/api/endpoints/classes.ts | A:listGroups,removeGroupMember,transferLeader,updateGroupTask,deleteGroupTask | S:前端仅裁剪展示权限；真实上传走XHR、mock走request
+interactions.ts[IB5S]: F:封装笔记和评论赞踩、收藏以及评论管理 | R:code:frontend/src/api/schemas/interaction.ts | A:likeNote,favoriteNote,dislikeComment,listComments,createComment,deleteComment | S:-
+materials.ts[IB6M]: F:封装资料资源、文件树、上传、排序与公告请求 | R:code:frontend/src/api/schemas/material.ts,code:frontend/src/api/upload.ts | A:listResources,createFolder,putNotice,deleteNotice,materialsAuthHeaders | S:共享读也携带token供识别owner；隐藏公告保留内容
+notes.ts[IB5S]: F:封装笔记筛选分页、推荐列表及修改删除 | R:code:frontend/src/api/schemas/note.ts | A:listNotes,getHotThisWeek,getLatest,getNote,updateNote,deleteNote | S:标签查询编码为逗号分隔
+reports.ts[IS5T]: F:封装内容举报创建、筛选与处理接口 | R:code:frontend/src/api/schemas/report.ts | A:createReport,listReports,resolveReport | S:-
+schools.ts[IB5T]: F:封装院校元信息、导师筛选分页与详情请求 | R:code:frontend/src/api/schemas/school.ts | A:getSchoolsMeta,listAdvisors,getAdvisor | S:多选条件作为数组交给统一请求编码
+uploads.ts[IB5T]: F:上传笔记图片与文档附件并校验返回信息 | R:code:frontend/src/api/upload.ts | A:uploadNoteImage,uploadNoteFile | S:文件真实上传使用XHR进度；mock不提供逐字节进度
+homeworks.ts[IB6T]: F:封装作业查询发布、带进度提交和鉴权文件下载 | R:code:frontend/src/api/schemas/homework.ts,code:frontend/src/api/upload.ts | A:listHomeworks,createHomework,getHomeworkRecords,uploadHomework,downloadHomework | S:提交使用PUT multipart；下载携带令牌后转Blob；mock下载明确报无真实文件
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/api/mock/===
+classes.ts[TB4L]: F:以内存状态模拟班级、小组、点名与甘特任务接口 | R:code:frontend/src/api/client.ts | A:classes与groups mock注册 | S:刷新重置且使用固定班委身份
+conferences.ts[TB3T]: F:将会议演示数据注册为列表mock响应 | R:code:frontend/src/features/conferences/data.ts | A:GET /conferences/list | S:-
+handlers.ts[TB4M]: F:注册身份、笔记、AI写作及班级作业模拟接口 | R:code:frontend/src/api/mock/notes.json,code:frontend/src/api/mock/homeworks.ts | A:registerMock调用集合 | S:模拟数据仅用于开发；AI为字符串变换
+notes.json[DB3L]: F:提供开发笔记列表、作者、分类与Markdown正文样本 | R:code:frontend/src/api/mock/handlers.ts | A:Note数组 | S:-
+schools.ts[TB4S]: F:模拟导师筛选分页、院校统计与详情接口 | R:code:frontend/src/features/schools/data.ts,code:frontend/src/features/schools/filter.ts,code:frontend/src/features/schools/sort.ts | A:schools mock接口 | S:列表去掉详情嵌套字段
+homeworks.ts[TB3T]: F:以内存样本模拟单人作业发布、提交与收件计数 | R:code:frontend/src/api/client.ts | A:/classes/me/homeworks mock | S:固定演示身份，刷新重置，不提供真实文件下载
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/api/schemas/===
+admin.ts[DI5S]: F:定义后台用户、班级、统计与登录审计载荷 | R:code:backend/app/schemas/admin.py | A:AdminUserRowSchema,AdminClassSchema,AdminStatsSchema,LoginEventSchema,UserCreateSchema | S:可分配角色不包含superadmin
+ai.ts[DA5T]: F:约束AI写作模式、请求、差异段与问候响应 | R:- | A:AIComposeRequestSchema,AIComposeResponseSchema,DiffSegmentSchema,GreetingsSchema | S:custom模式text代表提示词
+class.ts[DB6M]: F:定义班级、点名、小组、文件和任务的运行时契约 | R:code:backend/app/schemas/classes.py,code:backend/app/schemas/group.py | A:ClassMeSchema,MissionSchema,GroupDetailSchema,TaskCreateInSchema,TaskUpdateInSchema | S:甘特日期含首尾；部分更新的跨字段日期由后端合并校验
+collection.ts[DB5T]: F:定义笔记合集、排序条目和当前笔记上下文 | R:code:frontend/src/api/schemas/note.ts | A:CollectionSchema,CollectionDetailSchema,NoteCollectionContextSchema | S:-
+conference.ts[DB5T]: F:校验会议属性、录用统计和参考库清单 | R:- | A:ConferenceSchema,ConfManifestSchema,ConferencesOutSchema | S:-
+interaction.ts[DB5T]: F:定义评论分页、回复、图片、赞踩及文本锚点契约 | R:code:frontend/src/api/schemas/note.ts | A:CommentSchema,PaginatedCommentsSchema,CommentIn | S:回复仅两层，parentId始终指向顶层
+material.ts[DB5S]: F:定义共享资料资源、递归文件树和公告契约 | R:code:backend/app/schemas/material.py | A:MaterialFileSchema,MaterialResourceSchema,ReorderPositionSchema,MaterialNoticeSchema | S:文件夹属性可空；204归一为null
+note.ts[DB6T]: F:定义七类笔记、作者、交互状态与游标分页校验 | R:- | A:CATEGORY_IDS,NoteSchema,NoteAuthorSchema,ListNotesQuerySchema,PaginatedNotesSchema | S:赞踩收藏新增字段带默认值兼容旧载荷
+report.ts[DS5T]: F:定义举报原因、处理动作、审核记录与屏蔽名单 | R:code:frontend/src/api/schemas/note.ts | A:REPORT_REASONS,ReportSchema,BlockSchema,ReportResolveIn | S:-
+school.ts[DB5S]: F:校验院校、导师、名额、评价和分页元信息 | R:code:frontend/src/features/schools/types.ts | A:AdvisorRowSchema,AdvisorDetailSchema,SchoolsMetaSchema,ListAdvisorsParams | S:该域保留snake_case字段
+user.ts[DI6T]: F:定义用户身份、权限、班级、资料修改与密码契约 | R:code:backend/app/schemas/user.py | A:UserSchema,LoginRequestSchema,LoginResponseSchema,UserMeUpdateSchema,PasswordChangeSchema | S:联系信息仅本人接口填充；权限字段可空兼容旧响应
+homework.ts[DB5T]: F:校验作业列表、文件提交与收件记录的前端契约 | R:code:backend/app/schemas/homeworks.py | A:HomeworkSchema,HomeworkSubmissionSchema,HomeworkRecordsSchema,HomeworkCreateIn | S:时间字符串必须携带时区；未提交文件与时间显式为null
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/components/common/===
+CategoryBadge.tsx[CU4T]: F:按分类元信息渲染圆点、色块、图标或完整说明徽章 | R:code:frontend/src/lib/categories.ts | A:CategoryBadge | S:-
+CodeBlock.tsx[CU4T]: F:渲染带语言标签和复制反馈的代码块 | R:- | A:CodeBlock | S:复制使用原始文本而非高亮节点
+CommitteeBadge.tsx[CU4T]: F:按班委职务显示红或橙色徽标 | R:code:frontend/src/lib/committee.ts | A:CommitteeBadge | S:空标题回退班委
+EmptyState.tsx[CU4T]: F:提供带图标说明与可选操作的空状态 | R:- | A:EmptyState | S:-
+ErrorState.tsx[CU4T]: F:显示错误信息与可选重试按钮 | R:- | A:ErrorState | S:使用alert立即播报
+FileCard.tsx[CU6S]: F:把正文附件呈现为预览、下载和新窗操作卡片 | R:code:frontend/src/components/common/FilePreviewDialog.tsx,code:frontend/src/lib/fileTypes.ts | A:FileCard | S:根节点用span避免嵌套链接；data-filecard让评论锚点跳过子树
+FilePreviewDialog.tsx[AU6M]: F:按文件类型懒加载预览器并提供下载降级 | R:code:frontend/src/lib/fileTypes.ts,code:frontend/src/api/client.ts | A:FilePreviewDialog | S:以URL作为错误边界key，换文件重置错误态
+FileTypeIcon.tsx[CU4T]: F:根据文件类型或文件夹状态选择统一线性图标 | R:code:frontend/src/lib/fileTypes.ts | A:FileTypeIcon | S:-
+LoadingSkeleton.tsx[CU3T]: F:提供列表、卡片、段落三类加载占位 | R:code:frontend/src/components/ui/skeleton.tsx | A:LoadingSkeleton | S:-
+Markdown.tsx[CU6S]: F:渲染GFM、数学、代码高亮与附件卡片 | R:code:frontend/src/components/common/CodeBlock.tsx,code:frontend/src/components/common/FileCard.tsx | A:Markdown | S:空占位链接退化为文本或采用可见URL；启用原始HTML处理
+NoteCard.tsx[AU5S]: F:展示笔记分类、摘要、作者与点赞入口 | R:code:frontend/src/api/index.ts,code:frontend/src/stores/authStore.ts | A:NoteCard | S:点赞阻止卡片导航，未登录只提示
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/components/common/preview/===
+CodeViewer.tsx[CU5S]: F:加载文本并按语法高亮展示与复制 | R:code:frontend/src/api/client.ts | A:CodeViewer | S:大文本截断防止高亮阻塞，复制保留原始文本
+DocxViewer.tsx[CU6M]: F:渲染DOCX分页并支持缩放、适宽和拖动 | R:code:frontend/src/components/common/preview/usePreviewZoom.ts,code:frontend/src/components/common/preview/useDragScroll.ts | A:DocxViewer | S:缩放容器使用自然max-content尺寸避免双重放大；换文件令旧异步回调失效
+ExcelViewer.tsx[CU5S]: F:懒加载电子表格预览库显示XLSX | R:code:frontend/src/api/client.ts | A:ExcelViewer | S:换文件或卸载销毁实例并清空容器
+ImageViewer.tsx[CU5S]: F:展示图片并支持适配、缩放和拖动平移 | R:code:frontend/src/components/common/preview/usePreviewZoom.ts,code:frontend/src/components/common/preview/useDragScroll.ts | A:ImageViewer | S:初始适配不放大小图，Ctrl滚轮使用非passive监听
+PdfViewer.tsx[CU6M]: F:使用本地PDF worker逐页懒渲染并缓存文件与缩放 | R:code:frontend/src/components/common/preview/usePreviewZoom.ts,code:frontend/src/components/common/preview/useDragScroll.ts | A:PdfViewer | S:换文件或缩放取消旧渲染任务；画布按设备像素比放大
+useDragScroll.ts[CU5S]: F:为溢出的预览内容提供鼠标拖拽平移 | R:- | A:useDragScroll | S:位移超过4像素才捕获指针，保留普通点击与文本选区
+usePreviewZoom.ts[CD5S]: F:保存按文件和类型区分的预览缩放状态 | R:- | A:usePreviewZoom,ZOOM_MIN,ZOOM_MAX,ZOOM_STEP | S:内存缓存优先于localStorage；空fileId不持久化
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/components/layout/===
+AppShell.tsx[AU5T]: F:组装主站页头、路由内容与页脚 | R:code:frontend/src/components/layout/Header.tsx,code:frontend/src/components/layout/Footer.tsx | A:AppShell | S:登录页不使用此布局
+Footer.tsx[CU3T]: F:展示站点名称与当前年份页脚 | R:- | A:Footer | S:-
+GitHubStars.tsx[IU4T]: F:显示GitHub仓库Star和Watch计数 | R:- | A:GitHubStars | S:本地缓存一小时；离线失败只保留链接
+Header.tsx[AU5S]: F:组织站点导航、搜索、账户菜单与资料设置 | R:code:frontend/src/stores/authStore.ts,code:frontend/src/components/layout/MegaMenu.tsx | A:Header | S:-
+MegaMenu.tsx[AU5M]: F:提供桌面悬停分类菜单与移动侧栏浏览入口 | R:code:frontend/src/lib/categories.ts,code:frontend/src/api/index.ts | A:MegaMenu | S:桌面打开延迟200毫秒、关闭延迟150毫秒，支持固定展开
+RequireAccess.tsx[MI6T]: F:按登录或访客状态限制路由访问 | R:code:frontend/src/stores/authStore.ts | A:RequireAccess | S:拒绝后保存原路径到state.from供登录跳回
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/components/ui/===
+alert-dialog.tsx[CU4S]: F:封装Radix确认对话框的遮罩、内容与操作样式 | R:code:frontend/src/components/ui/button.tsx | A:AlertDialog,AlertDialogContent,AlertDialogAction,AlertDialogCancel | S:-
+avatar.tsx[CU3T]: F:封装圆形头像图片与加载回退 | R:- | A:Avatar,AvatarImage,AvatarFallback | S:-
+badge.tsx[CU3T]: F:提供默认、次级、危险和描边徽章变体 | R:- | A:Badge,badgeVariants | S:-
+button.tsx[CU5T]: F:提供统一按钮尺寸、状态与视觉变体 | R:- | A:Button,buttonVariants | S:asChild通过Radix Slot保留子元素语义
+card.tsx[CU3T]: F:组合卡片容器、标题、说明和内容布局 | R:- | A:Card,CardHeader,CardTitle,CardDescription,CardContent,CardFooter | S:-
+checkbox.tsx[CU3T]: F:包装Radix复选框与选中标记 | R:- | A:Checkbox | S:-
+context-menu.tsx[CU4M]: F:提供含子菜单、复选与单选项的右键菜单原语 | R:- | A:ContextMenu,ContextMenuContent,ContextMenuItem,ContextMenuCheckboxItem,ContextMenuRadioItem | S:-
+dialog.tsx[CU4S]: F:封装模态弹窗、遮罩、关闭按钮与标题说明 | R:- | A:Dialog,DialogContent,DialogTitle,DialogDescription,DialogFooter | S:-
+dropdown-menu.tsx[CU4M]: F:提供下拉菜单、子菜单和选择项的统一样式 | R:- | A:DropdownMenu,DropdownMenuContent,DropdownMenuItem,DropdownMenuCheckboxItem | S:-
+input.tsx[CU3T]: F:封装带焦点与禁用样式的原生输入框 | R:- | A:Input | S:-
+label.tsx[CU3T]: F:提供表单标签与关联禁用样式 | R:- | A:Label | S:-
+popover.tsx[CU3T]: F:封装锚定弹出层和Portal定位动画 | R:- | A:Popover,PopoverTrigger,PopoverContent,PopoverAnchor | S:-
+progress.tsx[CU3T]: F:用位移指示器显示百分比进度 | R:- | A:Progress | S:-
+scroll-area.tsx[CU3T]: F:提供带统一滚动条样式的滚动区域 | R:- | A:ScrollArea,ScrollBar | S:-
+select.tsx[CU4S]: F:封装可访问的下拉选择器及滚动选项列表 | R:- | A:Select,SelectTrigger,SelectContent,SelectItem,SelectValue | S:-
+separator.tsx[CU3T]: F:提供水平或垂直分隔线 | R:- | A:Separator | S:默认仅装饰用途
+sheet.tsx[CU4S]: F:封装从四个方向滑入的抽屉对话框 | R:- | A:Sheet,SheetTrigger,SheetContent,SheetTitle,SheetDescription | S:-
+skeleton.tsx[CU3T]: F:提供脉动加载占位块 | R:- | A:Skeleton | S:-
+sonner.tsx[CU4T]: F:为全站通知应用统一颜色和窄宽样式 | R:- | A:Toaster | S:固定light主题避免系统暗色导致黑色通知
+tabs.tsx[CU4T]: F:提供Radix标签栏、选中态与内容面板 | R:- | A:Tabs,TabsList,TabsTrigger,TabsContent | S:-
+textarea.tsx[CU3T]: F:封装多行文本输入的焦点与禁用样式 | R:- | A:Textarea | S:-
+tooltip.tsx[CU3T]: F:封装Portal文字提示与定位动画 | R:- | A:Tooltip,TooltipTrigger,TooltipContent,TooltipProvider | S:-
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/features/admin/===
+AdminPage.tsx[AI6T]: F:按管理员身份组装统计、用户、资料与举报后台 | R:code:frontend/src/stores/authStore.ts | A:AdminPage | S:非管理员显示404以隐藏管理入口
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/features/admin/components/===
+ImportUserDialog.tsx[AI5S]: F:收集学号姓名与可选密码以导入单个用户 | R:code:frontend/src/features/admin/hooks/useAdmin.ts | A:ImportUserDialog | S:空密码使用服务端默认；失败保持弹窗
+MaterialsTab.tsx[AB5S]: F:为管理员展示共享资料所有者与删除入口 | R:code:frontend/src/features/materials/hooks/useMaterials.ts | A:MaterialsTab | S:删除资料会一并删除其文件
+Overview.tsx[AO5S]: F:展示用户、资料、存储与登录活动统计图表 | R:code:frontend/src/features/admin/hooks/useAdmin.ts,code:frontend/src/features/admin/components/charts.tsx | A:Overview | S:-
+RecentLogins.tsx[AO5T]: F:呈现最近登录用户、设备、IP和时间 | R:code:frontend/src/features/admin/hooks/useAdmin.ts | A:RecentLogins | S:请求最近12次登录记录
+ReportsTab.tsx[AS5S]: F:展示举报与AI审核结果并执行下架删除或驳回 | R:code:frontend/src/api/index.ts | A:ReportsTab | S:默认仅显示待处理和AI标记记录
+ResetPasswordDialog.tsx[AI5S]: F:重置用户密码并显示可复制的结果 | R:code:frontend/src/features/admin/hooks/useAdmin.ts | A:ResetPasswordDialog | S:结果持续展示于弹窗，空输入采用服务端默认密码
+RoleBadge.tsx[CU3T]: F:按管理员级别展示图标与颜色徽章 | R:code:frontend/src/features/admin/lib/format.ts | A:RoleBadge | S:-
+SetClassDialog.tsx[AI5S]: F:为用户选择、新建或移除班级归属 | R:code:frontend/src/features/admin/hooks/useAdmin.ts | A:SetClassDialog | S:移除班级发送null且后端同时清除班委身份
+SetCommitteeDialog.tsx[AI5S]: F:让管理员通过预设或自定义职务设置班委身份 | R:code:frontend/src/features/admin/hooks/useAdmin.ts,code:frontend/src/components/common/CommitteeBadge.tsx | A:SetCommitteeDialog | S:空职务仍保留班委身份并显示通用班委标识
+StatCard.tsx[CU3T]: F:以统一卡片呈现后台统计值、说明及图标 | R:- | A:StatCard | S:-
+UsersTab.tsx[AI6M]: F:提供用户搜索、身份调整、导入、重置密码与班级班委管理入口 | R:code:frontend/src/features/admin/hooks/useAdmin.ts,code:frontend/src/features/admin/components/SetClassDialog.tsx,code:frontend/src/features/admin/components/SetCommitteeDialog.tsx | A:UsersTab | S:敏感角色变更通过确认流程，按钮权限按当前管理员等级区分
+charts.tsx[CU4S]: F:以原生SVG绘制后台环图、柱状图与横向比例条 | R:- | A:Donut,BarChart,HBars | S:空数据和零最大值由组件兜底，避免比例除零
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/features/admin/hooks/===
+useAdmin.ts[AD6S]: F:封装后台用户和统计查询、账户与班级身份修改并刷新缓存 | R:code:frontend/src/api/endpoints/admin.ts | A:useAdminUsers,useAdminStats,useSetRole,useSetLabMember,useSetUserClass,useSetUserCommittee | S:成功和错误提示在mutation回调执行，避免渲染阶段触发副作用
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/features/admin/lib/===
+format.ts[CU4T]: F:格式化后台日期、相对登录时间、角色及设备名称 | R:- | A:formatDate,formatRelative,ROLE_LABEL,deviceLabel | S:缺失登录时间显示从未，非法日期显示占位符
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/features/auth/===
+BrandPanel.tsx[AU4S]: F:使用模拟笔记和分类展示登录页品牌叠卡插画 | R:code:frontend/src/api/mock/notes.json,code:frontend/src/lib/categories.ts | A:BrandPanel | S:示例笔记按标题匹配并回退首批，避免数据重置造成固定ID失效
+LoginForm.tsx[AI6S]: F:校验登录输入、处理认证错误并提供访客进入方式 | R:code:frontend/src/stores/authStore.ts,code:frontend/src/api/schemas/user.ts | A:LoginForm | S:成功登录与访客进入均恢复路由保存的来源地址
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/features/browse/===
+FilterSidebar.tsx[AU4S]: F:提供浏览分类、排序、标签移除及清空筛选操作 | R:code:frontend/src/features/browse/useBrowseParams.ts,code:frontend/src/lib/categories.ts | A:FilterSidebar | S:筛选状态通过URL参数统一维护
+NoteGrid.tsx[AU5S]: F:按浏览参数加载笔记卡片并提供无限滚动与手动续页 | R:code:frontend/src/features/browse/useBrowseParams.ts,code:frontend/src/api/index.ts | A:NoteGrid | S:观察器仅在仍有下一页且未请求时续页，防止重复加载
+RightRail.tsx[AU4M]: F:从近期笔记构建热门标签、活跃作者及日期动态侧栏 | R:code:frontend/src/api/index.ts | A:RightRail | S:统计来自已取得的近期样本，不代表全站累计排名
+SearchBar.tsx[CU4T]: F:维护搜索草稿并在提交或清空时同步浏览URL | R:code:frontend/src/features/browse/useBrowseParams.ts | A:SearchBar | S:输入草稿与已提交查询分离，外部URL变化会重新同步
+useBrowseParams.ts[AD5S]: F:解析并更新浏览页分类、排序、查询及标签参数 | R:code:frontend/src/lib/categories.ts | A:useBrowseParams | S:更新使用replace避免每次筛选堆积浏览历史，未知枚举回退默认值
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/features/class/===
+ClassPage.tsx[AB6S]: F:组装概览、作业、点名与成员分页及班级状态 | R:code:frontend/src/features/class/components/homework/HomeworkTab.tsx,code:frontend/src/features/class/hooks/useClass.ts,code:frontend/src/features/class/hooks/useGroups.ts | A:ClassPage,tab=homeworks | S:仅裸/class自动跳本组；作业页隐藏班级大标题，并按用户和班级重挂载隔离临时文件
+GroupSpacePage.tsx[AB6T]: F:展示小组主页并按成员及管理身份开放文件与甘特任务区 | R:code:frontend/src/features/class/hooks/useGroups.ts,code:frontend/src/features/class/components/group-space/GroupFilesPanel.tsx,code:frontend/src/features/class/components/gantt/GanttPanel.tsx | A:GroupSpacePage | S:前端锁定仅作体验提示，后端仍须验证权限
+data.ts[CU4T]: F:定义甘特任务状态名称、主题配色与每日列宽 | R:code:frontend/src/api/schemas/class.ts | A:STATUS_META,STATUS_ORDER,GANTT_DAY_WIDTH | S:拖动吸附和渲染必须共用32像素日宽
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/features/class/components/===
+ClassNavbar.tsx[AU4S]: F:呈现分组任务导航、概览作业点名成员链接和用户入口 | R:code:frontend/src/stores/authStore.ts | A:ClassNavbar | S:分页链接显式带tab以绕过裸入口本组重定向
+MembersTab.tsx[AI6M]: F:展示班级成员网格并按权限提供班委调整及账户删除 | R:code:frontend/src/features/class/hooks/useClass.ts,code:frontend/src/features/class/components/SetMemberCommitteeDialog.tsx | A:MembersTab | S:班长仅管理普通班委，班长职务和删除账户由超级管理员控制
+SetMemberCommitteeDialog.tsx[AI5S]: F:在班级成员界面编辑班委职务并预览身份徽章 | R:code:frontend/src/features/class/hooks/useClass.ts,code:frontend/src/components/common/CommitteeBadge.tsx | A:SetMemberCommitteeDialog | S:非超级管理员隐藏班长选项，但最终授权仍由后端校验
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/features/class/components/gantt/===
+GanttChart.tsx[AU5S]: F:组合冻结任务列、月份日期网格及可操作甘特任务条 | R:code:frontend/src/features/class/lib/gantt.ts,code:frontend/src/features/class/components/gantt/GanttTaskBar.tsx | A:GanttChart | S:标题区与日期网格共享固定行高以维持滚动对齐
+GanttPanel.tsx[AW5S]: F:连接小组任务查询、甘特拖移和任务表单增删改流程 | R:code:frontend/src/features/class/hooks/useGroupTasks.ts,code:frontend/src/features/class/lib/gantt.ts | A:GanttPanel | S:拖移同时平移起止日期保留持续天数；删除仅向创建者或管理者开放
+GanttTaskBar.tsx[CU5S]: F:渲染状态进度任务条并将指针拖动吸附为整日移动 | R:code:frontend/src/features/class/lib/gantt.ts,code:frontend/src/features/class/data.ts | A:GanttTaskBar | S:以5像素阈值区分点击和拖移，零日偏移不提交更新
+TaskFormDialog.tsx[AW5M]: F:校验甘特任务标题日期负责人及状态，并提供删除二次确认 | R:code:frontend/src/api/schemas/class.ts,code:frontend/src/features/class/lib/gantt.ts | A:TaskFormDialog | S:每次打开重新填充表单，新任务默认今天到六天后；负责人来自当前组成员
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/features/class/components/group-space/===
+FileAccordion.tsx[CU4T]: F:将文件分组显示为横向可切换的展开卡片与竖排窄条 | R:code:frontend/src/features/class/lib/groupFiles.ts | A:FileAccordion | S:选中项不存在时回退首组，切换分组维度需由上层key重挂载重置
+FileRow.tsx[CU4T]: F:呈现文件类型、大小上传者及预览下载删除操作 | R:code:frontend/src/api/schemas/class.ts | A:FileRow | S:下载经回调处理认证，不能替换为未经授权的静态链接
+GroupFilesPanel.tsx[AB5M]: F:提供小组文件筛选排序、分组展示、拖入上传及预览下载 | R:code:frontend/src/features/class/lib/groupFiles.ts,code:frontend/src/features/class/hooks/useGroupFiles.ts,code:frontend/src/components/common/FilePreviewDialog.tsx | A:GroupFilesPanel | S:采用平铺文件集合；删除权限为管理者或文件上传者
+GroupHeader.tsx[AB6M]: F:展示小组身份并提供头像成员审批、转让退出及解散操作 | R:code:frontend/src/features/class/hooks/useGroups.ts | A:GroupHeader | S:解散会删除小组文件及任务，必须经过明确确认；头像限制2MB
+GroupIntro.tsx[AU4T]: F:展示小组简介并向有权用户提供内联编辑保存 | R:code:frontend/src/features/class/hooks/useGroups.ts | A:GroupIntro | S:保存成功才退出编辑，简介输入限制2000字符
+GroupUploadDialog.tsx[AB5M]: F:管理小组多文件选择、重命名、拖入与上传进度 | R:code:frontend/src/features/class/hooks/useGroupFiles.ts,code:frontend/src/lib/fileTypes.ts | A:GroupUploadDialog | S:单文件限50MB，重命名保留扩展名，上传期间禁止关闭
+JoinRequestsDialog.tsx[AB5T]: F:按需加载小组入组申请并逐项审批通过或拒绝 | R:code:frontend/src/features/class/hooks/useGroups.ts | A:JoinRequestsDialog | S:对话框打开才查询申请，审批期间禁用重复操作
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/features/class/components/groups/===
+CreateGroupDialog.tsx[AB5S]: F:校验新小组信息并支持创建时选择头像 | R:code:frontend/src/api/schemas/class.ts,code:frontend/src/features/class/hooks/useGroups.ts | A:CreateGroupDialog | S:头像限制2MB且通过对象URL预览，创建与头像上传并非单次原子请求
+GroupCard.tsx[AU4T]: F:展示小组标识组长人数及成员进入或非成员申请入口 | R:code:frontend/src/features/class/components/groups/GroupLogo.tsx,code:frontend/src/features/class/components/groups/JoinRequestButton.tsx | A:GroupCard | S:以myRole判断成员身份，不以组长学号推断
+GroupLogo.tsx[CU4T]: F:渲染小组缩略图或确定性颜色与名称首字后备头像 | R:code:frontend/src/api/client.ts,code:frontend/src/features/class/lib/logoColor.ts | A:GroupLogo | S:优先服务端缩略图，资源URL需跨源重定位
+GroupsTab.tsx[AB5S]: F:展示全班小组及未入组成员，并提供建组和班委分组导出 | R:code:frontend/src/features/class/hooks/useGroups.ts,code:frontend/src/features/class/hooks/useMissions.ts | A:GroupsTab | S:已加入小组时隐藏创建入口以符合一人一组约束
+JoinRequestButton.tsx[AU4T]: F:按未加入、待审批和已加入状态提供申请或撤回操作 | R:code:frontend/src/features/class/hooks/useGroups.ts | A:JoinRequestButton | S:已是成员不渲染按钮，撤回使用当前待审批申请ID
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/features/class/components/mission/===
+MissionBar.tsx[AU4T]: F:展示当前进行中分组任务并向班委开放管理入口 | R:code:frontend/src/features/class/components/mission/MissionManageDialog.tsx | A:MissionBar | S:仅从isActive任务派生横幅，无任务时呈现设置提示
+MissionManageDialog.tsx[AW5M]: F:在单一对话框切换分组任务列表与创建编辑表单 | R:code:frontend/src/features/class/hooks/useMissions.ts | A:MissionManageDialog | S:页内切换避免嵌套Radix对话框，新建默认设为进行中
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/features/class/components/rollcall/===
+RollcallHistoryItem.tsx[AU5S]: F:展示点名摘要并按需展开缺勤优先名单，允许班委修改删除 | R:code:frontend/src/features/class/hooks/useRollcalls.ts,code:frontend/src/features/class/lib/rollcall.ts | A:RollcallHistoryItem | S:展开才加载详情，已关闭点名仍可通过修改入口编辑
+RollcallSession.tsx[AW5S]: F:以成员勾选网格进行实时点名并保存会话 | R:code:frontend/src/features/class/hooks/useRollcalls.ts | A:RollcallSession | S:按学号单独禁用在途勾选，其他成员仍可并行更新
+RollcallTab.tsx[AW5T]: F:在班级点名历史和当前点名会话之间切换 | R:code:frontend/src/features/class/hooks/useRollcalls.ts,code:frontend/src/features/class/components/rollcall/RollcallSession.tsx | A:RollcallTab | S:全班可查看历史，仅班委显示发起操作
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/features/class/hooks/===
+keys.ts[CD5T]: F:集中构造班级查询缓存键并提取错误提示 | R:- | A:classKeys,errMsg | S:小组文件任务和申请键共享小组前缀以支持一致失效
+useClass.ts[AD6T]: F:查询班级与成员并封装班委设置和超级管理员删除账户 | R:code:frontend/src/api/endpoints/classes.ts,code:frontend/src/api/endpoints/admin.ts,code:frontend/src/features/class/hooks/keys.ts | A:useClassMe,useClassMembers,useSetMemberCommittee,useDeleteMemberAccount | S:未分配班级是正常空态；硬删账户后整个班级域缓存失效以处理级联变化
+useGroupFiles.ts[AD5T]: F:缓存小组文件列表并封装带进度上传与删除 | R:code:frontend/src/api/endpoints/groups.ts,code:frontend/src/features/class/hooks/keys.ts | A:useGroupFiles,useUploadGroupFiles,useDeleteGroupFile | S:上传成功用服务端返回完整列表替换缓存，删除后重新查询
+useGroupTasks.ts[AD6T]: F:缓存甘特任务并提供创建、乐观更新及删除 | R:code:frontend/src/api/endpoints/groups.ts,code:frontend/src/features/class/hooks/keys.ts | A:useGroupTasks,useCreateTask,useUpdateTask,useDeleteTask | S:更新先取消查询并记录旧值，失败回滚，结束后重新对账
+useGroups.ts[AD6M]: F:封装小组生命周期、头像、成员、申请审批及相关缓存刷新 | R:code:frontend/src/api/endpoints/groups.ts,code:frontend/src/features/class/hooks/keys.ts | A:useGroups,useUnassignedMembers,useGroup,useCreateGroup,useDecideJoinRequest,useTransferLeader | S:建组后才串行上传头像，后一步失败不能假定建组回滚；未入组名单共享列表前缀
+useMissions.ts[AD5T]: F:查询和管理班级分组任务，并下载分组信息文档 | R:code:frontend/src/api/endpoints/classes.ts,code:frontend/src/features/class/hooks/keys.ts | A:useMissions,activeMissionOf,useCreateMission,useUpdateMission,useDeleteMission,useExportClassGroups | S:导出先取得认证blob再触发下载，写入成功刷新任务列表
+useRollcalls.ts[AD7S]: F:封装点名查询创建关闭删除及单个出勤记录的乐观修改 | R:code:frontend/src/api/endpoints/classes.ts,code:frontend/src/features/class/hooks/keys.ts | A:useRollcalls,useRollcall,useStartRollcall,useSetRollcallRecord,useCloseRollcall,useDeleteRollcall | S:同会话记录共用mutationKey，最后一个在途修改完成才刷新，避免覆盖后续乐观勾选
+useHomeworks.ts[AD6T]: F:管理作业列表及收件记录查询与缓存键 | R:code:frontend/src/api/endpoints/homeworks.ts,code:frontend/src/stores/authStore.ts | A:useHomeworks,useHomeworkRecords,homeworkKeys | S:私有查询缓存按学号隔离；未选作业不请求收件记录
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/features/class/lib/===
+gantt.ts[KB6S]: F:以整数天序号计算甘特窗口、日期表头、任务条几何与拖动吸附 | R:- | A:parseDayNum,formatDayNum,addDays,computeWindow,barGeometry,snapDays | S:日期算术使用UTC构造和读取，任务跨度包含首尾两天以避免时区及差一错误
+groupFiles.ts[KB5S]: F:提供小组文件扩展名归一、筛选排序及按类型上传者分组 | R:code:frontend/src/api/schemas/class.ts | A:extFacets,uploaderFacets,filterFiles,sortFiles,groupByExt,groupByUploader | S:纯函数不修改输入，扩展名忽略大小写与前导点，无扩展名排序在末尾
+logoColor.ts[CU4T]: F:为小组生成稳定哈希底色和Unicode名称缩写 | R:- | A:LOGO_PALETTE,logoColor,logoInitials | S:颜色由gid决定以避免改名跳色，空名称回退组字
+rollcall.ts[KB4T]: F:对点名名单按缺勤和学号排序、计算出勤并生成缺勤摘要 | R:code:frontend/src/api/schemas/class.ts | A:sortAbsentFirst,countPresent,absentSummary | S:排序复制输入，全勤摘要返回null
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/features/collections/===
+CollectionsTab.tsx[AB6M]: F:管理个人笔记合集、重命名删除、加入移出和拖动排序 | R:code:frontend/src/api/index.ts,code:frontend/src/features/collections/SortableEntry.tsx | A:CollectionsTab | S:本地排序先乐观更新，详情响应变化重新同步；删除当前合集后清空选中
+NoteCollectionCard.tsx[AU4T]: F:在笔记文末展示所属合集位置及前后篇导航 | R:code:frontend/src/api/index.ts | A:NoteCollectionCard | S:无合集或查询失败均隐藏，不阻塞正文阅读
+SortableEntry.tsx[CU4T]: F:提供合集中的可拖动笔记行、序号分类和移除按钮 | R:code:frontend/src/components/common/CategoryBadge.tsx | A:SortableEntry | S:拖动监听绑定专用手柄以避免整行交互冲突
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/features/comments/===
+CommentSection.tsx[AM6L]: F:提供分页两层评论、引用锚点、图片回复、反应与举报删除 | R:code:frontend/src/api/index.ts,code:frontend/src/api/endpoints/uploads.ts,code:frontend/src/features/reports/ReportDialog.tsx | A:CommentSection,CommentSectionHandle,QuoteContext | S:回复统一挂顶层以避免三级嵌套；父评论未加载的回复暂作顶层展示
+QuoteBubble.tsx[CU4T]: F:在正文选区上方显示引用评论按钮 | R:- | A:QuoteBubble | S:使用mousedown阻止默认行为并提交选择，避免click前选区丢失
+useAnchorMarks.ts[CU6S]: F:按引用文本在文章DOM包裹评论标记并在清理时恢复原文 | R:- | A:useAnchorMarks,AnchorSpec | S:匹配容忍空白差异，跳过附件卡片和已有标记，跨边界失败仅略过该锚点
+useCommentViewMode.ts[CU4T]: F:持久化评论内联、抽屉或关闭偏好并适配移动视口 | R:- | A:useCommentViewMode,CommentViewMode | S:宽度不超过768像素时抽屉显示为内联，存储不可用不阻断页面
+useTextSelection.ts[CU5T]: F:追踪正文内至少四字符的选区文本、字符偏移和页面坐标 | R:- | A:useTextSelection,SelectionInfo | S:选区两端必须在容器内；元素端点无法精确定位时回退全文长度
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/features/conferences/===
+ConferencesPage.tsx[AB5S]: F:组合CCF会议数据查询、领域筛选排序及表格时间线视图 | R:code:frontend/src/api/endpoints/conferences.ts,code:frontend/src/features/conferences/data.ts,code:frontend/src/features/conferences/filter.ts,code:frontend/src/features/conferences/sort.ts | A:ConferencesPage | S:远端数据未取得时使用静态种子，查询缓存30分钟
+classify.ts[KB5T]: F:根据运行当天推导会议截稿状态、剩余天数与进度展示 | R:code:frontend/src/features/conferences/data.ts | A:daysUntil,classify,fmtDeadlineWord,progressForBar,fieldOf | S:以当地当天中午为参考、截稿日23:59:59为终点，30天内归入即将截稿
+data.ts[DD5M]: F:提供230个CCF会议与领域展示信息的本地回退种子 | R:code:archive/design-refs/components/conferences-data.jsx,code:scripts/seed_conferences.py,code:frontend/src/features/conferences/types.ts | A:CCF_FIELDS,CCF_CONFS | S:由种子脚本生成，不手改；动态会期字段只是种子而非实时公告
+filter.ts[KB5T]: F:组合会议领域级别状态出版方、未来截稿和文本筛选 | R:code:frontend/src/features/conferences/classify.ts,code:frontend/src/features/conferences/types.ts | A:applyFilters | S:未来截稿过滤排除未公布日期，文本检索覆盖简称全称出版方与地点
+sort.ts[KB5T]: F:实现会议列排序及优先临近截稿的默认智能排序 | R:code:frontend/src/features/conferences/classify.ts | A:applySort,smartSort | S:排序复制输入；空截稿日期使用Infinity参与列排序并随方向翻转
+types.ts[DB5S]: F:定义会议字段、截稿状态、筛选排序状态及默认展示选项 | R:- | A:Conference,FieldId,FilterState,SortState,BLANK_FILTERS,DEFAULT_SORT | S:领域ID允许未知字符串扩展，录取率单位为百分数而非小数比例
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/features/conferences/components/===
+ConfTable.tsx[AU4S]: F:渲染会议级别、领域、录取、会期截稿和外链的可排序表格 | R:code:frontend/src/features/conferences/classify.ts,code:frontend/src/features/conferences/types.ts | A:ConfTable | S:只为简称级别和截稿列提供排序操作
+FieldTabs.tsx[CU3T]: F:展示可换行会议领域筛选按钮与各领域数量 | R:code:frontend/src/features/conferences/data.ts | A:FieldTabs | S:-
+FilterBar.tsx[AU4M]: F:提供会议级别状态出版方多选、搜索与视图切换 | R:code:frontend/src/features/conferences/types.ts | A:FilterBar | S:筛选数组与开关由上层控制，数量展示区分筛后与总数
+TimelineView.tsx[AU4S]: F:将未来截稿会议按月份和日期排列为时间线 | R:code:frontend/src/features/conferences/classify.ts | A:TimelineView | S:仅显示有截稿日且不早于今日的会议，已截止和待公布项不出现
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/features/conferences/components/cells/===
+AcceptanceCell.tsx[CU3T]: F:展示会议录取率、投稿录取数量及统计年份 | R:code:frontend/src/features/conferences/types.ts | A:AcceptanceCell | S:缺少录取率时仅在投稿数大于零时计算比例
+DeadlineCell.tsx[CU4T]: F:呈现截稿日期、状态备注与临近进度条 | R:code:frontend/src/features/conferences/classify.ts | A:DeadlineCell | S:未公布日期直接使用占位，不绘制有日期的状态控件
+FieldChip.tsx[CU3T]: F:将会议领域转换为有颜色的简称标签 | R:code:frontend/src/features/conferences/classify.ts | A:FieldChip | S:未知领域不渲染标签
+LinksCell.tsx[CU3T]: F:展示会议官网和DBLP外链或官网未发布占位 | R:code:frontend/src/features/conferences/types.ts | A:LinksCell | S:外部链接在新页打开并去除referrer
+TierBadge.tsx[CU3T]: F:按A/B/C级别呈现CCF视觉徽章 | R:code:frontend/src/features/conferences/types.ts | A:TierBadge | S:-
+WhereCell.tsx[CU3T]: F:呈现会议地点、周期及会期日期 | R:code:frontend/src/features/conferences/types.ts | A:WhereCell | S:地点和日期均缺失时显示待公布
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/features/credits/===
+CreditsPage.tsx[AB6S]: F:编排手动PDF解析与教务回传取件，展示通识学分达标报告 | R:code:frontend/src/features/credits/lib/pdf.ts,code:frontend/src/features/credits/lib/parseTranscript.ts,code:frontend/src/features/credits/lib/rules.ts,code:frontend/src/features/credits/lib/stash.ts | A:CreditsPage | S:暂存件取后即删，busy锁防并发双取；主动轮询每2.5秒持续至三分钟超时
+data.ts[DB6T]: F:集中定义A至E模块最低学分及四史美育劳动专项要求 | R:- | A:MODULE_MIN_CREDITS,REQUIRED_MODULES,MODULE_NAMES,SPECIAL_RULES,ADVISORY_NOTES | S:专项学分按课程名关键词匹配，模块缺失须按零学分判定
+types.ts[DB5T]: F:定义PDF文本坐标、课程记录、模块达标报告及导入阶段类型 | R:- | A:RawTextItem,TranscriptRecord,SpecialRuleResult,ModuleStat,ImportPhase,CreditReport | S:credit为计划学分而earnedCredit用于达标，PDF坐标原点位于左下
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/features/credits/components/===
+AutoImportButton.tsx[AU4T]: F:展示教务导入等待解析失败状态并控制安装引导向导 | R:code:frontend/src/features/credits/components/ImportWizard.tsx,code:frontend/src/features/credits/types.ts | A:AutoImportButton | S:状态由页面控制，收到回传时自动收起向导
+CreditSummary.tsx[AU4T]: F:展示学分总体结论、五模块学分及未达标原因 | R:code:frontend/src/features/credits/lib/rules.ts,code:frontend/src/features/credits/types.ts | A:CreditSummary | S:判定口径为获得学分而非计划学分
+ImportWizard.tsx[AW5M]: F:检测导入工具安装状态并逐步引导安装脚本和打开教务导出 | R:code:frontend/src/features/credits/lib/userscriptManager.ts,code:frontend/src/features/credits/lib/bookmarklet.ts | A:ImportWizard | S:探测仅加速而不阻断，每步可手动前进且状态只前进不回退
+ModuleCard.tsx[AU4S]: F:展示单模块学分进度、特殊课程要求和选课记录 | R:code:frontend/src/features/credits/lib/rules.ts,code:frontend/src/features/credits/types.ts | A:ModuleCard | S:零门槛模块单独计算进度，避免除零
+RequirementChecklist.tsx[AU4T]: F:逐项呈现必修模块和特殊课程学分检查及不可核验提示 | R:code:frontend/src/features/credits/data.ts,code:frontend/src/features/credits/lib/rules.ts | A:RequirementChecklist | S:仅为必修模块展示最低学分检查，课程轮次要求只作提示
+UploadCard.tsx[CU4T]: F:提供点击或拖拽选择单份成绩单PDF的解析入口 | R:- | A:UploadCard | S:仅取首个文件，重置input使同一文件可再次选择
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/features/credits/lib/===
+bookmarklet.ts[IE6T]: F:提供导入安装地址及教务同源导出PDF后回传飞跃的书签脚本 | R:code:frontend/src/features/credits/lib/stash.ts | A:JWXT_LOGIN_URL,SCRIPTCAT_HOME_URL,IMPORT_USERJS_URL,FEIYUE_BOOKMARKLET | S:学号从导出文件路径获取而非HttpOnly cookie；no-cors回传无法读取服务端响应
+parseTranscript.ts[KB7M]: F:将PDF坐标文本重组为通识选修课程记录并解析获得学分 | R:code:frontend/src/features/credits/types.ts | A:MODULE_RE,clusterLines,parseTranscript | S:以课程代码识别记录边界并合并续行，按表头坐标归列，不能用序号或展示总学分代替
+pdf.ts[ID5T]: F:在浏览器本地逐页提取成绩单PDF文本及坐标 | R:code:frontend/src/features/credits/types.ts | A:loadTextItems | S:worker由Vite本地打包，逐页清理并最终销毁文档，文件不上传
+rules.ts[KB6T]: F:累计获得学分、判定模块及专项要求并生成失败原因 | R:code:frontend/src/features/credits/data.ts,code:frontend/src/features/credits/types.ts | A:fmtCredit,buildReport | S:必修模块与实际模块取并集以发现缺课，求和四舍五入两位消除浮点误差
+stash.ts[IN5T]: F:携带当前认证令牌取回本人暂存成绩PDF并构造File | R:code:frontend/src/api/client.ts | A:fetchStashedTranscript | S:取件禁止缓存且服务端取后即删，非200响应统一返回null
+userscriptManager.ts[IE5T]: F:通过脚本自报和扩展可访问资源探测导入安装状态 | R:- | A:isImporterInstalled,detectManager,detectInstallState,InstallState | S:篡改猴不能可靠从普通网页探测，新装脚本未刷新也可能未自报，必须保留手动引导
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/features/demo/components/===
+SectionShell.tsx[CU3T]: F:为动效章节提供技术署名标题说明与进入视口动画触发外壳 | R:code:frontend/src/features/demo/lib/motion.ts | A:SectionShell | S:完全离开视口才复位data-on以支持稳定重播
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/features/demo/===
+demo.css[CU4M]: F:定义动效演示的入场、描边、视差、字带及雷达样式 | R:code:frontend/src/features/demo/lib/motion.ts,code:frontend/src/styles/tokens.css | A:demo-*类,--sp,--pp | S:仅演示页面加载，颜色取主题变量并为减少动态效果偏好提供静态降级
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/features/demo/lib/===
+motion.ts[CU5S]: F:提供视口检测、减少动态偏好及rAF驱动滚动CSS变量的共用原语 | R:code:frontend/src/styles/tokens.css | A:lerp,clamp01,readToken,usePrefersReducedMotion,useInView,useScrollProgressVar | S:完全离开视口才重置入场状态，减少动态效果时短路动画
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/features/demo/sections/===
+Finale.tsx[AU4S]: F:组合滚动文字视差、描边背景和磁吸按钮作为演示终幕 | R:code:frontend/src/features/demo/lib/motion.ts | A:Finale | S:磁吸插值收敛后停止帧循环，减少动态偏好禁用指针动效
+HeroReveal.tsx[AU4S]: F:以八条交错裁剪文字层展示动效首页标题入场 | R:code:frontend/src/features/demo/lib/motion.ts | A:HeroReveal | S:视觉副本隐藏于辅助技术，真实标题单独保留，减少动态模式直接显示标题
+OdometerStats.tsx[AU4S]: F:用逐位数字带动画展示演示页固定统计 | R:code:frontend/src/features/demo/lib/motion.ts | A:OdometerStats | S:高位仅在低位进位末段联动，数值为演示常量而非实时统计
+ParallaxCards.tsx[AU4T]: F:呈现七分类差速视差卡片与示例篇数 | R:code:frontend/src/lib/categories.ts,code:frontend/src/features/demo/lib/motion.ts | A:ParallaxCards | S:视差、入场和悬停分层使用transform以避免插值冲突
+ParticleSculpture.tsx[AU5M]: F:在Canvas中将散落粒子聚合为飞跃字形并响应指针斥力 | R:code:frontend/src/features/demo/lib/motion.ts | A:ParticleSculpture | S:仅可见时运行帧循环，减少动态模式直接绘制静态目标点
+RadarBloom.tsx[AU4S]: F:将七分类示例篇数以生长雷达图和悬停提示展示 | R:code:frontend/src/lib/categories.ts,code:frontend/src/features/demo/lib/motion.ts | A:RadarBloom | S:顶点入场与悬停放大分离元素，数据与数字统计演示保持一致
+StrokeWriting.tsx[AU3T]: F:使用逐字SVG描边再填色演示文字动画并支持重播 | R:code:frontend/src/features/demo/demo.css | A:StrokeWriting | S:通过key重挂载触发重播，色彩循环采用分类主题变量
+TypePlayground.tsx[AU4S]: F:把指针位置映射到字重字距行高并实时显示排版读数 | R:code:frontend/src/features/demo/lib/motion.ts,code:frontend/src/features/demo/demo.css | A:TypePlayground | S:rAF直接更新CSS变量而不触发React逐帧渲染，离开时用注册属性平滑复位
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/features/editor/===
+MarkdownEditor.tsx[CU6S]: F:封装CodeMirror Markdown输入、选区坐标与图片文档粘贴拖入 | R:code:frontend/src/lib/fileTypes.ts | A:MarkdownEditor | S:配置对象扩展和回调保持稳定引用，避免每次按键重配置破坏中文输入法合成
+MarkdownPreview.tsx[CU4T]: F:为编辑器复用Markdown渲染并展示空白写作提示 | R:code:frontend/src/components/common/Markdown.tsx | A:MarkdownPreview | S:memo配合上层防抖降低输入时预览重渲染
+SummaryField.tsx[AA5S]: F:提供笔记简介编辑、流式AI生成和恢复生成前内容 | R:code:frontend/src/features/editor/ai/useSummaryCompose.ts | A:SummaryField | S:生成前保存旧简介并清空显示流式内容，生成中只读
+WritePage.tsx[AB7L]: F:编排新草稿与已发布笔记编辑、Markdown预览、附件和AI改写发布流程 | R:code:frontend/src/stores/draftStore.ts,code:frontend/src/api/endpoints/drafts.ts,code:frontend/src/api/endpoints/notes.ts,code:frontend/src/features/editor/MarkdownEditor.tsx | A:WritePage | S:新草稿自动保存到本地，编辑已发布笔记仅显式提交；不同面板组合分别持久化布局
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/features/editor/ai/===
+AIDrawer.tsx[AA5M]: F:提供AI改写模式、自定义要求、结果差异与历史选择及接受拒绝入口 | R:code:frontend/src/features/editor/ai/DiffView.tsx,code:frontend/src/features/editor/ai/useAICompose.ts | A:AIDrawer | S:结果应用通过父组件回调决定，不在抽屉直接改写编辑器文档
+DiffView.tsx[CU4T]: F:以行内或左右并排视图展示AI新增删除及保留文本 | R:code:frontend/src/api/schemas/ai.ts | A:DiffView | S:左栏排除新增，右栏排除删除；差异以纯文本渲染
+FloatingToolbar.tsx[CU4T]: F:在编辑选区附近提供五种AI快捷改写操作 | R:code:frontend/src/api/schemas/ai.ts | A:FloatingToolbar | S:坐标相对于视口，mousedown保留选区后触发操作
+diffEngine.ts[KA5T]: F:生成语义清理后的文本差异并从片段还原接受或拒绝结果 | R:code:frontend/src/api/schemas/ai.ts | A:computeDiff,applyAccept,applyReject | S:接受保留equal与add，拒绝保留equal与del
+useAICompose.ts[AA5T]: F:调用AI改写并管理当前结果及最近二十条会话内历史 | R:code:frontend/src/api/index.ts,code:frontend/src/api/schemas/ai.ts | A:useAICompose,ComposeHistoryItem | S:空白输入不发请求，历史仅保存在组件状态
+useSummaryCompose.ts[AA5T]: F:调用流式总结接口并累计增量向简介控件反馈 | R:code:frontend/src/api/endpoints/ai.ts | A:useSummaryCompose | S:使用ref累计文本避免旧闭包，完成时输出trim后的结果并结束等待
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/features/editor/hooks/===
+useAutoSave.ts[CW4T]: F:监视写作字段变化并防抖触发保存回调 | R:code:frontend/src/stores/draftStore.ts | A:useAutoSave | S:跳过首次渲染，默认800毫秒，保存仅标记状态因为本地草稿已持续持久化
+useScrollSync.ts[CU5T]: F:按滚动比例双向同步编辑器与预览容器 | R:- | A:useScrollSync | S:50毫秒方向锁防循环反馈，无可滚动高度时立即释放锁
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/features/editor/toolbar/===
+MainToolbar.tsx[AU4T]: F:提供笔记标题分类、保存草稿和发布或保存修改操作 | R:code:frontend/src/lib/categories.ts | A:MainToolbar | S:编辑模式隐藏保存草稿按钮，主按钮文案为保存修改
+SubToolbar.tsx[AU4M]: F:提供Markdown插入、附件标签管理、字数及编辑预览AI布局控制 | R:- | A:SubToolbar,EditorViewMode | S:插入与布局行为由父组件处理，AI润色须有可用选区
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/features/home/data/===
+greetings.json[DU3T]: F:提供七个时段及通用场景的首页本地问候文案 | R:code:frontend/src/features/home/lib/greeting.ts | A:时段键,{名字}占位符 | S:文案须保留名字占位符以供客户端替换
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/features/home/lib/===
+greeting.ts[CB6S]: F:派生亲切称呼、生成时段问候、过滤退化文本并轮换用户缓存 | R:code:frontend/src/features/home/data/greetings.json | A:familiarName,periodOf,timeFallback,isValidGreeting,writeCache,rotate | S:称呼输入取合法姓名而非昵称；按学号缓存三条三小时，轮换不延长TTL
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/features/home/sections/===
+CategoryGrid.tsx[AU3T]: F:展示七分类及全部笔记入口的响应式首页网格 | R:code:frontend/src/lib/categories.ts | A:CategoryGrid | S:-
+HotCarousel.tsx[AU4S]: F:查询本周热门笔记并以可横向滚动卡片展示 | R:code:frontend/src/api/index.ts,code:frontend/src/components/common/NoteCard.tsx | A:HotCarousel | S:根据首尾卡片真实位置决定边缘渐变，避免无溢出时遮挡
+LatestFeed.tsx[AU4T]: F:呈现首页最新笔记网格及加载错误和空态 | R:code:frontend/src/api/index.ts,code:frontend/src/components/common/NoteCard.tsx | A:LatestFeed | S:空态写作动作当前为空回调，不能视为已完成导航
+WelcomeSection.tsx[AA5T]: F:以同步本地问候呈现首页欢迎语并在缓存缺失时补充AI结果 | R:code:frontend/src/features/home/lib/greeting.ts,code:frontend/src/api/endpoints/ai.ts,code:frontend/src/stores/authStore.ts | A:WelcomeSection | S:首屏不等待网络，AI失败静默保留本地文案，渲染前再次剔除退化结果
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/features/materials/===
+MaterialsPage.tsx[AB6S]: F:切换共享资料列表与详情并处理资源删除后的返回 | R:code:frontend/src/features/materials/hooks/useMaterials.ts,code:frontend/src/features/materials/components/MaterialListView.tsx,code:frontend/src/features/materials/components/MaterialDetailView.tsx | A:MaterialsPage | S:页内状态切换而非路由，详情请求前用已点开的列表资源兜底
+data.ts[CU4T]: F:定义课程类型角标颜色、选择项及资料空态错误文案 | R:code:frontend/src/features/materials/types.ts | A:TAG_BADGE,getTagBadge,TAG_OPTIONS,TAG_NONE,ERROR_COPY | S:未知或缺失类型不生成角标，空选项需使用非空哨兵
+types.ts[DB5T]: F:从运行时schema派生资料资源和文件类型并定义拖动预览参数 | R:code:frontend/src/api/schemas/material.ts | A:MaterialFile,MaterialResource,ReorderInput,PreviewTarget,FolderOption,ResourceUpdateInput | S:列表files可能省略为[]；更新省略字段表示不改而tag:null表示清除
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/features/materials/components/===
+ConfirmDialog.tsx[CU5S]: F:提供返回布尔Promise的命令式确认对话框及可渲染宿主 | R:code:frontend/src/components/ui/alert-dialog.tsx | A:useConfirm,ConfirmOptions,ConfirmTone | S:调用方必须渲染一次host，关闭或取消均解析为false
+FileTree.tsx[AU6M]: F:渲染可折叠资料文件树并投影拖动为嵌套、移出或重排操作 | R:code:frontend/src/features/materials/lib/tree.ts,code:frontend/src/features/materials/components/FileTreeItem.tsx | A:FileTree | S:折叠子树从排序列表排除，权限决定拖动启用，指示线与提交共用同一落点投影
+FileTreeItem.tsx[CU5M]: F:呈现带缩进和落点指示的文件树行及预览下载管理菜单 | R:code:frontend/src/features/materials/lib/tree.ts,code:frontend/src/components/common/FileTypeIcon.tsx | A:FileTreeItem,DropLineEdge | S:文件夹和文件菜单不同，写操作及拖动仅在授权状态开放
+MaterialCard.tsx[AU4S]: F:展示资源标题课程类型、文件数量、目录预览及管理菜单 | R:code:frontend/src/features/materials/data.ts,code:frontend/src/features/materials/lib/tree.ts,code:frontend/src/stores/authStore.ts | A:MaterialCard | S:列表可能省略文件树，目录预览须按需隐藏；管理动作阻止整卡点击冒泡
+MaterialDetailView.tsx[AB6L]: F:编排资料工具栏、文件树与预览分栏及上传建夹改名删除流程 | R:code:frontend/src/features/materials/hooks/useMaterials.ts,code:frontend/src/features/materials/components/FileTree.tsx,code:frontend/src/features/materials/components/preview/PreviewPane.tsx | A:MaterialDetailView | S:写入权限根据所有者及管理身份派生，删除经确认，树与资源详情缓存需同步
+MaterialListView.tsx[AB5M]: F:组织资料搜索分类筛选、资源卡管理和最近上传预览 | R:code:frontend/src/features/materials/hooks/useMaterials.ts,code:frontend/src/features/materials/components/ResourceFormDialog.tsx,code:frontend/src/features/materials/components/RecentUploads.tsx | A:MaterialListView | S:搜索防抖300毫秒，最近上传仅从已带文件树的数据聚合
+MaterialNotice.tsx[AU5M]: F:显示可链接的资料致谢条并允许管理员编辑或隐藏 | R:code:frontend/src/features/materials/hooks/useMaterials.ts,code:frontend/src/stores/authStore.ts | A:MaterialNotice | S:删除仅软隐藏且保留内容；加载错误或普通用户隐藏态不渲染占位
+RecentUploads.tsx[AU4T]: F:通过弹出列表展示最近文件并直达共享预览 | R:code:frontend/src/features/materials/types.ts | A:RecentUploads,RecentItem | S:空集合时按钮和弹层整体隐藏
+ResourceFormDialog.tsx[AW5S]: F:创建或编辑资料标题简介及课程类型角标 | R:code:frontend/src/features/materials/hooks/useMaterials.ts,code:frontend/src/features/materials/data.ts | A:ResourceFormDialog | S:无角标以TAG_NONE表示以兼容Radix非空value约束，提交时转换为null
+UploadDialog.tsx[AW5L]: F:支持资料多文件重命名、目标文件夹选择和真实上传进度 | R:code:frontend/src/features/materials/hooks/useMaterials.ts,code:frontend/src/api/upload.ts,code:frontend/src/lib/fileTypes.ts | A:UploadDialog | S:上传字节完成后进入服务器处理不确定态，收到成功响应才显示100%；扩展名不可编辑
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/features/materials/components/preview/===
+PreviewPane.tsx[AU5M]: F:按文件类型懒加载共享预览器并为不支持或异常内容提供下载 | R:code:frontend/src/lib/fileTypes.ts,code:frontend/src/features/materials/hooks/useDownload.ts | A:PreviewPane | S:文件ID作为重挂载key重置缩放竞态和错误边界，渲染异常降级而不白屏
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/features/materials/hooks/===
+useDownload.ts[IN6S]: F:通过认证流式读取文件、报告逐文件进度并用blob触发下载 | R:code:frontend/src/api/endpoints/materials.ts | A:useDownload,DownloadProgress | S:按文件ID阻止重复请求，缺Content-Length使用不确定进度，最终释放对象URL
+useMaterials.ts[AD6M]: F:封装资料资源、公告和文件树读写缓存及乐观重排 | R:code:frontend/src/api/endpoints/materials.ts,code:frontend/src/features/materials/lib/tree.ts | A:useResources,useResource,useFiles,useReorder,useUploadFiles,materialsKeys | S:重排同时快照更新文件树和详情两份缓存，失败回滚并最终对账；toast仅在回调触发
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/features/materials/lib/===
+tree.ts[KB7L]: F:转换资料树与扁平列表、计算拖动深度落点并不可变应用重排 | R:code:frontend/src/features/materials/types.ts,code:backend/app/services/materials.py | A:flattenTree,unflatten,findNode,getAllFolders,projectDrop,applyReorder | S:禁止拖入自身后代；inside追加到末尾须镜像后端，投影自身over帧仍需计算原槽位
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/features/reports/===
+BlocksList.tsx[AB4T]: F:展示当前用户拉黑名单并提供取消拉黑 | R:code:frontend/src/api/index.ts | A:BlocksList | S:取消操作等待时禁用列表按钮以免重复提交
+ReportDialog.tsx[AB5T]: F:收集笔记或评论举报原因与可选补充说明并提交 | R:code:frontend/src/api/index.ts | A:ReportDialog | S:提交成功后才关闭重置，空白说明不发送
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/features/schools/===
+SchoolsPage.tsx[AB6M]: F:编排高校分组和导师服务端筛选排序、学校预取及详情抽屉 | R:code:frontend/src/api/endpoints/schools.ts,code:frontend/src/features/schools/data.ts,code:frontend/src/features/schools/components/AdvisorTable.tsx | A:SchoolsPage | S:列表请求首批最多200条，查询切换保留旧数据，动态高校名单以元数据为准
+data.ts[DD5L]: F:提供高校分组及示例导师、招生评价轨迹数据和相对时间格式化 | R:code:frontend/src/features/schools/types.ts | A:C9_SCHOOLS,SCHOOL_GROUPS,SCHOOLS,ADVISORS,formatRelTime | S:全部高校分组的静态schools留空由真实元数据替换，导师样例不能当作实时服务端结果
+filter.ts[KB4T]: F:对导师集合进行院系职称招生风评和文本筛选并统计结果 | R:code:frontend/src/features/schools/types.ts | A:applyFilters,FilterResult | S:未知招生与不招生分开，其他职称表示不在已知列表，检索包含评价正文
+sort.ts[KB4T]: F:按招生风评置信度和中文姓名默认排序或按指定字段排序导师 | R:code:frontend/src/features/schools/types.ts | A:defaultSort,sortAdvisors | S:复制输入集合，缺更新时间按零处理，默认优先招生再风评及置信度
+types.ts[DB5S]: F:定义高校导师、名额评价调研轨迹及筛选排序契约 | R:- | A:Advisor,SchoolCode,Quota,Evaluation,TraceItem,FilterState | S:学校code容许扩展字符串；招生及名额空值保留未知，默认仅显示有邮箱导师
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/features/schools/components/===
+AdvisorTable.tsx[AU5M]: F:展示导师联系招生风评摘要及更新时间并提供排序和详情入口 | R:code:frontend/src/features/schools/types.ts,code:frontend/src/features/schools/data.ts | A:AdvisorTable | S:单元格复制和外链操作应阻止行点击传播
+Chip.tsx[CU3T]: F:提供学校筛选用可着色选中按钮与可选颜色点 | R:- | A:Chip,ChipTone | S:-
+FilterBar.tsx[AU4S]: F:提供导师院系职称招生风评和邮箱摘要过滤控件 | R:code:frontend/src/features/schools/types.ts,code:frontend/src/features/schools/components/Chip.tsx | A:FilterBar | S:招生未知使用独立筛选值，不能与不招生混同
+SchoolChips.tsx[AU4T]: F:展示高校分组及学校计数按钮并在悬停聚焦时预取数据 | R:code:frontend/src/features/schools/data.ts | A:SchoolChips | S:全部高校取动态名单，固定分组保持预置学校顺序，未知学校名回退服务端元数据
+Toggle.tsx[CU3T]: F:以受控开关按钮呈现导师筛选布尔条件 | R:- | A:Toggle | S:-
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/features/schools/components/cells/===
+EmailCell.tsx[CU4T]: F:展示导师邮箱或未公开混淆状态并支持复制反馈 | R:- | A:EmailCell | S:复制点击阻止行事件，只有剪贴板写入成功后显示已复制
+RecruitCell.tsx[CU3T]: F:将招生布尔或空值呈现为招生不招未知徽章 | R:- | A:RecruitCell | S:null必须保持未知而非误判不招
+RepCell.tsx[CU3T]: F:按风评倾向呈现文本与颜色标签 | R:code:frontend/src/features/schools/components/cells/rep-meta.ts | A:RepCell | S:空风评回退unknown标签
+SummaryCell.tsx[CU3T]: F:显示两行导师投递摘要并通过提示层展开全文 | R:code:frontend/src/components/ui/tooltip.tsx | A:SummaryCell | S:缺摘要明确显示未调研
+rep-meta.ts[CU3T]: F:集中定义风评枚举的中文展示标签 | R:code:frontend/src/features/schools/types.ts | A:REP_LABEL | S:-
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/features/schools/components/drawer/===
+AdvisorDrawer.tsx[AU5S]: F:以抽屉组织导师概览、招生矩阵、网络评价和调研记录 | R:code:frontend/src/features/schools/types.ts,code:frontend/src/features/schools/components/drawer/OverviewTab.tsx,code:frontend/src/features/schools/components/drawer/MatrixTab.tsx | A:AdvisorDrawer | S:仅导师ID改变时重置页签与展开项，父组件重渲染不抹去阅读位置
+EvaluationTab.tsx[AU4T]: F:按来源分组展示导师公开评价并展开长文和原始链接 | R:code:frontend/src/features/schools/types.ts | A:EvaluationTab | S:超过240字符才折叠，评价作为公开参考展示而非确定结论
+MatrixTab.tsx[AU4S]: F:按学位与年份展示导师招生名额、置信度及原始证据 | R:code:frontend/src/features/schools/types.ts | A:MatrixTab | S:当前年份列固定2024至2026，未知名额显示问号而不是零
+OverviewTab.tsx[AU4S]: F:呈现导师投递参考、联系方式、研究方向和可展开简介 | R:code:frontend/src/features/schools/lib/format-phone.ts,code:frontend/src/features/schools/components/cells/EmailCell.tsx | A:OverviewTab | S:缺调研结论明确显示未调研，联系方式保留混淆及未知状态
+TraceTab.tsx[AU4T]: F:将导师调研步骤和最终结果呈现为带可点击来源的时间线 | R:code:frontend/src/features/schools/lib/linkify.tsx,code:frontend/src/features/schools/types.ts | A:TraceTab | S:缺日志不等同无调研结论，空态兼容日志清理情况
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/features/schools/lib/===
+format-phone.ts[CL4T]: F:保守格式化中国手机号固定电话及分机 | R:- | A:formatPhone | S:掩码或无法匹配的号码保留原文，避免重组为误导联系方式
+linkify.tsx[CU4T]: F:将调研日志文本中的URL或裸域名转换为React链接 | R:- | A:linkify | S:裸域名补https，匹配在空白和常见中文标点处停止，其余内容作为文本
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/features/settings/===
+ProfileSettingsDialog.tsx[AI6M]: F:编辑个人资料、上传头像及修改密码并同步用户和作者缓存 | R:code:frontend/src/api/endpoints/auth.ts,code:frontend/src/stores/authStore.ts | A:ProfileSettingsDialog | S:只在打开时初始化表单以免头像更新覆盖未保存输入，PATCH只发送已改变字段
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/lib/===
+categories.ts[CB6S]: F:统一七类笔记的标识名称图标说明及主题颜色引用 | R:code:frontend/src/styles/tokens.css | A:CategoryId,Category,CATEGORIES,getCategory | S:工具分类ID为复数tools，未知ID取值抛错，颜色值保持在token唯一来源
+cn.ts[CU4T]: F:组合条件类名并按Tailwind规则消除冲突 | R:- | A:cn | S:后传入冲突类通过tailwind-merge覆盖先前类
+committee.ts[CU3T]: F:依据班委职务派生徽章红色或橙色色调 | R:code:frontend/src/components/common/CommitteeBadge.tsx | A:committeeTone,CommitteeTone | S:仅班长和团支书为红色，空值和其他职务均橙色
+fileTypes.ts[CS7M]: F:集中定义附件允许类型、图标分类、预览分派和文件大小格式化 | R:- | A:DOC_EXTS,MAX_UPLOAD_BYTES,kindOf,previewKind,isAttachmentHref,formatBytes | S:优先扩展名以兼容空MIME的Office文件，上传文档白名单排除SVG/HTML/XML等可执行页面
+highlight.tsx[CU4T]: F:以React节点高亮文本中的大小写不敏感搜索命中 | R:- | A:highlight | S:查询先转义正则且不使用HTML注入，空查询返回原文
+utils.ts[CU3T]: F:兼容默认shadcn导入路径并转导统一类名工具 | R:code:frontend/src/lib/cn.ts | A:cn | S:仅作为稳定兼容桥，不另实现类名合并
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/pages/===
+AdminPage.tsx[EU3T]: F:提供后台管理页面的稳定路由导出 | R:code:frontend/src/features/admin/AdminPage.tsx | A:AdminPage | S:-
+BrowsePage.tsx[AU4T]: F:组合搜索、分类筛选、笔记网格及侧栏形成浏览页 | R:code:frontend/src/features/browse/useBrowseParams.ts,code:frontend/src/features/browse/NoteGrid.tsx,code:frontend/src/features/browse/RightRail.tsx | A:BrowsePage | S:大屏三栏，右侧统计在小屏隐藏，筛选标题从URL派生
+ClassPage.tsx[EU3T]: F:提供班级首页的稳定路由导出 | R:code:frontend/src/features/class/ClassPage.tsx | A:ClassPage | S:-
+ConferencesPage.tsx[EU3T]: F:提供CCF会议页面的稳定路由导出 | R:code:frontend/src/features/conferences/ConferencesPage.tsx | A:ConferencesPage | S:-
+CreditsPage.tsx[EU3T]: F:提供学分统计页面的稳定路由导出 | R:code:frontend/src/features/credits/CreditsPage.tsx | A:CreditsPage | S:-
+DemoPage.tsx[AU4S]: F:组装八种动效章节及阅读进度形成Motion Lab演示页 | R:code:frontend/src/features/demo/demo.css,code:frontend/src/features/demo/lib/motion.ts | A:DemoPage | S:演示样式局部导入，整页动效支持减少动态偏好降级
+GroupSpacePage.tsx[EU3T]: F:提供小组空间的稳定路由导出 | R:code:frontend/src/features/class/GroupSpacePage.tsx | A:GroupSpacePage | S:-
+HomePage.tsx[AU4T]: F:组合欢迎语分类导航热门与最新笔记内容 | R:code:frontend/src/features/home/sections/WelcomeSection.tsx,code:frontend/src/features/home/sections/LatestFeed.tsx | A:HomePage | S:-
+LoginPage.tsx[AU4T]: F:将品牌插画和登录表单组成响应式独立入口页 | R:code:frontend/src/features/auth/BrandPanel.tsx,code:frontend/src/features/auth/LoginForm.tsx | A:LoginPage | S:大屏采用七五分栏，小屏隐藏品牌侧区
+MaterialsPage.tsx[EU3T]: F:提供共享资料页面的稳定路由导出 | R:code:frontend/src/features/materials/MaterialsPage.tsx | A:MaterialsPage | S:-
+NoteDetailPage.tsx[AB7L]: F:展示笔记正文及交互操作，连接引用评论双向定位和合集导航 | R:code:frontend/src/api/index.ts,code:frontend/src/features/comments/CommentSection.tsx,code:frontend/src/features/comments/useAnchorMarks.ts,code:frontend/src/features/comments/useTextSelection.ts | A:NoteDetailPage | S:访客互动先要求登录，作者管理与举报分离；点击正文锚点会恢复关闭的评论视图
+ProfilePage.tsx[AB5L]: F:展示当前用户已发布笔记、草稿、收藏、合集和拉黑五个分页 | R:code:frontend/src/api/index.ts,code:frontend/src/features/collections/CollectionsTab.tsx,code:frontend/src/features/reports/BlocksList.tsx | A:ProfilePage | S:查询以认证状态门控，发布笔记数量来自已加载分页而非总量
+SchoolsPage.tsx[EU3T]: F:提供高校导师页面的稳定路由导出 | R:code:frontend/src/features/schools/SchoolsPage.tsx | A:SchoolsPage | S:-
+WritePage.tsx[EU3T]: F:提供Markdown写作页面的稳定路由导出 | R:code:frontend/src/features/editor/WritePage.tsx | A:WritePage | S:-
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/pages/_dev/===
+DesignSystemPage.tsx[XU4T]: F:组合颜色排版组件Markdown和状态样例供开发时检查设计体系 | R:code:frontend/src/router.tsx | A:DesignSystemPage | S:仅开发模式挂载，示例操作不代表业务功能
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/pages/_dev/sections/===
+CategoryBadgeSection.tsx[XU3T]: F:展示七分类徽章的圆点标签图标及完整四种变体 | R:code:frontend/src/components/common/CategoryBadge.tsx,code:frontend/src/lib/categories.ts | A:CategoryBadgeSection | S:-
+CodeBlockSection.tsx[XU3T]: F:以Python、TypeScript和Shell样例展示代码高亮及复制控件 | R:code:frontend/src/components/common/CodeBlock.tsx | A:CodeBlockSection | S:样例命令仅为展示字符串
+ColorsSection.tsx[XU3T]: F:将中性色分类强调色浅色底与辅助色token渲染为色板 | R:code:frontend/src/lib/categories.ts,code:frontend/src/styles/tokens.css | A:ColorsSection | S:色块直接解析CSS变量以检验实际主题映射
+MarkdownSection.tsx[XU3T]: F:展示GFM表格列表引用代码数学公式及图片的Markdown样例 | R:code:frontend/src/components/common/Markdown.tsx | A:MarkdownSection | S:-
+RadiusShadowSection.tsx[XU3T]: F:展示三档圆角与卡片阴影的设计token效果 | R:code:frontend/src/styles/tokens.css | A:RadiusShadowSection | S:-
+ShadcnSection.tsx[XU3M]: F:集中展示基础按钮表单弹层菜单标签页和骨架等组件状态 | R:code:frontend/src/components/ui/button.tsx,code:frontend/src/components/ui/dialog.tsx,code:frontend/src/components/ui/sonner.tsx | A:ShadcnSection | S:演示交互限于本地组件和提示，无业务写入
+StatesSection.tsx[XU3T]: F:并列演示空态、可重试错误与加载骨架 | R:code:frontend/src/components/common/EmptyState.tsx,code:frontend/src/components/common/ErrorState.tsx | A:StatesSection | S:重试只递增演示计数，空态操作为空回调
+TypographySection.tsx[XU3T]: F:展示衬线无衬线等宽字体和字重层级的中英混排 | R:code:frontend/src/styles/tokens.css | A:TypographySection | S:-
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/stores/===
+authStore.ts[PI7T]: F:持久化认证用户令牌及访客状态并执行登录退出与启动令牌核验 | R:code:frontend/src/api/endpoints/auth.ts,code:frontend/src/api/endpoints/ai.ts,code:frontend/src/features/home/lib/greeting.ts | A:useAuthStore,AuthMode,AuthState | S:令牌同时写独立storage键和persist状态，核验失败含网络错误会清除认证；问候预热不阻塞登录
+draftStore.ts[PD6S]: F:在本地持久化多份写作草稿、当前选中及增改删操作 | R:code:frontend/src/lib/categories.ts | A:useDraftStore,Draft,DraftState | S:草稿未按用户分区，版本迁移为旧草稿补空summary，字段修改即时持久化
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/styles/===
+globals.css[CU6M]: F:加载字体和设计token并定义基础样式、shadcn桥接及跨页面视觉规则 | R:code:frontend/src/styles/tokens.css,code:frontend/src/styles/prose-claude.css,code:frontend/tailwind.config.ts | A:全局基础层与语义CSS变量 | S:shadcn使用HSL桥接而业务色用原始token，docx注入样式须在layer外以important覆盖
+prose-claude.css[CU5M]: F:定义衬线Markdown正文、表格代码及评论锚点高亮排版 | R:code:frontend/src/components/common/CodeBlock.tsx,code:frontend/src/styles/tokens.css | A:.prose-claude,.anchor-mark,.flash-comment | S:评论定位闪烁同时支持Custom Highlight与DOM标记，正文最大宽720像素
+tokens.css[FC6S]: F:集中定义站点颜色分类字体系圆角阴影动效及兼容别名 | R:code:frontend/src/styles/globals.css,code:frontend/tailwind.config.ts | A:--color-*,--cat-*,--font-*,--radius-* | S:语义token是唯一色源，短名仅别名，shadcn的HSL映射在globals中同步维护
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/test/===
+setup.ts[TQ3T]: F:为Vitest注册DOM断言扩展 | R:code:frontend/vite.config.ts | A:jest-dom匹配器 | S:-
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/scripts/===
+balance_course_docx.py[XQ5L]: F:定点重排课程设计 Word 第四至七章的模块叙述与插图，统一字体并清除空段。 | R:code:scripts/merge_course_ch4_7.py,code:scripts/merge_tao_module.py | A:main() | S:仅匹配约定章节标题，写入前备份并重绑图片关系。
+convert_svg_to_drawio.py[XQ5L]: F:将课程设计 SVG 的几何图形和文字转换成可编辑 draw.io 单元。 | R:code:scripts/figlib.py,code:scripts/regenerate_coursework_assets.py | A:main();svg_to_drawio(svg_path) | S:仅支持脚本实现的 SVG 图形和路径命令，复杂路径可能失真。
+derive_mock_notes.py[XD5T]: F:从笔记 Markdown 及 YAML 元数据生成前端演示笔记 JSON。 | R:code:frontend/src/api/mock/notes.json,code:backend/scripts/seed.py | A:main() | S:作者映射须与种子用户一致；未知作者回退默认作者，互动计数归零。
+drawio_render.py[XQ5L]: F:将限定图元的 draw.io 文件渲染为 SVG 与 PNG，按单元层级计算坐标和连线。 | R:code:scripts/figlib.py | A:load();to_svg();render();CLI paths | S:仅覆盖 figlib 常用图元；PNG 渲染需 CairoSVG。
+figlib.py[LQ6L]: F:以统一节点和边模型产出可编辑 draw.io、SVG 和可选 PNG，提供 UML 与界面图元。 | R:code:scripts/drawio_render.py,code:scripts/gen_ch4.py,code:scripts/gen_ch6.py | A:Fig;Node;Edge;render(fig,outdir,stem,make_png) | S:图形坐标为单一来源；PNG 依赖延迟加载的 CairoSVG。
+gen_ch4.py[XQ4M]: F:生成第四章请求链、顶层与功能级数据流、系统用例等五幅课程图。 | R:code:scripts/figlib.py | A:BUILDERS;main() | S:输出至 docs/coursework/figures 并同时保留可编辑图源。
+gen_ch5.py[XQ4S]: F:生成第五章分层模块结构图，连接页面、API 客户端、网关、后端服务与存储。 | R:code:scripts/figlib.py | A:fig5_1();main() | S:-
+gen_ch6.py[XQ4M]: F:生成第六章发布、举报、收藏顺序图及笔记评论举报状态和浏览、AI 降级活动图。 | R:code:scripts/figlib.py | A:BUILDERS;main() | S:AI 图保留流式、单次与演示三层回退；举报图含规划语义。
+gen_ch6_ui.py[XQ4M]: F:用统一图元绘制撰写、浏览、详情、收藏、举报和打卡六幅课程界面原型。 | R:code:scripts/figlib.py | A:BUILDERS;main() | S:输出为文档示意图，不实现业务交互。
+gen_class_diagrams.py[XQ4M]: F:生成十五个领域实体及前后端程序分层的 UML 三栏类图。 | R:code:scripts/figlib.py | A:fig5_2();fig6_1();main() | S:类图是文档建模视图，方法与实体需随实现核验。
+gen_defense_ppt.py[XQ4M]: F:基于课程图 PNG 生成十八页十六比九小学期答辩 PPT，覆盖需求、架构、实现和验收。 | R:code:scripts/gen_ch4.py,code:scripts/gen_ch6.py,code:scripts/gen_ops_figures.py | A:build() | S:内容和验收数字为固定历史口径，生成不证明当前测试状态。
+gen_ops_figures.py[XQ4M]: F:生成部署拓扑、发布流程、流水线、备份、安全与性能六幅 SVG 和 PNG 运维图。 | R:code:scripts/gen_defense_ppt.py | A:main();SVG | S:使用固定示例架构与指标，不代表实时部署状态。
+merge_course_ch4_7.py[XQ5M]: F:将组员模块文档第四至七章合入课程设计主文档，重排标题并生成总览插图。 | R:code:scripts/merge_tao_module.py,code:scripts/balance_course_docx.py | A:merge() | S:覆盖目标章节前备份；复制插图须重绑文档关系 ID。
+merge_tao_module.py[XQ5S]: F:把陶语涵模块正文和图片替换进课程设计第四至七章预留位置并刷新总览。 | R:code:scripts/merge_course_ch4_7.py,code:scripts/balance_course_docx.py | A:main() | S:依赖约定占位标题，复制图片时重建目标关系并预先备份。
+notion_pull.py[XI5S]: F:分页抓取固定公开 Notion 页面清单，合并 recordMap 并保存原始快照与索引。 | R:code:scripts/notion_to_md.py,code:scripts/notion_raw/_index.json | A:fetch_chunk();fetch_full_page();main() | S:已有文件直接复用；游标耗尽才完整，网络失败最多重试三次。
+notion_to_md.py[XD5L]: F:按 Notion 块类型和富文本标记确定性转换成 GFM，支持代码、表格和递归子块。 | R:code:scripts/notion_pull.py,code:scripts/notion_raw/_index.json,code:scripts/wrap_frontmatter.py | A:slug_to_md(slug);CLI write <slug或all> | S:write 实际生成 .md.body 中间文件；无权限或缺失块无法补全。
+regenerate_coursework_assets.py[XQ4L]: F:保留旧课程图构造和正文口径替换函数，当前入口转交标准课程图生成器。 | R:code:scripts/regenerate_standard_coursework_diagrams.py | A:generate_figures();replace_text();CLI | S:直接执行仅调用标准生成器，不运行保留的文本替换函数。
+regenerate_standard_coursework_diagrams.py[XQ4M]: F:生成宋体黑白标准数据流图、用例图及数据与程序 UML 类图。 | R:code:scripts/regenerate_coursework_assets.py | A:main();dfd_top();usecase();class_diagram_data() | S:覆盖约定课程图文件，建模文字需随实现核验。
+register_xju_docx_skill.ps1[XV4T]: F:从个人技能仓库下载并注册 xju-docx 到 Windows Codex 技能目录。 | R:code:skills/xju-docx/SKILL.md | A:PowerShell 脚本 | S:优先 Git 克隆并回退分支 ZIP；安装后清理临时目录。
+restyle_drawio.py[XQ4S]: F:原地将 draw.io 图转换为黑白、统一页宽并缩放几何坐标和字体。 | R:code:scripts/drawio_render.py | A:restyle(path,target_w);CLI TARGET_WIDTH files | S:保留实心黑标记和透明填充；全部文字强制 34 号。
+seed_conferences.py[XD5M]: F:以设计参考会议 JSX 为单一来源，同步生成服务 SQLite、校验清单和前端类型化会议常量。 | R:code:archive/design-refs/components/conferences-data.jsx,code:frontend/src/features/conferences/data.ts,code:scripts/sync/conferences.py | A:main(argv);build_sqlite();write_manifest() | S:通过 Node vm 执行参考 JS；会议状态依据运行日和截止日期派生。
+tune_course_docx_tables.py[XQ5M]: F:压缩课程设计 Word 表格长文本和代码清单，统一中西文字体、列宽与表头样式。 | R:code:scripts/balance_course_docx.py | A:compact_tables(doc);main() | S:会截短单元格并以固定摘要替换代码清单；写前保留备份。
+update_coursework_docx.py[XQ5M]: F:把课程第四至七章 Markdown 和编号 PNG 插入指定 Word 章节区间并应用新大样式。 | R:code:scripts/xju_docx/xju_format.py,code:scripts/gen_ch4.py,code:scripts/gen_ch6.py | A:insert_markdown();main() | S:定位依赖 Heading 1 和段落位置；找不到边界即失败，更新前备份。
+wrap_frontmatter.py[XD5M]: F:为 Notion 导出的笔记正文附加稳定 YAML 字段，派生摘要、标签和阅读分钟。 | R:code:scripts/notion_to_md.py,code:scripts/notion_raw/_index.json,code:scripts/derive_mock_notes.py | A:build_frontmatter(meta);main() | S:成功写 .md 后删除 .md.body；创建时间借用 Notion 最后编辑时间。
+xju_pull.py[XI5S]: F:浅克隆或刷新上游 XJU 课程 Wiki，并为选定十七门课程生成子页与提交时间索引。 | R:code:scripts/xju_to_md.py,code:scripts/xju_wrap.py | A:ensure_clone();main() | S:刷新执行 reset --hard origin/main，原始副本内本地修改会丢失。
+xju_to_md.py[XD5M]: F:把各课程 MkDocs 子页整理合并为 Markdown 正文，降级标题并转换提示块和图片地址。 | R:code:scripts/xju_pull.py,code:scripts/xju_wrap.py | A:normalize_subpage();main() | S:去除评论脚本与 MkDocs 属性；相对图片转向上游 raw 地址。
+xju_wrap.py[XD5S]: F:给课程 Wiki 合并正文添加飞跃元数据、学科标签、来源链接和孙海洋署名。 | R:code:scripts/xju_to_md.py,code:scripts/wrap_frontmatter.py | A:derive_tags();offset_iso();main() | S:时间按枚举序号逐分钟偏移以稳定排序，并非每篇真实创建时间。
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/scripts/notion_raw/===
+_index.json[PD4M]: F:记录公开 Notion 抓取页的 slug、页面身份、标题、修改时间与采集时间，供转换定位来源。 | R:code:scripts/notion_pull.py,code:scripts/notion_to_md.py | A:slug;uuid;title;last_edited_ms;captured_at | S:采集时间不是业务内容更新时间。
+anyrouter-claude.json[PD3T]: F:保存 anyrouter-Claude 页的 Notion 原始块与抓取响应，供笔记转换溯源。 | R:code:content/notes/anyrouter-claude.md,code:scripts/notion_to_md.py | A:recordMap;chunks | S:快照含无读取权限块，不能视为完整正文。
+claude-code-install.json[PD3T]: F:保存 Claude Code 安装、授权与终端工具建议的 Notion 页面快照。 | R:code:content/notes/claude-code-install.md,code:scripts/notion_to_md.py | A:recordMap;chunks | S:安装版本与命令属于采集时资料。
+cuda-install.json[PD3T]: F:保存 CUDA 驱动、工具包安装和多版本切换操作的原始 Notion 块。 | R:code:content/notes/cuda-install.md,code:scripts/notion_to_md.py | A:recordMap;chunks | S:硬件与驱动建议为历史笔记，使用前须另行核验。
+dl-jupyter.json[PD3T]: F:保存可复现深度学习 Jupyter 环境仓库书签的 Notion 原始记录。 | R:code:content/notes/dl-jupyter.md,code:scripts/notion_to_md.py | A:recordMap;chunks | S:正文主要为外部仓库书签。
+docker-container-setup.json[PD3T]: F:保存 GPU Docker 开发容器、Jupyter 隧道与终端编辑器配置的 Notion 源块。 | R:code:content/notes/docker-container-setup.md,code:scripts/notion_to_md.py | A:recordMap;chunks | S:挂载路径和端口属于具体环境示例。
+docker-gpu-missing.json[PD3T]: F:保存 Docker 镜像重建、环境恢复和 GPU 容器启动排障的 Notion 快照。 | R:code:content/notes/docker-gpu-missing.md,code:scripts/notion_to_md.py | A:recordMap;chunks | S:示例含强制删除旧容器，不能直接当自动修复步骤。
+docker-install-general.json[PD3T]: F:保存 Ubuntu 和 ARM Docker 安装、用户权限及双层代理配置的原始页面。 | R:code:content/notes/docker-install-general.md,code:scripts/notion_to_md.py | A:recordMap;chunks | S:-
+esp32s3-board-dev.json[PD3T]: F:保存 ESP32S3 经 Windows USB 透传到 WSL 后编译烧录的开发流程。 | R:code:content/notes/esp32s3-board-dev.md,code:scripts/notion_to_md.py | A:recordMap;chunks | S:设备 BUSID 与串口须以实际枚举结果为准。
+flash-attn-install-fail.json[PD3T]: F:保存 Flash Attention 2.8.3 安装失败时使用指定预编译轮子的命令记录。 | R:code:content/notes/flash-attn-install-fail.md,code:scripts/notion_to_md.py | A:recordMap;chunks | S:轮子绑定 CUDA、Torch、Python 与 ABI 组合。
+frp-tunnel.json[PD3T]: F:保存 FRP 公网服务端与内网客户端配置、端口映射和部署步骤的源块。 | R:code:content/notes/frp-tunnel.md,code:scripts/notion_to_md.py | A:recordMap;chunks | S:示例公网地址与端口不是当前服务配置。
+git-docker-https-tokens.json[PD3T]: F:保存 Docker 内 Git HTTPS 令牌生成、凭据助手及挂载持久化说明。 | R:code:content/notes/git-docker-https-tokens.md,code:scripts/notion_to_md.py | A:recordMap;chunks | S:credential.helper store 会明文存储凭据。
+google-studio.json[PD3T]: F:保存 Google Studio 页的 Notion 页面与布局记录，作为历史导入来源。 | R:code:content/notes/google-studio.md,code:scripts/notion_to_md.py | A:recordMap;chunks | S:快照含无读取权限块，不能视为完整正文。
+hp-printer-stable.json[PD3T]: F:保存固定 HP 打印机 IP 和 Windows TCP/IP 端口绑定的 Notion 操作说明。 | R:code:content/notes/hp-printer-stable.md,code:scripts/notion_to_md.py | A:recordMap;chunks | S:IP 选择应核对实际子网，示例不构成通用网络规则。
+l40-tinystories.json[PD3T]: F:保存 L40 上 TinyStories 训练的普通、显存密集和长上下文命令方案。 | R:code:content/notes/l40-tinystories.md,code:scripts/notion_to_md.py | A:recordMap;chunks | S:设备序号和训练参数属于个人实验配置。
+matlab.json[PD3T]: F:保存 MATLAB 常用颜色及待补绘图库笔记的原始 Notion 页面。 | R:code:content/notes/matlab.md,code:scripts/notion_to_md.py | A:recordMap;chunks | S:-
+neovim-install.json[PD3T]: F:保存 Ubuntu 安装 Neovim、LazyVim 及 Python 语言支持的源文档。 | R:code:content/notes/neovim-install.md,code:scripts/notion_to_md.py | A:recordMap;chunks | S:安装前备份旧配置；快照使用 nightly AppImage。
+nginx.json[PD3T]: F:保存 Nginx 静态前端、反向代理、缓存和目录权限配置经验的源块。 | R:code:content/notes/nginx.md,code:scripts/notion_to_md.py | A:recordMap;chunks | S:项目路径与域名为历史示例，非飞跃线上配置。
+node-pnpm-install.json[PD3T]: F:保存 nvm、Node.js、pnpm 安装及 Vite 监听地址设置的 Notion 快照。 | R:code:content/notes/node-pnpm-install.md,code:scripts/notion_to_md.py | A:recordMap;chunks | S:-
+raspberry-pi.json[PD3T]: F:保存树莓派控制台字体、Emoji 与中文环境配置的原始页面。 | R:code:content/notes/raspberry-pi.md,code:scripts/notion_to_md.py | A:recordMap;chunks | S:-
+rpi5-ai-hat-hailo8.json[PD3T]: F:保存树莓派 Hailo-8 运行 YOLOv8 时的环境依赖和 HailoRT API 经验。 | R:code:content/notes/rpi5-ai-hat-hailo8.md,code:scripts/notion_to_md.py | A:recordMap;chunks | S:示例绑定 HailoRT 4.23.0 与 Python 3.12。
+rpi5-alphadog-hotspot.json[PD3T]: F:保存树莓派同时连接 AlphaDog 热点与 Windows 有线共享的双网络配置。 | R:code:content/notes/rpi5-alphadog-hotspot.md,code:scripts/notion_to_md.py | A:recordMap;chunks | S:接口、路由和地址须匹配现场网络。
+rpi5-hailo8-driver.json[PD3T]: F:保存树莓派 PCIe、Hailo-8 内核驱动与 C++ 运行时安装的历史教程。 | R:code:content/notes/rpi5-hailo8-driver.md,code:scripts/notion_to_md.py | A:recordMap;chunks | S:硬件带宽断言和版本配置应独立核验。
+rpi5-hailo8-usb-camera.json[PD3T]: F:保存 USB 摄像头权限、Hailo 推理和 Windows X11 显示链路的经验。 | R:code:content/notes/rpi5-hailo8-usb-camera.md,code:scripts/notion_to_md.py | A:recordMap;chunks | S:临时 chmod 666 与持久 video 组授权须区分。
+rpi5-lidar.json[PD3T]: F:保存树莓派 ROS 激光雷达、Docker 挂载及 WebSocket 地图可视化任务笔记。 | R:code:content/notes/rpi5-lidar.md,code:scripts/notion_to_md.py | A:recordMap;chunks | S:包含待办与实现提示词，不能据此认定功能完成。
+self-forcing-code-handover.json[PD3T]: F:保存 Self-Forcing 项目通过复制容器与独立 Git 分支交接开发环境的说明。 | R:code:content/notes/self-forcing-code-handover.md,code:scripts/notion_to_md.py | A:recordMap;chunks | S:共享宿主机挂载可使容器操作影响共同目录。
+server-setup.json[PD3T]: F:保存服务器 SSH 保活、NVIDIA 驱动重装和磁盘清理命令的 Notion 快照。 | R:code:content/notes/server-setup.md,code:scripts/notion_to_md.py | A:recordMap;chunks | S:属于运维经验记录，不代表当前服务器配置。
+spring-boot-deploy.json[PD3T]: F:保存把 Spring Boot 应用注册为 systemd 服务及查看状态日志的教程。 | R:code:content/notes/spring-boot-deploy.md,code:scripts/notion_to_md.py | A:recordMap;chunks | S:服务样例为 KnoHub，非本仓库 FastAPI 服务。
+sql-postgresql.json[PD3T]: F:保存 PostgreSQL 数据修改与结构修改语句分类的简短笔记。 | R:code:content/notes/sql-postgresql.md,code:scripts/notion_to_md.py | A:recordMap;chunks | S:-
+ssh-docker-jupyter.json[PD3T]: F:保存 WSL 访问宿主机 Docker Jupyter 与端口占用问题的页面提纲。 | R:code:content/notes/ssh-docker-jupyter.md,code:scripts/notion_to_md.py | A:recordMap;chunks | S:正文仅有主题标题，不能推定已包含解决步骤。
+systemctl-restart.json[PD3T]: F:保存 systemctl 重启主题的 Notion 页面和空文本布局快照。 | R:code:content/notes/systemctl-restart.md,code:scripts/notion_to_md.py | A:recordMap;chunks | S:快照缺少可读操作正文。
+tailscale-install.json[PD3T]: F:保存 Tailscale 安装及文件句柄、inotify 和用户资源限制调优教程。 | R:code:content/notes/tailscale-install.md,code:scripts/notion_to_md.py | A:recordMap;chunks | S:资源上限为特定服务器经验，不能直接套用。
+tailscale-lan.json[PD3T]: F:保存无 root 用户态 Tailscale 与 TCP 端口转发的两终端使用步骤。 | R:code:content/notes/tailscale-lan.md,code:scripts/notion_to_md.py | A:recordMap;chunks | S:守护进程和 serve 终端均需持续运行。
+tmp.json[PD3T]: F:保存按注意力头模式分配 sink、recent 与中间历史 KV 缓存策略的研究草稿。 | R:code:content/notes/tmp.md,code:scripts/notion_to_md.py | A:recordMap;chunks | S:研究草稿不代表本项目实现。
+token-and-password.json[PS5T]: F:保存个人令牌、密码和恢复凭据页面的原始 Notion 快照。 | R:code:content/notes/token-and-password.md,code:scripts/notion_to_md.py | A:recordMap;chunks | S:含真实敏感凭据，不应在索引或日志复制具体值。
+ubuntu-add-pubkey.json[PD3T]: F:保存 Ubuntu 添加公钥主题的 Notion 页面和空文本布局。 | R:code:content/notes/ubuntu-add-pubkey.md,code:scripts/notion_to_md.py | A:recordMap;chunks | S:快照缺少可读操作正文。
+uv-install.json[PD3T]: F:保存 Windows 和 Linux uv 安装、功能速查、依赖冲突与机制说明的源块。 | R:code:content/notes/uv-install.md,code:scripts/notion_to_md.py | A:recordMap;chunks | S:-
+vim-vimrc-detail.json[PD3T]: F:保存 Vim 升级和 vimrc 缩进、编辑、显示等配置逐项解释。 | R:code:content/notes/vim-vimrc-detail.md,code:scripts/notion_to_md.py | A:recordMap;chunks | S:-
+vps-node-setup.json[PD3T]: F:保存海外 VPS 安装 Xray 服务和节点配置的 Notion 教程快照。 | R:code:content/notes/vps-node-setup.md,code:scripts/notion_to_md.py | A:recordMap;chunks | S:外部安装脚本与节点示例属于采集时资料。
+vue.json[PD3T]: F:保存 Vue 项目启动和项目介绍的 Notion 页面提纲。 | R:code:content/notes/vue.md,code:scripts/notion_to_md.py | A:recordMap;chunks | S:主体为待补标题，不能视为完整指南。
+wip-placeholder.json[PD3T]: F:保存飞跃仓库链接及作者头像、CSS 结构和评论区的历史开发待办。 | R:code:content/notes/wip-placeholder.md,code:scripts/notion_to_md.py | A:recordMap;chunks | S:历史待办状态不反映当前功能完成情况。
+wsl-git-ssh-cheatsheet.json[PD3T]: F:保存 WSL 下 Git 初始化、SSH 远程、提交推拉与服务器迁移速查步骤。 | R:code:content/notes/wsl-git-ssh-cheatsheet.md,code:scripts/notion_to_md.py | A:recordMap;chunks | S:账户与仓库为示例，不能直接当当前项目配置。
+wsl-usb-passthrough.json[PD3T]: F:保存 usbipd-win 将 Windows USB 设备绑定并透传至 WSL2 的操作指南。 | R:code:content/notes/wsl-usb-passthrough.md,code:scripts/notion_to_md.py | A:recordMap;chunks | S:绑定与挂载是独立步骤，BUSID 须现场确认。
+xray.json[PD3T]: F:保存 Xray VLESS、TLS 服务端与客户端部署和自启动配置说明。 | R:code:content/notes/xray.md,code:scripts/notion_to_md.py | A:recordMap;chunks | S:节点资料为历史示例，不应复制其中凭据。
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/scripts/sync/===
+.gitignore[FC2T]: F:排除同步工具的 Python 缓存、虚拟环境及 uv 本地状态。 | R:code:scripts/sync/pyproject.toml | A:- | S:-
+README.md[SR5S]: F:说明私有HF数据集的运行状态、作业文件和参考库备份恢复 | R:code:scripts/sync/config.py,code:scripts/sync/push.py,code:scripts/sync/pull.py | A:make sync-bootstrap,sync-push,sync-pull | S:运行库仅恢复时拉取；自定义HOMEWORK_UPLOAD_DIR须同步传入cron；旧快照缺作业包仍可恢复
+_common.py[LR7L]: F:提供同步互斥锁、SQLite 快照、可复现归档、age 加解密和带哈希清单。 | R:code:scripts/sync/config.py,code:scripts/sync/push.py,code:scripts/sync/pull.py | A:file_lock();snapshot_db();archive_dir();encrypt_secrets();decrypt_secrets();build_manifest() | S:age 密码经独立 PTY、二进制经管道；VACUUM 失败回退复制不保证事务一致。
+bootstrap.py[OR6M]: F:交互检查同步依赖和 HF 登录，保存本机密码与机器配置并创建私有 Dataset。 | R:code:scripts/sync/config.py,code:scripts/sync/_common.py | A:main();setup_passphrase();setup_config_and_repo() | S:密码二次确认并以 0600 保存；远程 Dataset 创建采用幂等操作。
+conferences.py[IR6M]: F:在独立 conferences 命名空间推拉会议 SQLite 和清单，并提供远端状态查询。 | R:code:scripts/sync/config.py,code:scripts/sync/_common.py,code:scripts/seed_conferences.py | A:CLI push;pull --force;status | S:拉取先验哈希，相同内容不写入；镜像删除只作用 conferences 前缀。
+config.py[FC7S]: F:声明数据库、公开上传、私有作业和密钥的备份工件及路径 | R:code:scripts/sync/push.py,code:scripts/sync/pull.py,code:scripts/sync/bootstrap.py | A:Artifact,ARTIFACTS,SyncConfig,HOMEWORKS_DIR | S:state与参考库分前缀；作业路径读环境且相对backend；机器配置及解密密码禁止提交上传
+cron_install.sh[OR6T]: F:幂等安装每三十分钟运行静默同步的用户 cron 条目，并捕获 PATH 与代理环境。 | R:code:scripts/sync/push.py,code:Makefile | A:cron_install.sh | S:代理变量固定为安装时值，代理变更需重装；仅替换匹配同步命令的旧行。
+pull.py[OR7M]: F:从 HF state 快照验证清单与哈希后恢复运行数据库、上传目录和解密环境文件。 | R:code:scripts/sync/config.py,code:scripts/sync/_common.py | A:cmd_pull(cfg,force);CLI --force | S:覆盖前保留时间戳备份；--force 仅跳过确认，不能作为日常部署拉库。
+push.py[OR7M]: F:按注册表快照运行库、归档上传并加密配置，以一次镜像提交推送 HF state 并记录失败告警。 | R:code:scripts/sync/config.py,code:scripts/sync/_common.py | A:cmd_push(cfg,quiet);CLI --quiet;--status-only | S:远端删除范围仅 state；缺失或加密失败工件会标 omitted，所有工件缺失则拒绝推送。
+pyproject.toml[FV4T]: F:定义独立同步工具的 Python 环境，依赖 Hugging Face 客户端与终端展示库。 | R:code:scripts/sync/bootstrap.py,code:scripts/sync/push.py | A:Python>=3.11;uv package=false | S:-
+schools.py[IR6M]: F:在 schools 命名空间同步院校导师参考库，按来源清单校验哈希并替换本地文件。 | R:code:scripts/sync/config.py,code:scripts/sync/_common.py | A:CLI push;pull --force;status | S:明文参考数据可再生；镜像删除仅限 schools，相同数据库哈希跳过写入。
+selftest.py[TQ5T]: F:离线验证四类备份工件注册、确定性归档和SQLite快照往返 | R:code:scripts/sync/config.py,code:scripts/sync/_common.py | A:python scripts/sync/selftest.py | S:依赖GNU tar，不访问HF或age，不能替代远端上传与加密恢复测试
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/scripts/xju_docx/===
+extract_doc.py[XD4T]: F:从 Word97 OLE 的 FIB、Clx 与 piece table 提取混合编码纯文本。 | R:code:scripts/xju_docx/xju_format.py | A:extract(path);CLI 文件.doc | S:纯文本不保留图片、表格结构或上标；命令行规范化 Word 控制符。
+spec-digest.md[SQ5T]: F:提供新疆大学论文页面、页码、标题、图表、引用及装订顺序的格式速查。 | R:code:scripts/xju_docx/xju_format.py,code:scripts/xju_docx/validate_docx.py | A:- | S:封面无页码，前置罗马数字，正文阿拉伯数字重新起号。
+validate_docx.py[TQ5M]: F:检查并可修复新大 Word 样式和页面格式，另提供三节页码与占位符门禁。 | R:code:scripts/xju_docx/xju_format.py,code:scripts/xju_docx/spec-digest.md | A:CLI --framework;--json;--fix;--content | S:--content 单独扫描并退出；通过机器检查仍需视觉和目录域复核。
+xju_format.py[LQ6M]: F:封装新大论文的字体、段落、页面、分节页码、页眉、目录域与三线表样式。 | R:code:scripts/xju_docx/spec-digest.md,code:scripts/update_coursework_docx.py | A:setup_styles();setup_section();set_pg_num();three_line_table();add_toc() | S:目录以 TOC 域生成，最终页码依赖 Word/WPS 更新域。
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/site/===
+index.html[SU5L]: F:提供飞跃项目静态主页，展示功能、历史规模、技术栈、十二阶段里程碑、架构与贡献者。 | R:code:.github/workflows/deploy-pages.yml,code:README.md,code:skills/update-docs/SKILL.md | A:GitHub Pages 项目介绍页 | S:规模标注为 2026-07-10 快照；修改 site 后团队库推送会触发发布。
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/skills/===
+README.md[SW4T]: F:介绍仓库共享技能的规范来源、职责及项目内或全局安装方式。 | R:code:skills/install.sh,code:skills/update-docs/SKILL.md,code:skills/xju-docx/SKILL.md | A:- | S:skills 是可版本化来源，.claude 中安装状态不入库。
+install.sh[XW4T]: F:遍历含 SKILL.md 的技能目录并软链到项目或用户 Claude 技能目录。 | R:code:skills/README.md | A:install.sh;--global | S:软链接指向当前仓库绝对路径，移动仓库会影响安装。
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/skills/update-docs/===
+SKILL.md[SW6T]: F:定义按版本记忆与真实提交更新 README、项目主页和历史记录的发布工作流。 | R:code:README.md,code:site/index.html,code:skills/update-docs/VERSIONS.md,code:.github/workflows/deploy-pages.yml | A:update-docs 技能 | S:规模取生产事实；里程碑最新置顶；流程包含公开推送部署。
+VERSIONS.md[SW4T]: F:保存文档发布版本覆盖的 commit、主题、规模与功能变更，作为下一次增量更新起点。 | R:code:skills/update-docs/SKILL.md,code:README.md,code:site/index.html | A:since 提交锚点 | S:最新置顶；顶部记录签到经验体系已整体移除。
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/skills/xju-docx/===
+SKILL.md[SW6S]: F:规定新大论文框架、旧 Word 提取、规范排版和逐段润色的工具与校验流程。 | R:code:skills/xju-docx/references/spec-digest.md,code:skills/xju-docx/scripts/build_framework.py,code:skills/xju-docx/scripts/validate_docx.py | A:xju-docx 技能 | S:目录和页码须真实字段；局部润色不强制整篇重排，成稿仍需占位符与视觉检查。
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/skills/xju-docx/references/===
+spec-digest.md[SQ5T]: F:汇总新疆大学论文纸张页边距、标题字体、分节页码、三线表和引用装订规范。 | R:code:skills/xju-docx/SKILL.md,code:skills/xju-docx/scripts/xju_format.py | A:- | S:学校模板优先；目录页码需更新域后核验。
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/skills/xju-docx/scripts/===
+build_framework.py[XQ5M]: F:生成封面、修改记录、真实目录域和 GB8567 九章占位骨架的学年论文 Word。 | R:code:skills/xju-docx/scripts/xju_format.py,code:skills/xju-docx/scripts/validate_docx.py | A:build(args);CLI -o --name --title --header | S:骨架仍含灰色待填提示，不能直接作为定稿；页码采用三节结构。
+extract_doc.py[XD4T]: F:通过 OLE piece table 提取 Word97 文档文字供新大论文迁移和审阅。 | R:code:skills/xju-docx/SKILL.md | A:extract(path);CLI 文件.doc | S:只抽纯文本，图片、表格和引用上标必须后续重建。
+validate_docx.py[TQ5M]: F:为技能提供 Word 规范校验、机械修复、框架页码检查与定稿占位符扫描。 | R:code:skills/xju-docx/scripts/xju_format.py,code:skills/xju-docx/references/spec-digest.md | A:CLI --framework;--json;--fix;--content | S:--content 为独立模式；机检通过仍不能代替字体、目录和引用视觉复核。
+xju_format.py[LQ6M]: F:为技能生成器提供新大论文样式、页眉页码、真实目录域和三线表的复用函数。 | R:code:skills/xju-docx/references/spec-digest.md,code:skills/xju-docx/scripts/build_framework.py | A:setup_styles();setup_section();set_pg_num();three_line_table();add_toc() | S:目录域需在 Word/WPS 更新，不能由占位文字推定页码已正确。
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/wyt-drawio/===
+w1 图4-1　导师院校库与 CCF 会议截稿模块功能级 DFD.drawio[SB3S]: F:描绘导师院校与会议模块从采集、标准化、快照清单到只读查询和界面展示的数据流。 | R:code:backend/app/services/schools_query.py,code:backend/app/services/conferences_crawler.py | A:- | S:建模图包含概念流程，不是数据库或接口契约。
+w10-a图6-7　会议三级降级抓取活动图.drawio[SB3T]: F:展示会议自动抓取活动前半段：读取到期记录、加载 ccfddl 并对未命中项搜索 CFP。 | R:code:backend/app/services/conferences_crawler.py | A:- | S:此图为拆分活动图前半段，需结合后半段理解失败处理。
+w10-b图6-7　会议三级降级抓取活动图.drawio[SB3T]: F:展示会议抓取活动后半段：模型抽取、日期置信校验、排期以及快照替换和热加载。 | R:code:backend/app/services/conferences_crawler.py,code:backend/app/db/conferences_engine.py | A:- | S:抽取失败仅更新检查排期，不凭空写入截止时间。
+w2 图4-2　导师院校库与 CCF 会议截稿模块用例图.drawio[SB3T]: F:展示匿名用户导师搜索与详情、会议浏览及自动抓取和管理员重爬用例。 | R:code:backend/app/routes/schools.py,code:backend/app/routes/conferences.py | A:- | S:用例中的审计能力需以当前实现核对。
+w3 图5-1　导师院校库与 CCF 会议截稿模块外部数据模型 E-R 图.drawio[SD4L]: F:描绘学校院系导师、名额评价变更记录及会议时间轴的概念关系与字段。 | R:code:backend/app/services/schools_query.py,code:backend/app/services/conferences_query.py | A:- | S:图中含字段命名笔误和概念表，不可直接充当物理 schema。
+w4 图6-1　导师院校库与 CCF 会议截稿模块数据模型与后端类图.drawio[SB3T]: F:以职责链抽象描述三层会议抽取器和调度器，并展示导师融合检索服务类。 | R:code:backend/app/services/conferences_crawler.py,code:backend/app/services/schools_query.py | A:- | S:图为设计抽象，类名不对应当前 Python 符号。
+w5 图6-2　导师融合搜索顺序图.drawio[SB3S]: F:描绘拼音、FTS5 与子串匹配后合并去重排序的导师融合检索顺序。 | R:code:backend/app/services/schools_query.py,code:backend/app/services/schools_pinyin.py | A:- | S:并行与 SQL 为图示表达，具体执行以检索服务为准。
+w6 图6-3　会议自动更新三级降级顺序图.drawio[SB3S]: F:描绘会议抓取从 ccfddl 到 DDG 再到 DeepSeek 的失败回退与结果更新顺序。 | R:code:backend/app/services/conferences_crawler.py | A:- | S:图中中文状态为展示语义，持久化值以实现为准。
+w7 图6-4　导师详情多表联合加载顺序图.drawio[SB3S]: F:展示导师详情抽屉依次加载组织、招生、评价和变更信息并组装 DTO 的顺序。 | R:code:backend/app/services/schools_query.py,code:backend/app/routes/schools.py | A:- | S:SQL 与表名为概念示意，不能直接执行。
+w8 图6-5　会议 crawl_state 状态图.drawio[SB3T]: F:描绘会议由未公布、已公布到已截止，以及延期恢复的截止状态变化。 | R:code:backend/app/services/conferences_query.py,code:backend/app/services/conferences_crawler.py | A:- | S:状态由截止时间与当前时区推导，展示名称非数据库枚举契约。
+w9 图6-6　导师融合匹配活动图.drawio[SB3T]: F:以活动图展示输入分类、拼音和全文与子串匹配、导师去重及评分重排流程。 | R:code:backend/app/services/schools_query.py,code:backend/app/services/schools_pinyin.py | A:- | S:图示评分顺序需以服务当前算法核验。
+
+===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/features/class/components/homework/===
+HomeworkBadges.tsx[CU4T]: F:以课程稳定配色和小圆角标签呈现课程及提交状态 | R:- | A:CourseTag,SubmissionTag | S:-
+HomeworkRecords.tsx[AU6S]: F:以抽屉展示命名规则和单行收件记录并支持文件下载 | R:code:frontend/src/features/class/hooks/useHomeworks.ts,code:frontend/src/api/endpoints/homeworks.ts | A:HomeworkRecords | S:姓名不重复学号；单文件和ZIP均经鉴权下载，窄屏仅表格区域横向滚动
+HomeworkRow.tsx[AU6S]: F:呈现单条作业并接收点击选文件或整行拖入及行内反馈 | R:code:frontend/src/features/class/components/homework/helpers.ts | A:HomeworkRow,PendingHomework | S:文件状态由父级按作业id维护；上传中禁用重复操作，取消不清已有提交，非文件拖动不拦截
+HomeworkTab.tsx[AB7M]: F:组织收发台和学生收件箱的筛选、发布与逐行上传状态 | R:code:frontend/src/features/class/hooks/useHomeworks.ts,code:frontend/src/features/class/components/homework/HomeworkRow.tsx,code:frontend/src/api/endpoints/homeworks.ts | A:HomeworkTab | S:管理权限取API；待上传按id隔离，成功后刷新统计，失败可重试；卸载取消请求，页面外文件拖入阻止导航
+NewHomeworkDialog.tsx[AU6S]: F:收集课程实验截止时间和文件命名规则以发布作业 | R:code:frontend/src/api/endpoints/homeworks.ts,code:frontend/src/features/class/hooks/useHomeworks.ts | A:NewHomeworkDialog | S:实验名可空；输入时间按北京时区转UTC；命名顺序实时示例，发布中阻止关闭与重复提交
+helpers.ts[CU5T]: F:格式化作业标题、北京时间及文件大小并校验文件选择 | R:code:frontend/src/api/schemas/homework.ts | A:validateHomeworkFile,formatHomeworkTime,isFileDrag,HOMEWORK_EXTENSIONS | S:完整主名NFC比较，不按班级内连字符拆分；前端20MB限制与后端同步
+homework.css[FU4L]: F:定义作业列表、拖拽反馈、发布表单与收件抽屉的紧凑样式 | R:code:frontend/src/styles/tokens.css | A:hw-*样式类 | S:标签4px按钮6px；窄屏作业换行布局，收件表保持单行并局部横滚

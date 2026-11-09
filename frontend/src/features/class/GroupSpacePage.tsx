@@ -46,7 +46,7 @@ export function GroupSpacePage() {
           <Button asChild variant="outline" size="sm">
             <Link to="/class">
               <ArrowLeft size={14} aria-hidden className="mr-1" />
-              返回班级空间
+              返回分组任务
             </Link>
           </Button>
         </div>
@@ -69,8 +69,19 @@ export function GroupSpacePage() {
 
         {canAccess ? (
           <>
-            <GroupFilesPanel gid={group.id} group={group} currentSid={user?.sid ?? ''} canManage={canManage} />
-            <GanttPanel gid={group.id} members={group.members} canEdit currentSid={user?.sid ?? ''} canManage={canManage} />
+            <GroupFilesPanel
+              gid={group.id}
+              group={group}
+              currentSid={user?.sid ?? ''}
+              canManage={canManage}
+            />
+            <GanttPanel
+              gid={group.id}
+              members={group.members}
+              canEdit
+              currentSid={user?.sid ?? ''}
+              canManage={canManage}
+            />
           </>
         ) : (
           <section className="flex flex-col items-center gap-3 rounded-lg border border-dashed border-border px-6 py-14 text-center">

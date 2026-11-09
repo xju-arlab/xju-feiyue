@@ -18,6 +18,7 @@ never clobber each other:
 |---|---|---|---|---|
 | `state/` | sqlite DB | `backend/labnotes.db` | `state/labnotes.db` | VACUUM INTO snapshot (plain) |
 | `state/` | uploads | `backend/uploads/` | `state/uploads.tar` | deterministic tar (plain) |
+| `state/` | private homework submissions | `backend/private/homeworks/` | `state/homeworks.tar` | deterministic tar (private dataset) |
 | `state/` | secrets | `backend/.env.local`, `frontend/.env.local` | `state/secrets.age` | tar + age (encrypted) |
 | `state/` | metadata | (generated) | `state/manifest.json` | sha256 + size per file |
 | `schools/` | advisor DB | `backend/data/schools/schools.sqlite` | `schools/schools.sqlite` | plain (regenerable by claw) |
@@ -83,6 +84,11 @@ cd backend && uv sync && uv run alembic upgrade head   # alembic is idempotent
 
 The DB stores absolute `<PUBLIC_BASE_URL>/uploads/...` URLs, so restoring
 `backend/uploads/` to the same path is what keeps avatars/images from 404'ing.
+
+Homework submissions are stored separately from public uploads and restored by
+the same registry-driven state sync. When overriding `HOMEWORK_UPLOAD_DIR`, pass
+the same value to the sync process (including cron); relative paths resolve from
+`backend/`. Historical snapshots without `state/homeworks.tar` remain restorable.
 
 ## Adding future state (extension interface)
 

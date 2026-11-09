@@ -26,6 +26,7 @@ from app.routes import (
     conferences,
     drafts,
     groups,
+    homeworks,
     interactions,
     materials,
     notes,
@@ -188,6 +189,7 @@ app.include_router(materials.router)
 app.include_router(transcript.router)
 app.include_router(classes.router)
 app.include_router(groups.router)
+app.include_router(homeworks.router)
 
 
 @app.get("/health", tags=["meta"])
