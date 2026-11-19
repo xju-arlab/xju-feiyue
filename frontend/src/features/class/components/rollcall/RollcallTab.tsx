@@ -29,32 +29,32 @@ export function RollcallTab({ isCommittee }: Props) {
 
   return (
     <section aria-label="点名">
-      <div className="mb-4 flex items-center gap-3">
-        {isCommittee ? (
+      {isCommittee && (
+        <div className="mb-4 flex justify-end">
           <Button
+            size="sm"
+            className="class-primary"
             onClick={() => start.mutate(undefined, { onSuccess: (d) => setActiveId(d.id) })}
             disabled={start.isPending}
           >
             <ClipboardCheck size={15} aria-hidden className="mr-1.5" />
             {start.isPending ? '发起中…' : '发起点名'}
           </Button>
-        ) : (
-          <p className="m-0 text-sm text-text-muted">仅班委可发起点名；历史记录全班可见。</p>
-        )}
-      </div>
+        </div>
+      )}
 
       {isLoading ? (
         <LoadingSkeleton preset="paragraph" count={2} />
       ) : isError || !history ? (
-        <ErrorState title="点名历史加载失败" message="请稍后重试。" onRetry={() => void refetch()} />
-      ) : history.length === 0 ? (
-        <EmptyState
-          icon={ClipboardCheck}
-          title="还没有点名记录"
-          description={isCommittee ? '点击「发起点名」开始第一次点名。' : '等待班委发起第一次点名。'}
+        <ErrorState
+          title="点名历史加载失败"
+          message="请稍后重试。"
+          onRetry={() => void refetch()}
         />
+      ) : history.length === 0 ? (
+        <EmptyState icon={ClipboardCheck} title="还没有点名记录" />
       ) : (
-        <ul className="m-0 flex list-none flex-col gap-2 p-0">
+        <ul className="m-0 list-none divide-y divide-border border-y border-border p-0">
           {history.map((s) => (
             <RollcallHistoryItem
               key={s.id}

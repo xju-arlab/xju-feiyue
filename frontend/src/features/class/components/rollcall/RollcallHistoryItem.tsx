@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import { LoadingSkeleton } from '@/components/common/LoadingSkeleton'
+import { ErrorState } from '@/components/common/ErrorState'
 import type { RollcallSummary } from '@/api/schemas/class'
 import { cn } from '@/lib/cn'
 
@@ -44,19 +45,19 @@ function formatDateTime(iso: string): string {
 export function RollcallHistoryItem({ summary, isCommittee, onContinue }: Props) {
   const [expanded, setExpanded] = useState(false)
   // 展开才发请求（懒加载详情）。
-  const { data: detail, isLoading } = useRollcall(expanded ? summary.id : null)
+  const { data: detail, isLoading, refetch } = useRollcall(expanded ? summary.id : null)
   const remove = useDeleteRollcall()
 
   const isOpenSession = summary.closedAt == null
   const hasAbsent = summary.presentCount < summary.totalCount
 
   return (
-    <li className="rounded-lg border border-border bg-bg">
+    <li className="bg-bg">
       <div className="flex flex-wrap items-center gap-3 px-3 py-2.5">
         <button
           type="button"
           onClick={() => setExpanded((v) => !v)}
-          className="inline-flex items-center gap-2 text-sm text-text"
+          className="inline-flex max-w-full items-center gap-2 rounded-[4px] px-1.5 py-1 text-left text-sm text-text hover:bg-bg-subtle"
           aria-expanded={expanded}
         >
           {expanded ? (
@@ -64,11 +65,11 @@ export function RollcallHistoryItem({ summary, isCommittee, onContinue }: Props)
           ) : (
             <ChevronRight size={15} aria-hidden />
           )}
-          <span className="font-medium">
+          <span className="min-w-0 font-medium [overflow-wrap:anywhere]">
             {formatDateTime(summary.createdAt)}
             {summary.title ? ` · ${summary.title}` : ''}
           </span>
-          {isOpenSession && <span className="text-xs text-cat-research">点名中</span>}
+          {isOpenSession && <span className="shrink-0 text-xs text-cat-research">点名中</span>}
         </button>
         <span
           className={cn(
@@ -114,8 +115,14 @@ export function RollcallHistoryItem({ summary, isCommittee, onContinue }: Props)
 
       {expanded && (
         <div className="border-t border-border px-3 py-3">
-          {isLoading || !detail ? (
+          {isLoading ? (
             <LoadingSkeleton preset="paragraph" count={1} />
+          ) : !detail ? (
+            <ErrorState
+              title="点名记录加载失败"
+              message="请稍后重试。"
+              onRetry={() => void refetch()}
+            />
           ) : (
             <>
               {absentSummary(detail.records) && (

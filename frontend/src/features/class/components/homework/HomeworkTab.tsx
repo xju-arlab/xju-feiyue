@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
-import { ChevronRight, Loader2, Plus, Upload } from 'lucide-react'
+import { ChevronRight, Inbox, Plus, Upload } from 'lucide-react'
 import { toast } from 'sonner'
 import { uploadHomework } from '@/api/endpoints/homeworks'
+import { ErrorState } from '@/components/common/ErrorState'
+import { LoadingSkeleton } from '@/components/common/LoadingSkeleton'
 import { useAuthStore } from '@/stores/authStore'
 import { useHomeworks, homeworkKeys } from '../../hooks/useHomeworks'
 import { errMsg } from '../../hooks/keys'
@@ -144,22 +146,9 @@ export function HomeworkTab({ className }: { className: string }) {
       controllers.current.delete(id)
     }
   }
-  if (isPending)
-    return (
-      <div className="hw-empty">
-        <Loader2 size={18} className="animate-spin" />
-        加载作业…
-      </div>
-    )
+  if (isPending) return <LoadingSkeleton preset="list" count={3} />
   if (isError || !data)
-    return (
-      <div className="hw-empty">
-        <p>作业加载失败</p>
-        <button className="hw-button" onClick={() => void refetch()}>
-          重试
-        </button>
-      </div>
-    )
+    return <ErrorState title="作业加载失败" message="请稍后重试。" onRetry={() => void refetch()} />
   const courses = [...new Set(data.items.map((h) => h.course))]
   const items = data.items.filter(
     (h) =>
@@ -173,28 +162,34 @@ export function HomeworkTab({ className }: { className: string }) {
       className={`hw-workspace${fileDragging && !managing ? ' hw-file-dragging' : ''}`}
       aria-label={managing ? '作业收发台' : '作业收件箱'}
     >
-      {data.canManage && (
-        <div className="hw-view-switch" aria-label="作业视图">
-          <button
-            aria-pressed={managing}
-            onClick={() => {
-              setView('manage')
-              setFilter('all')
-            }}
-          >
-            收发台
-          </button>
-          <button
-            aria-pressed={!managing}
-            onClick={() => {
-              setView('mine')
-              setFilter('all')
-            }}
-          >
-            我的作业
-          </button>
-        </div>
-      )}
+      <header className="hw-heading">
+        <h1>
+          <Inbox size={21} strokeWidth={1.65} aria-hidden />
+          {managing ? '收发台' : '收件箱'}
+        </h1>
+        {data.canManage && (
+          <div className="hw-view-switch" aria-label="作业视图">
+            <button
+              aria-pressed={managing}
+              onClick={() => {
+                setView('manage')
+                setFilter('all')
+              }}
+            >
+              收发台
+            </button>
+            <button
+              aria-pressed={!managing}
+              onClick={() => {
+                setView('mine')
+                setFilter('all')
+              }}
+            >
+              我的作业
+            </button>
+          </div>
+        )}
+      </header>
       <div className="hw-toolbar">
         <div className="hw-filters">
           {(['all', 'pending', 'done'] as const).map((value) => (
@@ -233,7 +228,7 @@ export function HomeworkTab({ className }: { className: string }) {
         </div>
       )}
       {managing ? (
-        <div className="hw-table-scroll">
+        <div className="hw-table-scroll" role="region" aria-label="作业收发记录" tabIndex={0}>
           <table className="hw-management">
             <thead>
               <tr>

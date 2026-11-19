@@ -14,17 +14,14 @@ type Props = { group: Group }
 export function GroupCard({ group }: Props) {
   const isMember = group.myRole != null
   return (
-    <li className="flex flex-col gap-3 rounded-lg border border-border bg-bg p-4">
+    <li className="class-item flex flex-col gap-3 p-4">
       <div className="flex items-start gap-3">
-        <GroupLogo
-          gid={group.id}
-          name={group.name}
-          logo={group.logo}
-          logoThumb={group.logoThumb}
-        />
+        <GroupLogo gid={group.id} name={group.name} logo={group.logo} logoThumb={group.logoThumb} />
         <div className="min-w-0">
           <div className="flex items-center gap-1.5">
-            <h3 className="m-0 truncate text-base font-semibold text-text">{group.name}</h3>
+            <h3 className="m-0 truncate font-serif text-base font-semibold text-text">
+              {group.name}
+            </h3>
             {group.myRole === 'leader' && <Badge className="px-1.5 py-0 text-[10px]">组长</Badge>}
             {group.myRole === 'member' && (
               <Badge variant="secondary" className="px-1.5 py-0 text-[10px]">
@@ -39,13 +36,11 @@ export function GroupCard({ group }: Props) {
         </div>
       </div>
 
-      {group.intro && (
-        <p className="m-0 line-clamp-2 text-sm text-text-muted">{group.intro}</p>
-      )}
+      {group.intro && <p className="m-0 line-clamp-2 text-sm text-text-muted">{group.intro}</p>}
 
       <div className="mt-auto flex items-center gap-2">
         {isMember ? (
-          <Button asChild size="sm" className="ml-auto">
+          <Button asChild size="sm" variant="outline" className="ml-auto">
             <Link to={`/class/groups/${group.id}`}>
               进入小组
               <ArrowRight size={14} aria-hidden className="ml-1" />

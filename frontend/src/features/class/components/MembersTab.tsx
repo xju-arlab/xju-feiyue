@@ -1,9 +1,10 @@
 import { useState } from 'react'
-import { Star, StarOff, Trash2 } from 'lucide-react'
+import { Star, StarOff, Trash2, Users } from 'lucide-react'
 
 import { resolveAssetUrl } from '@/api/client'
 import type { ClassMember } from '@/api/schemas/class'
 import { CommitteeBadge } from '@/components/common/CommitteeBadge'
+import { EmptyState } from '@/components/common/EmptyState'
 import { ErrorState } from '@/components/common/ErrorState'
 import { LoadingSkeleton } from '@/components/common/LoadingSkeleton'
 import {
@@ -55,8 +56,7 @@ export function MembersTab() {
   const isBanzhang = me?.committeeTitle === '班长'
   const canManage = isSuperAdmin || isBanzhang
   // 非超管不能动现任班长（含自己）。
-  const canTouch = (m: ClassMember) =>
-    canManage && (isSuperAdmin || m.committeeTitle !== '班长')
+  const canTouch = (m: ClassMember) => canManage && (isSuperAdmin || m.committeeTitle !== '班长')
   // 删除账户：仅超管，且不能删自己（超管账户后端另有保护）。
   const canDelete = (m: ClassMember) => isSuperAdmin && m.sid !== user?.sid
 
@@ -64,6 +64,7 @@ export function MembersTab() {
   if (isError || !members) {
     return <ErrorState title="成员加载失败" message="请稍后重试。" onRetry={() => void refetch()} />
   }
+  if (!members.length) return <EmptyState icon={Users} title="暂无班级成员" />
 
   return (
     <>
@@ -72,23 +73,20 @@ export function MembersTab() {
           右键成员卡片可设置班委职务{isSuperAdmin ? '（含班长）' : '（「班长」由超管设置）'}。
         </p>
       )}
-      <ul className="grid list-none grid-cols-2 gap-2 p-0 sm:grid-cols-3 lg:grid-cols-4">
+      <ul className="m-0 grid list-none grid-cols-1 gap-2 p-0 min-[420px]:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
         {members.map((m) => {
           const card = (
-            <li
-              key={m.sid}
-              className="flex items-center gap-3 rounded-lg border border-border bg-bg px-3 py-2.5"
-            >
+            <li key={m.sid} className="class-item flex items-center gap-3 px-3 py-2.5">
               <Avatar className="size-9">
                 {m.avatarThumb && <AvatarImage src={resolveAssetUrl(m.avatarThumb)} alt="" />}
                 <AvatarFallback className="text-xs">{m.nickname.slice(0, 2)}</AvatarFallback>
               </Avatar>
               <div className="min-w-0">
-                <div className="flex items-center gap-1.5">
+                <div className="flex flex-wrap items-center gap-1.5">
                   <span className="truncate text-sm font-medium text-text">{m.nickname}</span>
                   {m.isClassCommittee && <CommitteeBadge title={m.committeeTitle} />}
                 </div>
-                <div className="truncate text-xs text-text-faint">{m.sid}</div>
+                <div className="truncate font-mono text-xs text-text-muted">{m.sid}</div>
               </div>
             </li>
           )

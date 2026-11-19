@@ -1,7 +1,9 @@
 import { useState } from 'react'
-import { Download, Loader2 } from 'lucide-react'
+import { Download } from 'lucide-react'
 import { toast } from 'sonner'
 import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet'
+import { LoadingSkeleton } from '@/components/common/LoadingSkeleton'
+import { ErrorState } from '@/components/common/ErrorState'
 import { downloadHomework } from '@/api/endpoints/homeworks'
 import { useHomeworkRecords } from '../../hooks/useHomeworks'
 import { errMsg } from '../../hooks/keys'
@@ -35,17 +37,13 @@ export function HomeworkRecords({ id, onClose }: Props) {
           {data ? homeworkTitle(data.homework) : '提交记录'}
         </SheetTitle>
         {isPending ? (
-          <p className="hw-empty">
-            <Loader2 size={18} className="animate-spin" />
-            加载中…
-          </p>
+          <LoadingSkeleton preset="list" count={3} />
         ) : isError || !data ? (
-          <div className="hw-empty">
-            <p>提交记录加载失败</p>
-            <button className="hw-button" onClick={() => void refetch()}>
-              重试
-            </button>
-          </div>
+          <ErrorState
+            title="提交记录加载失败"
+            message="请稍后重试。"
+            onRetry={() => void refetch()}
+          />
         ) : (
           <>
             <div className="hw-records-meta">
@@ -66,7 +64,7 @@ export function HomeworkRecords({ id, onClose }: Props) {
               </span>
             </div>
             <div className="hw-records-actions">
-              <span>提交记录</span>
+              <h2>提交记录</h2>
               <button
                 className="hw-button hw-ghost"
                 disabled={downloading || !data.homework.submittedCount}

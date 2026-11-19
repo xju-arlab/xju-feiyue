@@ -8,8 +8,9 @@ import { LoadingSkeleton } from '@/components/common/LoadingSkeleton'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 
-import { useExportClassGroups } from '../../hooks/useMissions'
+import { useExportClassGroups, useMissions } from '../../hooks/useMissions'
 import { useGroups, useUnassignedMembers } from '../../hooks/useGroups'
+import { MissionBar } from '../mission/MissionBar'
 import { CreateGroupDialog } from './CreateGroupDialog'
 import { GroupCard } from './GroupCard'
 
@@ -27,6 +28,7 @@ export function GroupsTab({ isCommittee = false }: Props) {
   const { data: unassigned } = useUnassignedMembers(true)
   const [createOpen, setCreateOpen] = useState(false)
   const exportGroups = useExportClassGroups()
+  const missions = useMissions(true)
 
   if (isLoading) return <LoadingSkeleton preset="paragraph" count={2} />
   if (isError || !groups) {
@@ -36,11 +38,12 @@ export function GroupsTab({ isCommittee = false }: Props) {
   const inGroup = groups.some((g) => g.myRole != null)
 
   return (
-    <section aria-label="小组">
-      {(!inGroup || isCommittee) && (
-        <div className="mb-4 flex flex-wrap items-center gap-2">
+    <section aria-label="小组列表">
+      <div className="class-section-heading">
+        <span className="class-section-count">{groups.length} 个小组</span>
+        <div className="class-section-actions">
           {!inGroup && (
-            <Button onClick={() => setCreateOpen(true)}>
+            <Button size="sm" className="class-primary" onClick={() => setCreateOpen(true)}>
               <Plus size={15} aria-hidden className="mr-1.5" />
               创建小组
             </Button>
@@ -48,26 +51,33 @@ export function GroupsTab({ isCommittee = false }: Props) {
           {isCommittee && (
             <Button
               variant="outline"
-              className="ml-auto"
+              size="sm"
               onClick={() => exportGroups.mutate()}
               disabled={exportGroups.isPending}
             >
               <Download size={15} aria-hidden className="mr-1.5" />
-              {exportGroups.isPending ? '导出中…' : '导出班级分组信息'}
+              {exportGroups.isPending ? '导出中…' : '导出分组'}
             </Button>
           )}
         </div>
+      </div>
+
+      {missions.isError ? (
+        <ErrorState
+          title="分组任务加载失败"
+          message="请稍后重试。"
+          onRetry={() => void missions.refetch()}
+        />
+      ) : missions.isPending ? (
+        <LoadingSkeleton preset="paragraph" count={1} />
+      ) : (
+        <MissionBar missions={missions.data} isCommittee={isCommittee} />
       )}
 
       {groups.length === 0 ? (
-        <EmptyState
-          icon={UsersRound}
-          title="班里还没有小组"
-          description="创建第一个小组，成为组长并邀请同学加入。"
-          action={{ label: '创建小组', onClick: () => setCreateOpen(true) }}
-        />
+        <EmptyState icon={UsersRound} title="班里还没有小组" />
       ) : (
-        <ul className="grid list-none grid-cols-1 gap-3 p-0 sm:grid-cols-2 lg:grid-cols-3">
+        <ul className="m-0 grid list-none grid-cols-1 gap-3 p-0 sm:grid-cols-2 lg:grid-cols-3">
           {groups.map((g) => (
             <GroupCard key={g.id} group={g} />
           ))}
@@ -76,10 +86,7 @@ export function GroupsTab({ isCommittee = false }: Props) {
 
       {/* 未进组名单 —— 组卡片下方；全员进组后自动隐藏。 */}
       {unassigned && unassigned.length > 0 && (
-        <section
-          aria-label="未进组同学"
-          className="mt-6 rounded-lg border border-dashed border-border p-4"
-        >
+        <section aria-label="未进组同学" className="mt-7 border-t border-border py-4">
           <div className="mb-3 flex items-center gap-2">
             <UserX size={15} aria-hidden className="text-text-muted" />
             <h3 className="m-0 text-sm font-semibold text-text">未进组同学</h3>
@@ -89,7 +96,7 @@ export function GroupsTab({ isCommittee = false }: Props) {
             {unassigned.map((m) => (
               <li
                 key={m.sid}
-                className="inline-flex items-center gap-1.5 rounded-full border border-border bg-bg-subtle py-0.5 pl-0.5 pr-2.5 text-xs text-text"
+                className="inline-flex items-center gap-1.5 rounded-[4px] bg-bg-subtle px-1.5 py-1 text-xs text-text"
                 title={m.sid}
               >
                 <Avatar className="size-5">

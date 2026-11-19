@@ -27,6 +27,7 @@ type Props = {
 
 const PRESETS = [
   '班长',
+  '副班长',
   '团支书',
   '学习委员',
   '体育委员',
@@ -69,8 +70,8 @@ export function SetMemberCommitteeDialog({ member, open, onOpenChange, allowBanz
             {member.isClassCommittee ? '修改班委职务' : '设为班委'}
           </DialogTitle>
           <DialogDescription>
-            <strong>{member.nickname}</strong>
-            （{member.sid}）将获得班委权限：发起点名、勾选到点、审批本班小组的加入申请。
+            <strong>{member.nickname}</strong>（{member.sid}
+            ）将获得班委权限：发起点名、勾选到点、审批本班小组的加入申请。
           </DialogDescription>
         </DialogHeader>
 

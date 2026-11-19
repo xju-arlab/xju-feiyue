@@ -472,7 +472,7 @@ ReportsTab.tsx[AS5S]: F:展示举报与AI审核结果并执行下架删除或驳
 ResetPasswordDialog.tsx[AI5S]: F:重置用户密码并显示可复制的结果 | R:code:frontend/src/features/admin/hooks/useAdmin.ts | A:ResetPasswordDialog | S:结果持续展示于弹窗，空输入采用服务端默认密码
 RoleBadge.tsx[CU3T]: F:按管理员级别展示图标与颜色徽章 | R:code:frontend/src/features/admin/lib/format.ts | A:RoleBadge | S:-
 SetClassDialog.tsx[AI5S]: F:为用户选择、新建或移除班级归属 | R:code:frontend/src/features/admin/hooks/useAdmin.ts | A:SetClassDialog | S:移除班级发送null且后端同时清除班委身份
-SetCommitteeDialog.tsx[AI5S]: F:让管理员通过预设或自定义职务设置班委身份 | R:code:frontend/src/features/admin/hooks/useAdmin.ts,code:frontend/src/components/common/CommitteeBadge.tsx | A:SetCommitteeDialog | S:空职务仍保留班委身份并显示通用班委标识
+SetCommitteeDialog.tsx[AI5S]: F:让管理员通过预设或自定义职务设置班委身份，预设含副班长 | R:code:frontend/src/features/admin/hooks/useAdmin.ts,code:frontend/src/components/common/CommitteeBadge.tsx | A:SetCommitteeDialog | S:空职务保留班委身份并显示通用班委标识
 StatCard.tsx[CU3T]: F:以统一卡片呈现后台统计值、说明及图标 | R:- | A:StatCard | S:-
 UsersTab.tsx[AI6M]: F:提供用户搜索、身份调整、导入、重置密码与班级班委管理入口 | R:code:frontend/src/features/admin/hooks/useAdmin.ts,code:frontend/src/features/admin/components/SetClassDialog.tsx,code:frontend/src/features/admin/components/SetCommitteeDialog.tsx | A:UsersTab | S:敏感角色变更通过确认流程，按钮权限按当前管理员等级区分
 charts.tsx[CU4S]: F:以原生SVG绘制后台环图、柱状图与横向比例条 | R:- | A:Donut,BarChart,HBars | S:空数据和零最大值由组件兜底，避免比例除零
@@ -495,14 +495,16 @@ SearchBar.tsx[CU4T]: F:维护搜索草稿并在提交或清空时同步浏览URL
 useBrowseParams.ts[AD5S]: F:解析并更新浏览页分类、排序、查询及标签参数 | R:code:frontend/src/lib/categories.ts | A:useBrowseParams | S:更新使用replace避免每次筛选堆积浏览历史，未知枚举回退默认值
 
 ===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/features/class/===
-ClassPage.tsx[AB6S]: F:组装概览、作业、点名与成员分页及班级状态 | R:code:frontend/src/features/class/components/homework/HomeworkTab.tsx,code:frontend/src/features/class/hooks/useClass.ts,code:frontend/src/features/class/hooks/useGroups.ts | A:ClassPage,tab=homeworks | S:仅裸/class自动跳本组；作业页隐藏班级大标题，并按用户和班级重挂载隔离临时文件
-GroupSpacePage.tsx[AB6T]: F:展示小组主页并按成员及管理身份开放文件与甘特任务区 | R:code:frontend/src/features/class/hooks/useGroups.ts,code:frontend/src/features/class/components/group-space/GroupFilesPanel.tsx,code:frontend/src/features/class/components/gantt/GanttPanel.tsx | A:GroupSpacePage | S:前端锁定仅作体验提示，后端仍须验证权限
+ClassPage.tsx[AB6T]: F:组装班级空间概览与作业、点名、成员及独立小组分页 | R:code:frontend/src/features/class/components/ClassOverview.tsx,code:frontend/src/features/class/components/groups/GroupsTab.tsx,code:frontend/src/features/class/components/homework/HomeworkTab.tsx | A:ClassPage,tab=overview,tab=groups,tab=homeworks | S:裸/class落在班级概览；作业组件按用户和班级重挂载隔离待传文件
+GroupSpacePage.tsx[AB6S]: F:以共享班级布局展示小组简介、成员、文件及甘特任务 | R:code:frontend/src/features/class/components/ClassNavbar.tsx,code:frontend/src/features/class/components/group-space/GroupFilesPanel.tsx,code:frontend/src/features/class/components/gantt/GanttPanel.tsx | A:GroupSpacePage | S:非成员显示申请入口；前端裁剪只是体验提示，后端仍须验证权限
 data.ts[CU4T]: F:定义甘特任务状态名称、主题配色与每日列宽 | R:code:frontend/src/api/schemas/class.ts | A:STATUS_META,STATUS_ORDER,GANTT_DAY_WIDTH | S:拖动吸附和渲染必须共用32像素日宽
+class-space.css[FU5M]: F:用暖灰分隔线、紧凑圆角和衬线标题统一班级导航、概览与小组布局 | R:code:frontend/src/styles/tokens.css,code:frontend/src/features/class/components/ClassNavbar.tsx | A:class-space,class-content,class-tabs,class-overview-links | S:窄屏页签移至次行、概览入口纵向排列；降低动态效果时移除导航过渡
 
 ===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/features/class/components/===
-ClassNavbar.tsx[AU4S]: F:呈现分组任务导航、概览作业点名成员链接和用户入口 | R:code:frontend/src/stores/authStore.ts | A:ClassNavbar | S:分页链接显式带tab以绕过裸入口本组重定向
-MembersTab.tsx[AI6M]: F:展示班级成员网格并按权限提供班委调整及账户删除 | R:code:frontend/src/features/class/hooks/useClass.ts,code:frontend/src/features/class/components/SetMemberCommitteeDialog.tsx | A:MembersTab | S:班长仅管理普通班委，班长职务和删除账户由超级管理员控制
-SetMemberCommitteeDialog.tsx[AI5S]: F:在班级成员界面编辑班委职务并预览身份徽章 | R:code:frontend/src/features/class/hooks/useClass.ts,code:frontend/src/components/common/CommitteeBadge.tsx | A:SetMemberCommitteeDialog | S:非超级管理员隐藏班长选项，但最终授权仍由后端校验
+ClassNavbar.tsx[AU4T]: F:呈现班级空间名称、五个分页、小组面包屑与当前用户 | R:code:frontend/src/features/class/class-space.css,code:frontend/src/stores/authStore.ts | A:ClassNavbar | S:组内路由保持小组页签选中，裸班级入口默认概览
+MembersTab.tsx[AI6M]: F:展示班级成员网格、班委职务及按权限提供职务调整和删除入口 | R:code:frontend/src/features/class/hooks/useClass.ts,code:frontend/src/features/class/components/SetMemberCommitteeDialog.tsx | A:MembersTab | S:班长仅可管理普通班委；班长职务及删除账户由超级管理员控制
+SetMemberCommitteeDialog.tsx[AI5S]: F:在班级成员界面预设或自定义班委职务，支持副班长并预览徽标 | R:code:frontend/src/features/class/hooks/useClass.ts,code:frontend/src/components/common/CommitteeBadge.tsx | A:SetMemberCommitteeDialog | S:非超级管理员隐藏班长预设，最终授权仍由后端校验
+ClassOverview.tsx[AB5T]: F:提供作业、点名、成员和小组入口及实际数量摘要 | R:code:frontend/src/features/class/hooks/useHomeworks.ts,code:frontend/src/features/class/hooks/useRollcalls.ts,code:frontend/src/features/class/hooks/useGroups.ts | A:ClassOverview | S:待提交数量按当前用户提交记录统计；查询未取得数据时保留入口并省略计数
 
 ===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/features/class/components/gantt/===
 GanttChart.tsx[AU5S]: F:组合冻结任务列、月份日期网格及可操作甘特任务条 | R:code:frontend/src/features/class/lib/gantt.ts,code:frontend/src/features/class/components/gantt/GanttTaskBar.tsx | A:GanttChart | S:标题区与日期网格共享固定行高以维持滚动对齐
@@ -521,19 +523,19 @@ JoinRequestsDialog.tsx[AB5T]: F:按需加载小组入组申请并逐项审批通
 
 ===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/features/class/components/groups/===
 CreateGroupDialog.tsx[AB5S]: F:校验新小组信息并支持创建时选择头像 | R:code:frontend/src/api/schemas/class.ts,code:frontend/src/features/class/hooks/useGroups.ts | A:CreateGroupDialog | S:头像限制2MB且通过对象URL预览，创建与头像上传并非单次原子请求
-GroupCard.tsx[AU4T]: F:展示小组标识组长人数及成员进入或非成员申请入口 | R:code:frontend/src/features/class/components/groups/GroupLogo.tsx,code:frontend/src/features/class/components/groups/JoinRequestButton.tsx | A:GroupCard | S:以myRole判断成员身份，不以组长学号推断
+GroupCard.tsx[AU4T]: F:呈现小组名称标识、组长人数、简介与进入或申请入口 | R:code:frontend/src/features/class/components/groups/GroupLogo.tsx,code:frontend/src/features/class/components/groups/JoinRequestButton.tsx | A:GroupCard | S:以myRole判断成员身份，不以组长学号推断
 GroupLogo.tsx[CU4T]: F:渲染小组缩略图或确定性颜色与名称首字后备头像 | R:code:frontend/src/api/client.ts,code:frontend/src/features/class/lib/logoColor.ts | A:GroupLogo | S:优先服务端缩略图，资源URL需跨源重定位
-GroupsTab.tsx[AB5S]: F:展示全班小组及未入组成员，并提供建组和班委分组导出 | R:code:frontend/src/features/class/hooks/useGroups.ts,code:frontend/src/features/class/hooks/useMissions.ts | A:GroupsTab | S:已加入小组时隐藏创建入口以符合一人一组约束
+GroupsTab.tsx[AB5S]: F:在小组页签展示当前分组任务、所有小组和未入组成员及管理入口 | R:code:frontend/src/features/class/hooks/useGroups.ts,code:frontend/src/features/class/hooks/useMissions.ts,code:frontend/src/features/class/components/mission/MissionBar.tsx | A:GroupsTab | S:已入组者不显示创建入口；任务加载失败可单独重试
 JoinRequestButton.tsx[AU4T]: F:按未加入、待审批和已加入状态提供申请或撤回操作 | R:code:frontend/src/features/class/hooks/useGroups.ts | A:JoinRequestButton | S:已是成员不渲染按钮，撤回使用当前待审批申请ID
 
 ===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/features/class/components/mission/===
-MissionBar.tsx[AU4T]: F:展示当前进行中分组任务并向班委开放管理入口 | R:code:frontend/src/features/class/components/mission/MissionManageDialog.tsx | A:MissionBar | S:仅从isActive任务派生横幅，无任务时呈现设置提示
-MissionManageDialog.tsx[AW5M]: F:在单一对话框切换分组任务列表与创建编辑表单 | R:code:frontend/src/features/class/hooks/useMissions.ts | A:MissionManageDialog | S:页内切换避免嵌套Radix对话框，新建默认设为进行中
+MissionBar.tsx[AU4T]: F:在小组页呈现当前分组任务与班委管理入口 | R:code:frontend/src/features/class/components/mission/MissionManageDialog.tsx | A:MissionBar | S:只有isActive任务进入摘要；无活跃任务时历史记录仍可经管理入口查看
+MissionManageDialog.tsx[AW5S]: F:管理分组任务列表、创建和编辑并可设当前任务 | R:code:frontend/src/features/class/hooks/useMissions.ts | A:MissionManageDialog | S:列表和表单页内切换避免嵌套对话框；新建默认设为进行中
 
 ===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/features/class/components/rollcall/===
-RollcallHistoryItem.tsx[AU5S]: F:展示点名摘要并按需展开缺勤优先名单，允许班委修改删除 | R:code:frontend/src/features/class/hooks/useRollcalls.ts,code:frontend/src/features/class/lib/rollcall.ts | A:RollcallHistoryItem | S:展开才加载详情，已关闭点名仍可通过修改入口编辑
+RollcallHistoryItem.tsx[AU5S]: F:展示点名摘要并按需展开缺勤优先名单及错误重试 | R:code:frontend/src/features/class/hooks/useRollcalls.ts,code:frontend/src/features/class/lib/rollcall.ts | A:RollcallHistoryItem | S:展开才请求详情，已关闭点名仍可通过修改入口编辑
 RollcallSession.tsx[AW5S]: F:以成员勾选网格进行实时点名并保存会话 | R:code:frontend/src/features/class/hooks/useRollcalls.ts | A:RollcallSession | S:按学号单独禁用在途勾选，其他成员仍可并行更新
-RollcallTab.tsx[AW5T]: F:在班级点名历史和当前点名会话之间切换 | R:code:frontend/src/features/class/hooks/useRollcalls.ts,code:frontend/src/features/class/components/rollcall/RollcallSession.tsx | A:RollcallTab | S:全班可查看历史，仅班委显示发起操作
+RollcallTab.tsx[AW5T]: F:以分隔行显示班级点名历史并切换到点名会话 | R:code:frontend/src/features/class/hooks/useRollcalls.ts,code:frontend/src/features/class/components/rollcall/RollcallSession.tsx | A:RollcallTab | S:全班可查看历史，仅班委显示发起操作
 
 ===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/features/class/hooks/===
 keys.ts[CD5T]: F:集中构造班级查询缓存键并提取错误提示 | R:- | A:classKeys,errMsg | S:小组文件任务和申请键共享小组前缀以支持一致失效
@@ -907,9 +909,9 @@ w9 图6-6　导师融合匹配活动图.drawio[SB3T]: F:以活动图展示输入
 
 ===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/features/class/components/homework/===
 HomeworkBadges.tsx[CU4T]: F:以课程稳定配色和小圆角标签呈现课程及提交状态 | R:- | A:CourseTag,SubmissionTag | S:-
-HomeworkRecords.tsx[AU6S]: F:以抽屉展示命名规则和单行收件记录并支持文件下载 | R:code:frontend/src/features/class/hooks/useHomeworks.ts,code:frontend/src/api/endpoints/homeworks.ts | A:HomeworkRecords | S:姓名不重复学号；单文件和ZIP均经鉴权下载，窄屏仅表格区域横向滚动
+HomeworkRecords.tsx[AU6S]: F:以抽屉和单行表格展示命名规则、收件状态及鉴权文件下载 | R:code:frontend/src/features/class/hooks/useHomeworks.ts,code:frontend/src/api/endpoints/homeworks.ts | A:HomeworkRecords | S:姓名列不重复学号；窄屏只在表格区域横向滚动
 HomeworkRow.tsx[AU6S]: F:呈现单条作业并接收点击选文件或整行拖入及行内反馈 | R:code:frontend/src/features/class/components/homework/helpers.ts | A:HomeworkRow,PendingHomework | S:文件状态由父级按作业id维护；上传中禁用重复操作，取消不清已有提交，非文件拖动不拦截
-HomeworkTab.tsx[AB7M]: F:组织收发台和学生收件箱的筛选、发布与逐行上传状态 | R:code:frontend/src/features/class/hooks/useHomeworks.ts,code:frontend/src/features/class/components/homework/HomeworkRow.tsx,code:frontend/src/api/endpoints/homeworks.ts | A:HomeworkTab | S:管理权限取API；待上传按id隔离，成功后刷新统计，失败可重试；卸载取消请求，页面外文件拖入阻止导航
+HomeworkTab.tsx[AB7M]: F:组织作业收发台、学生收件箱、筛选及逐行上传反馈 | R:code:frontend/src/features/class/hooks/useHomeworks.ts,code:frontend/src/features/class/components/homework/HomeworkRow.tsx,code:frontend/src/api/endpoints/homeworks.ts | A:HomeworkTab | S:管理权限取API；待传文件按作业ID隔离，卸载取消请求，页面外文件拖入阻止导航
 NewHomeworkDialog.tsx[AU6S]: F:收集课程实验截止时间和文件命名规则以发布作业 | R:code:frontend/src/api/endpoints/homeworks.ts,code:frontend/src/features/class/hooks/useHomeworks.ts | A:NewHomeworkDialog | S:实验名可空；输入时间按北京时区转UTC；命名顺序实时示例，发布中阻止关闭与重复提交
 helpers.ts[CU5T]: F:格式化作业标题、北京时间及文件大小并校验文件选择 | R:code:frontend/src/api/schemas/homework.ts | A:validateHomeworkFile,formatHomeworkTime,isFileDrag,HOMEWORK_EXTENSIONS | S:完整主名NFC比较，不按班级内连字符拆分；前端20MB限制与后端同步
-homework.css[FU4L]: F:定义作业列表、拖拽反馈、发布表单与收件抽屉的紧凑样式 | R:code:frontend/src/styles/tokens.css | A:hw-*样式类 | S:标签4px按钮6px；窄屏作业换行布局，收件表保持单行并局部横滚
+homework.css[FU4L]: F:用站点设计变量统一区分作业列表、拖拽反馈、发布表单和收件抽屉 | R:code:frontend/src/styles/tokens.css,code:frontend/src/features/class/components/homework/HomeworkTab.tsx | A:hw-*样式类 | S:标签4px、按钮6px；窄屏学生行重排而收件表维持单行，管理表包含绝对定位的无障碍表头

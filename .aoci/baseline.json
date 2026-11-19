@@ -1,7 +1,7 @@
 {
   "version": 1,
   "created_at": "2026-11-09T04:33:37Z",
-  "updated_at": "2026-11-09T05:42:55Z",
+  "updated_at": "2026-11-19T13:25:28Z",
   "files": {
     ".gitattributes": {
       "role": "index",
@@ -65,9 +65,9 @@
     },
     "aoci.code.txt": {
       "role": "index",
-      "sha256": "6807713530f747d5c23dfd2cd17a96b8e1e77f666e70fbffaccedf2dee4d3f9d",
-      "size": 168817,
-      "normalized_sha256": "6807713530f747d5c23dfd2cd17a96b8e1e77f666e70fbffaccedf2dee4d3f9d"
+      "sha256": "751d732461c60d4d44aba139c5039155a706875b424f2b61b952e3a0fd45d86d",
+      "size": 169934,
+      "normalized_sha256": "751d732461c60d4d44aba139c5039155a706875b424f2b61b952e3a0fd45d86d"
     },
     "aoci.meta.txt": {
       "role": "index",
@@ -2838,9 +2838,9 @@
     },
     "frontend/src/features/admin/components/SetCommitteeDialog.tsx": {
       "role": "index",
-      "sha256": "0ce20762625abd3436a8dcb85055c295f675be4d859ddc062c4a5b8b200403b1",
-      "size": 3877,
-      "normalized_sha256": "0ce20762625abd3436a8dcb85055c295f675be4d859ddc062c4a5b8b200403b1"
+      "sha256": "51c8a1c1a3a1885205e4a487c996ca14a439cd25540287bfed68653a15650914",
+      "size": 3892,
+      "normalized_sha256": "51c8a1c1a3a1885205e4a487c996ca14a439cd25540287bfed68653a15650914"
     },
     "frontend/src/features/admin/components/StatCard.tsx": {
       "role": "index",
@@ -2916,33 +2916,45 @@
     },
     "frontend/src/features/class/ClassPage.tsx": {
       "role": "index",
-      "sha256": "cc4203d1babe1247ff089a16f5231ad90b6661c056bb371db5e7cff0859221b2",
-      "size": 4759,
-      "normalized_sha256": "cc4203d1babe1247ff089a16f5231ad90b6661c056bb371db5e7cff0859221b2"
+      "sha256": "6a152e34ef44435cb7a52145a91eb5b69ab0f9dae8e02a6886cbfc776e409224",
+      "size": 3114,
+      "normalized_sha256": "6a152e34ef44435cb7a52145a91eb5b69ab0f9dae8e02a6886cbfc776e409224"
     },
     "frontend/src/features/class/GroupSpacePage.tsx": {
       "role": "index",
-      "sha256": "220099f0395c90020eae967d46024b796d592cfb11a4b3eda21b828273a660a1",
-      "size": 3709,
-      "normalized_sha256": "220099f0395c90020eae967d46024b796d592cfb11a4b3eda21b828273a660a1"
+      "sha256": "b04e0537c2e75b0a34c5fdde9bb6fa443e0cdb76469b1c72b037367db35fe8ca",
+      "size": 3699,
+      "normalized_sha256": "b04e0537c2e75b0a34c5fdde9bb6fa443e0cdb76469b1c72b037367db35fe8ca"
+    },
+    "frontend/src/features/class/class-space.css": {
+      "role": "index",
+      "sha256": "dfc56b6448d8e3e0fce2ad35cb8f5a4bdcfcaf08caac506f07306155c0d699cb",
+      "size": 4987,
+      "normalized_sha256": "dfc56b6448d8e3e0fce2ad35cb8f5a4bdcfcaf08caac506f07306155c0d699cb"
     },
     "frontend/src/features/class/components/ClassNavbar.tsx": {
       "role": "index",
-      "sha256": "85a679b7fcd1ea0e605854acdcd7053e0c44160db38dbda1133bf9f1e702a262",
-      "size": 4065,
-      "normalized_sha256": "85a679b7fcd1ea0e605854acdcd7053e0c44160db38dbda1133bf9f1e702a262"
+      "sha256": "5421102e908bebef7e9b0dda27389d126b6cf2e0a5694833c36567d684a63023",
+      "size": 3631,
+      "normalized_sha256": "5421102e908bebef7e9b0dda27389d126b6cf2e0a5694833c36567d684a63023"
+    },
+    "frontend/src/features/class/components/ClassOverview.tsx": {
+      "role": "index",
+      "sha256": "068db48f06ec6999e23b154bfbca80b27761b3544f0e36b3b16ac323258b116d",
+      "size": 1730,
+      "normalized_sha256": "068db48f06ec6999e23b154bfbca80b27761b3544f0e36b3b16ac323258b116d"
     },
     "frontend/src/features/class/components/MembersTab.tsx": {
       "role": "index",
-      "sha256": "fcf87b1feb1863f6e8b50e38db149152076c9b2897de435ef86d3fa2da6f890f",
-      "size": 7960,
-      "normalized_sha256": "fcf87b1feb1863f6e8b50e38db149152076c9b2897de435ef86d3fa2da6f890f"
+      "sha256": "33132a19a3ee004d3dfaf894a26a04a5776d209ef34fe4713aa175ea4af51bd6",
+      "size": 8088,
+      "normalized_sha256": "33132a19a3ee004d3dfaf894a26a04a5776d209ef34fe4713aa175ea4af51bd6"
     },
     "frontend/src/features/class/components/SetMemberCommitteeDialog.tsx": {
       "role": "index",
-      "sha256": "c24ee1fdfebd60cf184e84a8b760b697b0c6707ea78cac7732142003483fb8d2",
-      "size": 4305,
-      "normalized_sha256": "c24ee1fdfebd60cf184e84a8b760b697b0c6707ea78cac7732142003483fb8d2"
+      "sha256": "3d194bb714aa5fc252de39d699a36c82acf3cab1112b901bb34513ffa73b5804",
+      "size": 4320,
+      "normalized_sha256": "3d194bb714aa5fc252de39d699a36c82acf3cab1112b901bb34513ffa73b5804"
     },
     "frontend/src/features/class/components/gantt/GanttChart.tsx": {
       "role": "index",
@@ -3018,9 +3030,9 @@
     },
     "frontend/src/features/class/components/groups/GroupCard.tsx": {
       "role": "index",
-      "sha256": "777c45cf4d6829573be4450a2dc2d71f089525aaaa9c4a34ec53a814743342b9",
-      "size": 2354,
-      "normalized_sha256": "777c45cf4d6829573be4450a2dc2d71f089525aaaa9c4a34ec53a814743342b9"
+      "sha256": "f50a05ab7679ac4e8b6e2448f0085c93d3f7a83dddb813cd3ba91cf8ee8adf39",
+      "size": 2318,
+      "normalized_sha256": "f50a05ab7679ac4e8b6e2448f0085c93d3f7a83dddb813cd3ba91cf8ee8adf39"
     },
     "frontend/src/features/class/components/groups/GroupLogo.tsx": {
       "role": "index",
@@ -3030,9 +3042,9 @@
     },
     "frontend/src/features/class/components/groups/GroupsTab.tsx": {
       "role": "index",
-      "sha256": "db83dc8535626c9336d558e9ca9f1bcfd41ae8c8ede45b3b7df93afc8117ed89",
-      "size": 4331,
-      "normalized_sha256": "db83dc8535626c9336d558e9ca9f1bcfd41ae8c8ede45b3b7df93afc8117ed89"
+      "sha256": "db5a9254d3607c825d4cd6f8d124e4995cbc07297aa8af739b76a075bd5994d0",
+      "size": 4633,
+      "normalized_sha256": "db5a9254d3607c825d4cd6f8d124e4995cbc07297aa8af739b76a075bd5994d0"
     },
     "frontend/src/features/class/components/groups/JoinRequestButton.tsx": {
       "role": "index",
@@ -3048,9 +3060,9 @@
     },
     "frontend/src/features/class/components/homework/HomeworkRecords.tsx": {
       "role": "index",
-      "sha256": "5234bee3b71d1e2ed77c4ddb872884884109bf7b1424d9e949a3840fc46ceacc",
-      "size": 5037,
-      "normalized_sha256": "5234bee3b71d1e2ed77c4ddb872884884109bf7b1424d9e949a3840fc46ceacc"
+      "sha256": "6559df1f0b7878b83a2693fc846ec10f5e4c95b76a1e50ff1feb94f466d56c04",
+      "size": 5023,
+      "normalized_sha256": "6559df1f0b7878b83a2693fc846ec10f5e4c95b76a1e50ff1feb94f466d56c04"
     },
     "frontend/src/features/class/components/homework/HomeworkRow.tsx": {
       "role": "index",
@@ -3066,9 +3078,9 @@
     },
     "frontend/src/features/class/components/homework/HomeworkTab.tsx": {
       "role": "index",
-      "sha256": "aade03b29527a4e3e5f84741907a1a8b7dba0c08053062bf127b4c39c38bf2fd",
-      "size": 11412,
-      "normalized_sha256": "aade03b29527a4e3e5f84741907a1a8b7dba0c08053062bf127b4c39c38bf2fd"
+      "sha256": "6e6d2fb380416640550434bfd7306109f071d71ba7566bf9a86c5be2322348ff",
+      "size": 11650,
+      "normalized_sha256": "6e6d2fb380416640550434bfd7306109f071d71ba7566bf9a86c5be2322348ff"
     },
     "frontend/src/features/class/components/homework/NewHomeworkDialog.tsx": {
       "role": "index",
@@ -3084,27 +3096,27 @@
     },
     "frontend/src/features/class/components/homework/homework.css": {
       "role": "index",
-      "sha256": "72ae43577774ba42db99763d9591191ca29fc27a9e0beccf3769d93ea89c205a",
-      "size": 12506,
-      "normalized_sha256": "72ae43577774ba42db99763d9591191ca29fc27a9e0beccf3769d93ea89c205a"
+      "sha256": "fc79ac6b69d36ef50f8f351aa012c675b0e6a3280c4b1fecae075f5082020c3c",
+      "size": 14434,
+      "normalized_sha256": "fc79ac6b69d36ef50f8f351aa012c675b0e6a3280c4b1fecae075f5082020c3c"
     },
     "frontend/src/features/class/components/mission/MissionBar.tsx": {
       "role": "index",
-      "sha256": "9a92bb28e240575f98b0c5bb402a994faa0731453031ffa7f73435d48b2b52fe",
-      "size": 2940,
-      "normalized_sha256": "9a92bb28e240575f98b0c5bb402a994faa0731453031ffa7f73435d48b2b52fe"
+      "sha256": "f9f11a3fb74ed32abb14cc366edd2c75917fc7f0ec124386c7744bf5bc43cf6b",
+      "size": 2534,
+      "normalized_sha256": "f9f11a3fb74ed32abb14cc366edd2c75917fc7f0ec124386c7744bf5bc43cf6b"
     },
     "frontend/src/features/class/components/mission/MissionManageDialog.tsx": {
       "role": "index",
-      "sha256": "ffaf441cc0d8563f7189ede2a53ed7b8eb9c762575454cc717e353b371482c96",
-      "size": 7200,
-      "normalized_sha256": "ffaf441cc0d8563f7189ede2a53ed7b8eb9c762575454cc717e353b371482c96"
+      "sha256": "850672372e93b3819b2cf0931f70e0f9bb0af6b85f923bff43c40126abc451d2",
+      "size": 7038,
+      "normalized_sha256": "850672372e93b3819b2cf0931f70e0f9bb0af6b85f923bff43c40126abc451d2"
     },
     "frontend/src/features/class/components/rollcall/RollcallHistoryItem.tsx": {
       "role": "index",
-      "sha256": "471331e574f7179f16d6ca25235be1d36e17ce70a6682a33acd653c2c8aeaf3b",
-      "size": 5317,
-      "normalized_sha256": "471331e574f7179f16d6ca25235be1d36e17ce70a6682a33acd653c2c8aeaf3b"
+      "sha256": "ce6737f6319ea99b847356966ad5d1bf7395c3f444dead80ed7f2348e16ad59f",
+      "size": 5651,
+      "normalized_sha256": "ce6737f6319ea99b847356966ad5d1bf7395c3f444dead80ed7f2348e16ad59f"
     },
     "frontend/src/features/class/components/rollcall/RollcallSession.tsx": {
       "role": "index",
@@ -3114,9 +3126,9 @@
     },
     "frontend/src/features/class/components/rollcall/RollcallTab.tsx": {
       "role": "index",
-      "sha256": "383e32ff215ed347ba119c789f9cb4a52f8f189f988e38723289389755677c58",
-      "size": 2556,
-      "normalized_sha256": "383e32ff215ed347ba119c789f9cb4a52f8f189f988e38723289389755677c58"
+      "sha256": "f61fc2c55f2b7cf4f96564e1cf19fb7faa38870a061959aa3682498eef6d0aed",
+      "size": 2390,
+      "normalized_sha256": "f61fc2c55f2b7cf4f96564e1cf19fb7faa38870a061959aa3682498eef6d0aed"
     },
     "frontend/src/features/class/data.ts": {
       "role": "index",

@@ -44,9 +44,9 @@ export function GroupSpacePage() {
         />
         <div className="mt-4 text-center">
           <Button asChild variant="outline" size="sm">
-            <Link to="/class">
+            <Link to="/class?tab=groups">
               <ArrowLeft size={14} aria-hidden className="mr-1" />
-              返回分组任务
+              返回小组列表
             </Link>
           </Button>
         </div>
@@ -97,9 +97,9 @@ export function GroupSpacePage() {
 
 function GroupLayout({ crumb, children }: { crumb?: ReactNode; children: ReactNode }) {
   return (
-    <div className="min-h-screen">
+    <div className="class-space">
       <ClassNavbar crumb={crumb} />
-      <main className="mx-auto max-w-5xl px-6 pb-24 pt-7">{children}</main>
+      <main className="class-content">{children}</main>
     </div>
   )
 }

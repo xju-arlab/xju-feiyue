@@ -4,13 +4,7 @@ import { CheckCircle2, Circle, Pencil, Plus, Trash2 } from 'lucide-react'
 import type { Mission } from '@/api/schemas/class'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
@@ -47,12 +41,9 @@ export function MissionManageDialog({ open, onOpenChange, missions }: Props) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="sm:max-w-lg" aria-describedby={undefined}>
         <DialogHeader>
           <DialogTitle>分组任务</DialogTitle>
-          <DialogDescription>
-            设置正在进行的分组任务；全班成员进入分组任务时以它为顶层。
-          </DialogDescription>
         </DialogHeader>
 
         {editing !== null ? (
