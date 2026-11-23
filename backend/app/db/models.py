@@ -860,6 +860,7 @@ class Homework(Base):
     due_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
     naming_class: Mapped[str] = mapped_column(String(80), nullable=False)
     naming_order: Mapped[str] = mapped_column(String(24), nullable=False)
+    required_questions: Mapped[list[str] | None] = mapped_column(JSON, nullable=True)
     created_by_sid: Mapped[str | None] = mapped_column(
         ForeignKey("users.sid", ondelete="SET NULL"), nullable=True
     )
@@ -869,7 +870,7 @@ class Homework(Base):
 
 
 class HomeworkSubmission(Base):
-    """One current file per student; storage paths are private, server-generated."""
+    """One current submission per student, backed by a file or a bundle ZIP."""
 
     __tablename__ = "homework_submissions"
 
@@ -882,4 +883,5 @@ class HomeworkSubmission(Base):
     filename: Mapped[str] = mapped_column(String(255), nullable=False)
     storage_path: Mapped[str] = mapped_column(String(160), nullable=False)
     size: Mapped[int] = mapped_column(Integer, nullable=False)
+    files: Mapped[list[dict] | None] = mapped_column(JSON, nullable=True)
     submitted_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)

@@ -70,11 +70,12 @@ script.py.mako[XV4T]: F:生成包含版本关系和升降级函数的迁移脚�
 0013_drop_growth_checkin.py[PD7T]: F:删除签到、经验事件与用户成长字段 | R:code:backend/alembic/versions/0010_classes.py | A:0013_drop_growth_checkin | S:users采用原生DROP COLUMN，禁止batch重建触发内容级联删除
 0014_lab_member.py[PI6T]: F:增加供ICTHub消费的实验室成员身份标记 | R:code:backend/app/routes/auth.py,code:backend/app/routes/admin.py | A:0014_lab_member | S:Feiyue持有身份真源；SQLite只做ADD COLUMN避免users级联风险
 0015_homeworks.py[PD7T]: F:新增班级单人作业与每人当前提交表 | R:code:backend/app/db/models.py | A:0015_homeworks,upgrade,downgrade | S:仅新建两表和班级索引，不重建users避免触发级联删除
+0016_homework_batches.py[PD7T]: F:为作业与提交新增可空的题号规则和批次文件元数据列 | R:code:backend/app/db/models.py | A:0016_homework_batches,upgrade,downgrade | S:仅增列，既有记录按单文件模式读取
 
 ===/Users/winbeau/Developer/orgs/xju-feiyue/backend/app/db/===
 base.py[PD8T]: F:提供ORM声明基类并启用SQLite外键执行 | R:code:backend/app/db/models.py | A:Base | S:监听全局Engine连接，迁移和测试也会触发外键级联
 conferences_engine.py[PD7S]: F:管理会议参考库只读连接和mtime热重载 | R:code:backend/app/main.py,code:backend/app/services/conferences_query.py | A:ConferencesEngineHolder,init_holder,get_holder | S:使用ro与immutable及query_only三重只读；数据缺失不阻止主应用启动
-models.py[PD9L]: F:定义账号内容、社区互动、资料、班级协作与单人作业ORM | R:code:backend/app/db/base.py | A:User,Note,Group,ClassMission,Homework,HomeworkSubmission | S:StringList按库选择ARRAY或JSON；作业提交以作业与学号复合主键保留当前文件；分组任务不隔离小组
+models.py[PD9L]: F:定义账号内容、社区互动、资料、班级协作和作业持久化模型 | R:code:backend/app/db/base.py | A:User,Note,Group,ClassMission,Homework,HomeworkSubmission | S:作业与学号复合键维持每人一条当前提交，按题批次用JSON记录内部文件，私有存储路径指向一个归档；分组任务不隔离小组
 schools_engine.py[PD7S]: F:管理院校导师参考库只读连接、manifest缓存与热重载 | R:code:backend/app/main.py,code:backend/app/services/schools_query.py | A:SchoolsEngineHolder,init_holder,get_holder | S:连接使用ro和immutable并启用query_only；数据缺失时请求失败但启动继续
 session.py[PD7T]: F:创建主数据库异步引擎与请求级会话工厂 | R:code:backend/app/settings.py,code:backend/app/deps.py | A:engine,AsyncSessionLocal,get_session | S:禁用autoflush与提交后过期，业务需显式写入事务
 
@@ -101,7 +102,7 @@ reports.py[ES7S]: F:创建举报并支持管理员隐藏、删除或驳回处理
 schools.py[EB6S]: F:查询院校元数据、导师列表详情并叠加站内内容 | R:code:backend/app/services/schools_query.py,code:backend/app/services/schools_overlay.py | A:/schools/meta,/schools/list,/schools/{advisor_id},/admin/schools/reload | S:此域使用snake_case；只读库与主库会话分离
 transcript.py[EI7T]: F:中转教务书签上传的成绩PDF供本人轮询取回 | R:code:backend/app/deps.py | A:POST /notes/transcript-stash,GET /notes/transcript-stash | S:POST无认证，GET仅本人且取后即删；单进程内存5分钟有效
 uploads.py[ES7T]: F:上传笔记图片与文档附件并返回公开地址 | R:code:backend/app/services/uploads_common.py,code:backend/app/main.py | A:/notes/images,/notes/files | S:图片真实解码防MIME伪装；文档由共享管线流式限额与魔数校验
-homeworks.py[EB7S]: F:暴露单人作业发布、上传、收件记录与鉴权下载 | R:code:backend/app/services/homeworks.py,code:backend/app/services/classes.py | A:/classes/me/homeworks,submission,submissions,export | S:班级由JWT推导，发布记录导出限管理者；本人可下载自己的文件，响应禁止缓存并强制下载
+homeworks.py[EB7S]: F:暴露作业发布、单文件与按题批量提交、收件记录和鉴权下载 | R:code:backend/app/services/homeworks.py,code:backend/app/services/classes.py | A:/classes/me/homeworks,submission,submission/batch,submissions,export | S:班级由JWT推导；发布记录与导出限管理者，本人可下载自己的提交
 
 ===/Users/winbeau/Developer/orgs/xju-feiyue/backend/app/schemas/===
 _base.py[CN7T]: F:统一JSON字段命名和UTC时间序列化 | R:- | A:CamelModel,SnakeModel,UtcDateTime | S:SQLite返回无时区时间按UTC处理；参考资料域保留snake_case
@@ -119,7 +120,7 @@ report.py[FS5T]: F:定义举报原因、处置动作、审计与屏蔽输出 | R
 school.py[FB5S]: F:定义院校导师、招生名额、评价与采集追踪数据 | R:code:backend/app/routes/schools.py | A:AdvisorRow,AdvisorDetail,SchoolsMeta,PaginatedAdvisors | S:使用snake_case与参考库前端契约一致
 uploads.py[FN5T]: F:定义图片地址和文档附件上传结果 | R:code:backend/app/routes/uploads.py | A:UploadedImage,UploadedFile | S:附件预览由扩展名判断，响应不提供MIME
 user.py[FI6S]: F:定义登录、本人资料、密码修改与权限展示字段 | R:code:backend/app/services/auth.py | A:UserOut,LoginIn,LoginOut,UserMeUpdate,PasswordChangeIn | S:联系方式仅用于本人资料，公开作者使用NoteAuthorOut
-homeworks.py[FB6T]: F:定义作业发布、提交结果和收件名单的JSON契约 | R:code:backend/app/schemas/_base.py | A:HomeworkCreateIn,HomeworkOut,HomeworkRecordsOut,SubmissionOut | S:输入截止时间必须带时区，输出UTC；班级命名片段拒绝路径字符，文本按NFC归一化
+homeworks.py[FB6T]: F:定义作业发布和收件契约，包括必交题号与批次文件反馈 | R:code:backend/app/schemas/_base.py | A:HomeworkCreateIn,HomeworkOut,HomeworkRecordsOut,SubmissionOut | S:截止时间须含时区；题号匹配Xiti章号_题号且唯一；可空批次字段兼容单文件
 
 ===/Users/winbeau/Developer/orgs/xju-feiyue/backend/app/services/===
 ai_compose.py[IA7S]: F:将写作操作转换为DeepSeek请求并计算文本差异 | R:code:backend/app/services/diff.py,code:backend/app/settings.py | A:compose,stream_chunks,summarize_or_fallback,build_prompt | S:dry-run回显原文；自动摘要失败回退本地摘要；流式响应限300 tokens
@@ -141,7 +142,8 @@ schools_overlay.py[DB4T]: F:为导师响应提供站内笔记数与收藏状态�
 schools_pinyin.py[KB6T]: F:构建导师全拼与首字母内存搜索索引 | R:code:backend/app/services/schools_query.py | A:PinyinIndex,get_pinyin_index | S:缓存绑定参考库mtime；纯中文查询交回FTS与LIKE
 schools_query.py[PB7L]: F:执行导师过滤、融合搜索、分页及详情多表聚合 | R:code:backend/app/services/schools_pinyin.py,code:backend/app/db/schools_engine.py | A:AdvisorFilters,SortSpec,query_advisor_rows,query_advisor_detail,query_schools_meta | S:FTS、LIKE和拼音命中取并集；unknown口碑包括NULL；所有用户值参数绑定
 uploads_common.py[CS8M]: F:提供上传限额、格式魔数校验、缩略图与安全名称处理 | R:code:backend/app/main.py | A:save_upload,sniff_magic,safe_display_name,make_thumbnail,normalize_ext | S:拒绝浏览器可执行扩展；任何失败删除部分文件；OOXML检验缓存至上限；生产下载头还依赖nginx
-homeworks.py[DB8M]: F:编排私有作业存储、命名验证、提交替换、统计与打包 | R:code:backend/app/db/models.py,code:backend/app/services/classes.py,code:backend/app/services/uploads_common.py | A:save_submission,validate_filename,collection,build_archive | S:20MB流式限额与格式校验；完整文件主名按NFC比较；CAS冲突或失败清理新文件，提交成功后才删旧文件；统计只含当前班成员
+homeworks.py[DB8L]: F:编排作业命名校验、单文件和整批保存、收件统计及导出 | R:code:backend/app/db/models.py,code:backend/app/services/classes.py,code:backend/app/services/homework_zip.py,code:backend/app/services/uploads_common.py | A:save_submission,save_batch,collection,build_archive | S:单包20MB、整批45MB；全部必交题通过才CAS替换；兼容样例连字符但导出统一下划线格式；批次仍按一人计数，导出按题展开
+homework_zip.py[DS7T]: F:检查单题Android工程ZIP结构、工程名和构建目录 | R:code:backend/app/services/homeworks.py | A:inspect_android_zip | S:不解包落盘，仅读取有大小限制的Gradle设置；app/build为硬错误，.gradle为提醒；拒绝路径异常、加密和符号链接
 
 ===/Users/winbeau/Developer/orgs/xju-feiyue/backend/scripts/===
 add_user.py[OI6M]: F:按学号交互或批量导入账号并分配班级 | R:code:backend/app/services/auth.py,code:backend/app/services/greeting.py | A:--sid,--name,--batch,--class-full,--class-short | S:已有用户保留密码，只更新姓名昵称与指定班级
@@ -382,7 +384,7 @@ notes.ts[IB5S]: F:封装笔记筛选分页、推荐列表及修改删除 | R:cod
 reports.ts[IS5T]: F:封装内容举报创建、筛选与处理接口 | R:code:frontend/src/api/schemas/report.ts | A:createReport,listReports,resolveReport | S:-
 schools.ts[IB5T]: F:封装院校元信息、导师筛选分页与详情请求 | R:code:frontend/src/api/schemas/school.ts | A:getSchoolsMeta,listAdvisors,getAdvisor | S:多选条件作为数组交给统一请求编码
 uploads.ts[IB5T]: F:上传笔记图片与文档附件并校验返回信息 | R:code:frontend/src/api/upload.ts | A:uploadNoteImage,uploadNoteFile | S:文件真实上传使用XHR进度；mock不提供逐字节进度
-homeworks.ts[IB6T]: F:封装作业查询发布、带进度提交和鉴权文件下载 | R:code:frontend/src/api/schemas/homework.ts,code:frontend/src/api/upload.ts | A:listHomeworks,createHomework,getHomeworkRecords,uploadHomework,downloadHomework | S:提交使用PUT multipart；下载携带令牌后转Blob；mock下载明确报无真实文件
+homeworks.ts[IB6T]: F:封装作业发布查询、上传进度及鉴权下载 | R:code:frontend/src/api/schemas/homework.ts,code:frontend/src/api/upload.ts | A:listHomeworks,createHomework,getHomeworkRecords,uploadHomework,downloadHomework | S:单文件和分题数组分别使用不同PUT路径及multipart字段；下载前携带令牌
 
 ===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/api/mock/===
 classes.ts[TB4L]: F:以内存状态模拟班级、小组、点名与甘特任务接口 | R:code:frontend/src/api/client.ts | A:classes与groups mock注册 | S:刷新重置且使用固定班委身份
@@ -390,7 +392,7 @@ conferences.ts[TB3T]: F:将会议演示数据注册为列表mock响应 | R:code:
 handlers.ts[TB4M]: F:注册身份、笔记、AI写作及班级作业模拟接口 | R:code:frontend/src/api/mock/notes.json,code:frontend/src/api/mock/homeworks.ts | A:registerMock调用集合 | S:模拟数据仅用于开发；AI为字符串变换
 notes.json[DB3L]: F:提供开发笔记列表、作者、分类与Markdown正文样本 | R:code:frontend/src/api/mock/handlers.ts | A:Note数组 | S:-
 schools.ts[TB4S]: F:模拟导师筛选分页、院校统计与详情接口 | R:code:frontend/src/features/schools/data.ts,code:frontend/src/features/schools/filter.ts,code:frontend/src/features/schools/sort.ts | A:schools mock接口 | S:列表去掉详情嵌套字段
-homeworks.ts[TB3T]: F:以内存样本模拟单人作业发布、提交与收件计数 | R:code:frontend/src/api/client.ts | A:/classes/me/homeworks mock | S:固定演示身份，刷新重置，不提供真实文件下载
+homeworks.ts[TB3T]: F:模拟作业列表、单文件提交、收件计数和批次发布规则 | R:code:frontend/src/api/client.ts | A:/classes/me/homeworks mock | S:批量工程检查和真实下载必须使用后端
 
 ===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/api/schemas/===
 admin.ts[DI5S]: F:定义后台用户、班级、统计与登录审计载荷 | R:code:backend/app/schemas/admin.py | A:AdminUserRowSchema,AdminClassSchema,AdminStatsSchema,LoginEventSchema,UserCreateSchema | S:可分配角色不包含superadmin
@@ -404,7 +406,7 @@ note.ts[DB6T]: F:定义七类笔记、作者、交互状态与游标分页校验
 report.ts[DS5T]: F:定义举报原因、处理动作、审核记录与屏蔽名单 | R:code:frontend/src/api/schemas/note.ts | A:REPORT_REASONS,ReportSchema,BlockSchema,ReportResolveIn | S:-
 school.ts[DB5S]: F:校验院校、导师、名额、评价和分页元信息 | R:code:frontend/src/features/schools/types.ts | A:AdvisorRowSchema,AdvisorDetailSchema,SchoolsMetaSchema,ListAdvisorsParams | S:该域保留snake_case字段
 user.ts[DI6T]: F:定义用户身份、权限、班级、资料修改与密码契约 | R:code:backend/app/schemas/user.py | A:UserSchema,LoginRequestSchema,LoginResponseSchema,UserMeUpdateSchema,PasswordChangeSchema | S:联系信息仅本人接口填充；权限字段可空兼容旧响应
-homework.ts[DB5T]: F:校验作业列表、文件提交与收件记录的前端契约 | R:code:backend/app/schemas/homeworks.py | A:HomeworkSchema,HomeworkSubmissionSchema,HomeworkRecordsSchema,HomeworkCreateIn | S:时间字符串必须携带时区；未提交文件与时间显式为null
+homework.ts[DB5T]: F:校验作业列表、分题规则、批次文件反馈与收件记录 | R:code:backend/app/schemas/homeworks.py | A:HomeworkSchema,HomeworkSubmissionSchema,HomeworkRecordsSchema,HomeworkCreateIn | S:批次字段可空或缺省以兼容历史单文件响应
 
 ===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/components/common/===
 CategoryBadge.tsx[CU4T]: F:按分类元信息渲染圆点、色块、图标或完整说明徽章 | R:code:frontend/src/lib/categories.ts | A:CategoryBadge | S:-
@@ -909,9 +911,9 @@ w9 图6-6　导师融合匹配活动图.drawio[SB3T]: F:以活动图展示输入
 
 ===/Users/winbeau/Developer/orgs/xju-feiyue/frontend/src/features/class/components/homework/===
 HomeworkBadges.tsx[CU4T]: F:以课程稳定配色和小圆角标签呈现课程及提交状态 | R:- | A:CourseTag,SubmissionTag | S:-
-HomeworkRecords.tsx[AU6S]: F:以抽屉和单行表格展示命名规则、收件状态及鉴权文件下载 | R:code:frontend/src/features/class/hooks/useHomeworks.ts,code:frontend/src/api/endpoints/homeworks.ts | A:HomeworkRecords | S:姓名列不重复学号；窄屏只在表格区域横向滚动
-HomeworkRow.tsx[AU6S]: F:呈现单条作业并接收点击选文件或整行拖入及行内反馈 | R:code:frontend/src/features/class/components/homework/helpers.ts | A:HomeworkRow,PendingHomework | S:文件状态由父级按作业id维护；上传中禁用重复操作，取消不清已有提交，非文件拖动不拦截
-HomeworkTab.tsx[AB7M]: F:组织作业收发台、学生收件箱、筛选及逐行上传反馈 | R:code:frontend/src/features/class/hooks/useHomeworks.ts,code:frontend/src/features/class/components/homework/HomeworkRow.tsx,code:frontend/src/api/endpoints/homeworks.ts | A:HomeworkTab | S:管理权限取API；待传文件按作业ID隔离，卸载取消请求，页面外文件拖入阻止导航
-NewHomeworkDialog.tsx[AU6S]: F:收集课程实验截止时间和文件命名规则以发布作业 | R:code:frontend/src/api/endpoints/homeworks.ts,code:frontend/src/features/class/hooks/useHomeworks.ts | A:NewHomeworkDialog | S:实验名可空；输入时间按北京时区转UTC；命名顺序实时示例，发布中阻止关闭与重复提交
-helpers.ts[CU5T]: F:格式化作业标题、北京时间及文件大小并校验文件选择 | R:code:frontend/src/api/schemas/homework.ts | A:validateHomeworkFile,formatHomeworkTime,isFileDrag,HOMEWORK_EXTENSIONS | S:完整主名NFC比较，不按班级内连字符拆分；前端20MB限制与后端同步
-homework.css[FU4L]: F:用站点设计变量统一区分作业列表、拖拽反馈、发布表单和收件抽屉 | R:code:frontend/src/styles/tokens.css,code:frontend/src/features/class/components/homework/HomeworkTab.tsx | A:hw-*样式类 | S:标签4px、按钮6px；窄屏学生行重排而收件表维持单行，管理表包含绝对定位的无障碍表头
+HomeworkRecords.tsx[AU6S]: F:展示收件抽屉、命名规则和单人或全班下载入口 | R:code:frontend/src/features/class/hooks/useHomeworks.ts,code:frontend/src/api/endpoints/homeworks.ts | A:HomeworkRecords | S:批次用包数占据同一记录行；姓名不重复学号，窄屏表格独立横滚
+HomeworkRow.tsx[AU6M]: F:实现作业行选择与拖拽、逐题反馈、移除和确认上传 | R:code:frontend/src/features/class/components/homework/helpers.ts,code:frontend/src/features/class/components/homework/HomeworkTab.tsx | A:HomeworkRow,PendingHomework | S:仅分题任务启用多选；上传时锁定编辑；取消不影响已保存的提交
+HomeworkTab.tsx[AB7M]: F:编排作业收发筛选、文件选取和整批上传状态 | R:code:frontend/src/features/class/hooks/useHomeworks.ts,code:frontend/src/features/class/components/homework/HomeworkRow.tsx,code:frontend/src/api/endpoints/homeworks.ts | A:HomeworkTab | S:同题后续选择替换待传文件；不同任务分别持有待传状态；卸载取消请求，背景拖放阻止导航
+NewHomeworkDialog.tsx[AU6S]: F:收集作业课程、实验号、日期与单文件或Android分题规则 | R:code:frontend/src/api/endpoints/homeworks.ts,code:frontend/src/features/class/hooks/useHomeworks.ts | A:NewHomeworkDialog | S:日期按北京时区录入；分题模式需2至12个唯一题号，姓名后紧跟题号
+helpers.ts[CU5T]: F:格式化作业时间大小并预查单文件或分题批次名称和缺题 | R:code:frontend/src/api/schemas/homework.ts | A:validateHomeworkFile,validateHomeworkBatch,matchQuestion,formatHomeworkTime,isFileDrag | S:按服务端下发的完整前缀比对NFC文件名，不拆班级连字符；内容校验由后端进行
+homework.css[FU4L]: F:为作业列表、批量反馈、发布表单和收件抽屉提供样式 | R:code:frontend/src/styles/tokens.css,code:frontend/src/features/class/components/homework/HomeworkRow.tsx | A:hw-*样式类 | S:学生行在窄屏重排，收件表独立横滚；多行错误按题显示

@@ -1,7 +1,7 @@
 {
   "version": 1,
   "created_at": "2026-11-09T04:33:37Z",
-  "updated_at": "2026-11-19T13:25:28Z",
+  "updated_at": "2026-11-23T17:54:28Z",
   "files": {
     ".gitattributes": {
       "role": "index",
@@ -65,9 +65,9 @@
     },
     "aoci.code.txt": {
       "role": "index",
-      "sha256": "751d732461c60d4d44aba139c5039155a706875b424f2b61b952e3a0fd45d86d",
-      "size": 169934,
-      "normalized_sha256": "751d732461c60d4d44aba139c5039155a706875b424f2b61b952e3a0fd45d86d"
+      "sha256": "f0499ac4e8795f61395b95af233ff0d56fcb48c15589942d7b0f274a4a63c049",
+      "size": 170544,
+      "normalized_sha256": "f0499ac4e8795f61395b95af233ff0d56fcb48c15589942d7b0f274a4a63c049"
     },
     "aoci.meta.txt": {
       "role": "index",
@@ -309,6 +309,12 @@
       "size": 2213,
       "normalized_sha256": "29b94147ef1e1b74b057ba9ceae9cf4d75877bed531c62f1e29da49d6baf06f8"
     },
+    "backend/alembic/versions/0016_homework_batches.py": {
+      "role": "index",
+      "sha256": "99f6944da9d7522b2b86ec13794c7e8f2c65348d6aafda7132d5515657c58004",
+      "size": 565,
+      "normalized_sha256": "99f6944da9d7522b2b86ec13794c7e8f2c65348d6aafda7132d5515657c58004"
+    },
     "backend/app/__init__.py": {
       "role": "index",
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
@@ -333,9 +339,9 @@
     },
     "backend/app/db/models.py": {
       "role": "index",
-      "sha256": "8b14ea9baa49db1fcbcba931de3bc6c9527d7c26f9d13d84c1462c93f731fd19",
-      "size": 37962,
-      "normalized_sha256": "8b14ea9baa49db1fcbcba931de3bc6c9527d7c26f9d13d84c1462c93f731fd19"
+      "sha256": "f5358debe340391ea8eafb4c17cb27afbd6c67448e354ede682db75afd7c160c",
+      "size": 38117,
+      "normalized_sha256": "f5358debe340391ea8eafb4c17cb27afbd6c67448e354ede682db75afd7c160c"
     },
     "backend/app/db/schools_engine.py": {
       "role": "index",
@@ -428,9 +434,9 @@
     },
     "backend/app/routes/homeworks.py": {
       "role": "index",
-      "sha256": "da0a5caf98d6e600c720fb39c84f8862cc16b6731851ae1097e1e08084e8c1bc",
-      "size": 4062,
-      "normalized_sha256": "da0a5caf98d6e600c720fb39c84f8862cc16b6731851ae1097e1e08084e8c1bc"
+      "sha256": "cb5d787e3873f5ba99fa470803c86cc1dc10dadd624bd99ae7f4c30dfdc73538",
+      "size": 4552,
+      "normalized_sha256": "cb5d787e3873f5ba99fa470803c86cc1dc10dadd624bd99ae7f4c30dfdc73538"
     },
     "backend/app/routes/interactions.py": {
       "role": "index",
@@ -529,9 +535,9 @@
     },
     "backend/app/schemas/homeworks.py": {
       "role": "index",
-      "sha256": "15d01be0d0f4b7df0065ea02dc33cfe3306f36930a18006725e79231c8bbe215",
-      "size": 1875,
-      "normalized_sha256": "15d01be0d0f4b7df0065ea02dc33cfe3306f36930a18006725e79231c8bbe215"
+      "sha256": "58281ea5bc850ce5c69a9551560f8f60e9d5b27dd2b7e03c71ee372fce07f530",
+      "size": 2739,
+      "normalized_sha256": "58281ea5bc850ce5c69a9551560f8f60e9d5b27dd2b7e03c71ee372fce07f530"
     },
     "backend/app/schemas/interaction.py": {
       "role": "index",
@@ -652,11 +658,17 @@
       "size": 20621,
       "normalized_sha256": "a7a4110f80c728ed4d94c2377160ce0a407663d99cac7a7adf5c6d157e9fb796"
     },
+    "backend/app/services/homework_zip.py": {
+      "role": "index",
+      "sha256": "bd64f3c17a68b7b7a39b9820e00d18fc63261a69d5236750d33cd46fd9f5330a",
+      "size": 3232,
+      "normalized_sha256": "bd64f3c17a68b7b7a39b9820e00d18fc63261a69d5236750d33cd46fd9f5330a"
+    },
     "backend/app/services/homeworks.py": {
       "role": "index",
-      "sha256": "71a092847037dacf28f2eb1d5ad2eb6a0792abcd19b36f513435688689d3ca9a",
-      "size": 11940,
-      "normalized_sha256": "71a092847037dacf28f2eb1d5ad2eb6a0792abcd19b36f513435688689d3ca9a"
+      "sha256": "a580382478905c03aac92234a0e4a556f5f759acab90638c2be7ebd49af537b0",
+      "size": 18092,
+      "normalized_sha256": "a580382478905c03aac92234a0e4a556f5f759acab90638c2be7ebd49af537b0"
     },
     "backend/app/services/materials.py": {
       "role": "index",
@@ -821,9 +833,9 @@
     },
     "backend/app/tests/test_homeworks.py": {
       "role": "observe",
-      "sha256": "e64cb2e027e3c097f0d9731d5f8e5027e60b9ff642c88ede72bbc4ee0b262484",
-      "size": 11897,
-      "normalized_sha256": "e64cb2e027e3c097f0d9731d5f8e5027e60b9ff642c88ede72bbc4ee0b262484"
+      "sha256": "c047529c5a8bf29136509f509a4d3af37a43e0bcd0c2e8df44b4980f96ac3292",
+      "size": 15210,
+      "normalized_sha256": "c047529c5a8bf29136509f509a4d3af37a43e0bcd0c2e8df44b4980f96ac3292"
     },
     "backend/app/tests/test_image_upload.py": {
       "role": "observe",
@@ -2298,9 +2310,9 @@
     },
     "frontend/src/api/endpoints/homeworks.ts": {
       "role": "index",
-      "sha256": "7100dee566a894c5f5d7a6e883db22a874c677eb638c37b80dcb5132f44e6b35",
-      "size": 2255,
-      "normalized_sha256": "7100dee566a894c5f5d7a6e883db22a874c677eb638c37b80dcb5132f44e6b35"
+      "sha256": "d942b8e8612cfc001cf0ea491a87b4148a23684dd75728ded0f9ff5b5368e529",
+      "size": 2412,
+      "normalized_sha256": "d942b8e8612cfc001cf0ea491a87b4148a23684dd75728ded0f9ff5b5368e529"
     },
     "frontend/src/api/endpoints/interactions.ts": {
       "role": "index",
@@ -2364,9 +2376,9 @@
     },
     "frontend/src/api/mock/homeworks.ts": {
       "role": "index",
-      "sha256": "5c318844051797e6158baa9b189cc8857e3d4bc049e728b5cd6716418f3c1d6c",
-      "size": 2594,
-      "normalized_sha256": "5c318844051797e6158baa9b189cc8857e3d4bc049e728b5cd6716418f3c1d6c"
+      "sha256": "47551a2020d324651ce801be2924bf45d552e718098e676f9d0730738df69fad",
+      "size": 2914,
+      "normalized_sha256": "47551a2020d324651ce801be2924bf45d552e718098e676f9d0730738df69fad"
     },
     "frontend/src/api/mock/notes.json": {
       "role": "index",
@@ -2424,9 +2436,9 @@
     },
     "frontend/src/api/schemas/homework.ts": {
       "role": "index",
-      "sha256": "368121258548a651125cf2a4c9a8d7684672eb0930bdcad028ea13c244e926ad",
-      "size": 1483,
-      "normalized_sha256": "368121258548a651125cf2a4c9a8d7684672eb0930bdcad028ea13c244e926ad"
+      "sha256": "050ccbf37d9e7d58f97313abe17c327e3bb4c1a63e2d968e7b352597432ba124",
+      "size": 1891,
+      "normalized_sha256": "050ccbf37d9e7d58f97313abe17c327e3bb4c1a63e2d968e7b352597432ba124"
     },
     "frontend/src/api/schemas/interaction.ts": {
       "role": "index",
@@ -3060,15 +3072,15 @@
     },
     "frontend/src/features/class/components/homework/HomeworkRecords.tsx": {
       "role": "index",
-      "sha256": "6559df1f0b7878b83a2693fc846ec10f5e4c95b76a1e50ff1feb94f466d56c04",
-      "size": 5023,
-      "normalized_sha256": "6559df1f0b7878b83a2693fc846ec10f5e4c95b76a1e50ff1feb94f466d56c04"
+      "sha256": "0a5655d4c850adad6697be27740983024073e0623d5318fbc47ec3552a16ae9a",
+      "size": 5194,
+      "normalized_sha256": "0a5655d4c850adad6697be27740983024073e0623d5318fbc47ec3552a16ae9a"
     },
     "frontend/src/features/class/components/homework/HomeworkRow.tsx": {
       "role": "index",
-      "sha256": "9459f4c10e91a3884ff9df511b351963ef1b6e14626ecafee4fe5db56f2dd5de",
-      "size": 5703,
-      "normalized_sha256": "9459f4c10e91a3884ff9df511b351963ef1b6e14626ecafee4fe5db56f2dd5de"
+      "sha256": "03ba413ec1aa3ac59589b4ee9eb004b65bd552861f90e8c0a0baf8c447106820",
+      "size": 9281,
+      "normalized_sha256": "03ba413ec1aa3ac59589b4ee9eb004b65bd552861f90e8c0a0baf8c447106820"
     },
     "frontend/src/features/class/components/homework/HomeworkTab.test.tsx": {
       "role": "observe",
@@ -3078,27 +3090,27 @@
     },
     "frontend/src/features/class/components/homework/HomeworkTab.tsx": {
       "role": "index",
-      "sha256": "6e6d2fb380416640550434bfd7306109f071d71ba7566bf9a86c5be2322348ff",
-      "size": 11650,
-      "normalized_sha256": "6e6d2fb380416640550434bfd7306109f071d71ba7566bf9a86c5be2322348ff"
+      "sha256": "dbb6283a456b392b1be1be2951645768ff5d2c4bd99029933a77ef8f408e2ee7",
+      "size": 13520,
+      "normalized_sha256": "dbb6283a456b392b1be1be2951645768ff5d2c4bd99029933a77ef8f408e2ee7"
     },
     "frontend/src/features/class/components/homework/NewHomeworkDialog.tsx": {
       "role": "index",
-      "sha256": "341203e53a8a36aa74866f3cd70546008a1965cfc72586bdaaa265e6ba774df1",
-      "size": 5231,
-      "normalized_sha256": "341203e53a8a36aa74866f3cd70546008a1965cfc72586bdaaa265e6ba774df1"
+      "sha256": "54e8753288dc41e6f8b05f43a48c103bafb33bb7c40d6058cafbcf7e71dda72a",
+      "size": 6498,
+      "normalized_sha256": "54e8753288dc41e6f8b05f43a48c103bafb33bb7c40d6058cafbcf7e71dda72a"
     },
     "frontend/src/features/class/components/homework/helpers.ts": {
       "role": "index",
-      "sha256": "5597a899adf8b68937b17ef00464ee013ce4dd635e823a3d582d0e369e12d14e",
-      "size": 1625,
-      "normalized_sha256": "5597a899adf8b68937b17ef00464ee013ce4dd635e823a3d582d0e369e12d14e"
+      "sha256": "362928ca648d1be2dd3c9a6122e3566d5bc127555ebf5bf1660b57f144dbed47",
+      "size": 2834,
+      "normalized_sha256": "362928ca648d1be2dd3c9a6122e3566d5bc127555ebf5bf1660b57f144dbed47"
     },
     "frontend/src/features/class/components/homework/homework.css": {
       "role": "index",
-      "sha256": "fc79ac6b69d36ef50f8f351aa012c675b0e6a3280c4b1fecae075f5082020c3c",
-      "size": 14434,
-      "normalized_sha256": "fc79ac6b69d36ef50f8f351aa012c675b0e6a3280c4b1fecae075f5082020c3c"
+      "sha256": "21e0a72fe7a9f5a8953a676fb63304819875ac685eeefaea8ceb66ca454cb131",
+      "size": 15420,
+      "normalized_sha256": "21e0a72fe7a9f5a8953a676fb63304819875ac685eeefaea8ceb66ca454cb131"
     },
     "frontend/src/features/class/components/mission/MissionBar.tsx": {
       "role": "index",

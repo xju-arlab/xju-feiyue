@@ -30,6 +30,64 @@ def auth(sid="20240001001"):
     return {"Authorization": f"Bearer {create_access_token(sid)}"}
 
 
+def android_zip(question, *, build=False, cache=False):
+    output = io.BytesIO()
+    with zipfile.ZipFile(output, "w") as archive:
+        archive.writestr(f"{question}/settings.gradle", f'rootProject.name = "{question}"')
+        archive.writestr(f"{question}/app/build.gradle", "")
+        archive.writestr(f"{question}/app/src/main/AndroidManifest.xml", "<manifest/>")
+        if build:
+            archive.writestr(f"{question}/app/build/generated/result.txt", "build")
+        if cache:
+            archive.writestr(f"{question}/.gradle/cache", "")
+    return output.getvalue()
+
+
+async def test_android_batch_checks_all_questions_and_preserves_previous_set(client, class_setup):
+    required = ["Xiti2_1", "Xiti2_2", "Xiti2_4", "Xiti2_5", "Xiti2_6"]
+    task = await publish(client, requiredQuestions=required)
+    path = f"{ROOT}/{task['id']}/submission"
+    student = auth("20240001002")
+    names = [f"计算机24-3班-20240001002-成员乙-{question}.zip" for question in required]
+    filenames = [f"计算机24-3_20240001002_成员乙{question}.zip" for question in required]
+    files = [
+        ("files", (name, android_zip(question, cache=True)))
+        for name, question in zip(names, required, strict=True)
+    ]
+
+    assert (await put(client, task["id"])).status_code == 400
+    assert (
+        await client.put(f"{path}/batch", headers=auth("20240002001"), files=files)
+    ).status_code == 404
+    incomplete = await client.put(f"{path}/batch", headers=student, files=files[:-1])
+    assert incomplete.status_code == 400 and required[-1] in incomplete.json()["detail"]
+    wrong_name = [*files[:-1], ("files", ("wrong.zip", files[-1][1][1]))]
+    wrong = await client.put(f"{path}/batch", headers=student, files=wrong_name)
+    assert wrong.status_code == 400 and "wrong.zip" in wrong.json()["detail"]
+    submitted = await client.put(f"{path}/batch", headers=student, files=files)
+    assert submitted.status_code == 200, submitted.text
+    assert [file["filename"] for file in submitted.json()["files"]] == filenames
+    assert all(file["warnings"] for file in submitted.json()["files"])
+
+    bad = [*files[:-1], ("files", (names[-1], android_zip(required[-1], build=True)))]
+    rejected = await client.put(f"{path}/batch", headers=student, files=bad)
+    assert rejected.status_code == 400
+    assert "Xiti2_6" in rejected.json()["detail"] and "app/build" in rejected.json()["detail"]
+    mismatched = [*files[:-1], ("files", (names[-1], android_zip(required[0])))]
+    rejected = await client.put(f"{path}/batch", headers=student, files=mismatched)
+    assert rejected.status_code == 400 and "工程名应为 Xiti2_6" in rejected.json()["detail"]
+
+    collection = await client.get(f"{ROOT}/{task['id']}/submissions", headers=auth())
+    assert collection.json()["homework"]["submittedCount"] == 1
+    record = next(item for item in collection.json()["records"] if item["sid"] == "20240001002")
+    assert record["submittedAt"] == submitted.json()["submittedAt"]
+    exported = await client.get(f"{ROOT}/{task['id']}/export", headers=auth())
+    with zipfile.ZipFile(io.BytesIO(exported.content)) as archive:
+        assert archive.namelist() == filenames
+        for name, (_, (_, original)) in zip(filenames, files, strict=True):
+            assert archive.read(name) == original
+
+
 @pytest.fixture(autouse=True)
 def private_storage(tmp_path, monkeypatch):
     monkeypatch.setattr(settings, "homework_upload_dir", str(tmp_path / "homeworks"))

@@ -12,7 +12,14 @@ import { CourseTag } from './HomeworkBadges'
 import { HomeworkRow, type PendingHomework } from './HomeworkRow'
 import { NewHomeworkDialog } from './NewHomeworkDialog'
 import { HomeworkRecords } from './HomeworkRecords'
-import { formatHomeworkTime, homeworkTitle, isFileDrag, validateHomeworkFile } from './helpers'
+import {
+  formatHomeworkTime,
+  homeworkTitle,
+  isFileDrag,
+  matchQuestion,
+  validateHomeworkBatch,
+  validateHomeworkFile,
+} from './helpers'
 import './homework.css'
 
 type Filter = 'all' | 'pending' | 'done'
@@ -89,6 +96,29 @@ export function HomeworkTab({ className }: { className: string }) {
     if (controllers.current.has(id)) return
     const task = data?.items.find((t) => t.id === id)
     if (!task) return
+    if (task.requiredQuestions?.length) {
+      const selected = Array.from(files)
+      if (selected.length > 12) {
+        toast.error('一次最多选择 12 个压缩包')
+        return
+      }
+      setPending((prev) => {
+        const selectedQuestions = new Set(selected.map((file) => matchQuestion(file.name, task)))
+        const retained = (prev[id]?.files ?? []).filter((file) => {
+          const question = matchQuestion(file.name, task)
+          return question && !selectedQuestions.has(question)
+        })
+        const batch = [...retained, ...selected]
+        const check = validateHomeworkBatch(batch, task)
+        const valid =
+          !check.tooLarge && !check.missing.length && check.parts.every((part) => !part.error)
+        return {
+          ...prev,
+          [id]: { file: null, files: batch, valid, error: null, uploading: false, progress: '' },
+        }
+      })
+      return
+    }
     const file = files.length === 1 ? files[0]! : null
     const error = file
       ? validateHomeworkFile(file, task.expectedFilename)
@@ -107,7 +137,8 @@ export function HomeworkTab({ className }: { className: string }) {
   }
   async function submit(id: string) {
     const candidate = pending[id]
-    if (!candidate?.file || !candidate.valid || controllers.current.has(id)) return
+    const payload = candidate?.files ?? candidate?.file
+    if (!payload || !candidate?.valid || controllers.current.has(id)) return
     const controller = new AbortController()
     controllers.current.set(id, controller)
     setPending((prev) => ({
@@ -115,14 +146,14 @@ export function HomeworkTab({ className }: { className: string }) {
       [id]: { ...candidate, uploading: true, error: null, progress: '正在上传…' },
     }))
     try {
-      await uploadHomework(
+      const result = await uploadHomework(
         id,
-        candidate.file,
+        payload,
         (progress) => {
           if (controller.signal.aborted) return
           const text =
             progress.phase === 'processing'
-              ? '文件已发送，正在保存…'
+              ? '文件已发送，正在检查…'
               : progress.ratio === null
                 ? '正在上传…'
                 : `正在上传 ${Math.round(progress.ratio * 100)}%`
@@ -136,6 +167,8 @@ export function HomeworkTab({ className }: { className: string }) {
       discard(id)
       await qc.invalidateQueries({ queryKey: homeworkKeys.all })
       toast.success('作业已提交')
+      const warnings = result.files?.filter((file) => file.warnings.length)
+      if (warnings?.length) toast.info(`${warnings.length} 个包含 .gradle 缓存，建议下次打包前删除`)
     } catch (e) {
       if (!controller.signal.aborted)
         setPending((prev) => ({
@@ -298,6 +331,24 @@ export function HomeworkTab({ className }: { className: string }) {
               onFiles={choose}
               onSubmit={(id) => void submit(id)}
               onDiscard={discard}
+              onRemove={(id, files) => {
+                if (!files.length) return discard(id)
+                const check = validateHomeworkBatch(files, h)
+                setPending((prev) => ({
+                  ...prev,
+                  [id]: {
+                    file: null,
+                    files,
+                    error: null,
+                    uploading: false,
+                    progress: '',
+                    valid:
+                      !check.tooLarge &&
+                      !check.missing.length &&
+                      check.parts.every((part) => !part.error),
+                  },
+                }))
+              }}
             />
           ))}
           {!items.length && (

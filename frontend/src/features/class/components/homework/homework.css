@@ -265,6 +265,57 @@
   padding: 0 18px 16px;
   cursor: default;
 }
+.hw-batch-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  padding: 0 16px 12px;
+  color: var(--color-text-muted);
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+.hw-batch .hw-batch-summary {
+  padding-inline: 0;
+}
+.hw-batch-example {
+  font-family: var(--font-mono);
+}
+.hw-batch-parts {
+  margin: 0 0 10px;
+  padding: 0;
+  border-top: 1px solid var(--color-border);
+  list-style: none;
+}
+.hw-batch-parts li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--color-border);
+}
+.hw-batch-parts strong,
+.hw-batch-parts small {
+  display: block;
+  overflow-wrap: anywhere;
+  font-size: 12px;
+}
+.hw-batch-parts strong {
+  font-weight: 500;
+}
+.hw-batch-error {
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+.hw-batch .hw-file-actions {
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+.hw-form-rule > label.hw-batch-mode {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
 .hw-file {
   display: flex;
   align-items: flex-start;

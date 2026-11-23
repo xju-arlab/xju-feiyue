@@ -36,6 +36,7 @@ registerMock('POST', base, async (req) => {
     ...body,
     id: crypto.randomUUID(),
     expectedFilename: expected(body),
+    batchPrefixes: body.requiredQuestions ? [`${body.namingClass}_${sid}_${name}`] : null,
     submission: null,
     submittedCount: 0,
     totalCount: members.length,
@@ -53,9 +54,13 @@ registerMock('GET', `${base}/:id/submissions`, async (req) => {
       ...member,
       filename: member.sid === sid ? (h.submission?.filename ?? null) : null,
       size: member.sid === sid ? (h.submission?.size ?? null) : null,
+      files: member.sid === sid ? (h.submission?.files ?? null) : null,
       submittedAt: member.sid === sid ? (h.submission?.submittedAt ?? null) : null,
     })),
   }
+})
+registerMock('PUT', `${base}/:id/submission/batch`, async (req) => {
+  throw new ApiError('请连接后端检查并提交工程压缩包', 501, req.path)
 })
 registerMock('PUT', `${base}/:id/submission`, async (req) => {
   const h = items.find((item) => item.id === req.path.split('/')[4])

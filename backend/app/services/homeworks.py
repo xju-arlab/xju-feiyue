@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import errno
 import logging
+import shutil
 import tempfile
 import unicodedata
 import zipfile
@@ -16,6 +17,7 @@ from fastapi import HTTPException, UploadFile
 from sqlalchemy import func, select, update
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
+from starlette.concurrency import run_in_threadpool
 
 from app.db.models import Homework, HomeworkSubmission, User
 from app.schemas.homeworks import (
@@ -24,13 +26,16 @@ from app.schemas.homeworks import (
     HomeworkRecordOut,
     HomeworkRecordsOut,
     SubmissionOut,
+    SubmittedFile,
 )
 from app.services import classes
 from app.services.auth import is_admin
+from app.services.homework_zip import inspect_android_zip
 from app.services.uploads_common import ALLOWED_DOC_EXTS, ALLOWED_IMAGE_EXTS, sniff_magic
 from app.settings import settings
 
 MAX_FILE_BYTES = 20 * 1024 * 1024
+MAX_BATCH_BYTES = 45 * 1024 * 1024
 ALLOWED_EXTS = ALLOWED_DOC_EXTS | ALLOWED_IMAGE_EXTS | {".zip", ".txt", ".csv", ".md"}
 _log = logging.getLogger(__name__)
 
@@ -63,6 +68,16 @@ def expected_filename(homework: Homework, user: User) -> str:
     if homework.naming_order == "class-name-id":
         parts = [homework.naming_class, name, user.sid]
     return unicodedata.normalize("NFC", "-".join(parts))
+
+
+def batch_prefixes(homework: Homework, user: User) -> list[str]:
+    name = user.name.strip() or user.nickname.strip()
+    class_name = homework.naming_class
+    alternate = class_name.removesuffix("班") if class_name.endswith("班") else f"{class_name}班"
+    prefixes = []
+    for label in dict.fromkeys((class_name, alternate)):
+        prefixes.extend((f"{label}_{user.sid}_{name}", f"{label}-{user.sid}-{name}-"))
+    return [unicodedata.normalize("NFC", prefix) for prefix in prefixes]
 
 
 async def get_homework(db: AsyncSession, homework_id: str, class_id: int) -> Homework:
@@ -117,6 +132,8 @@ def homework_out(
         naming_class=h.naming_class,
         naming_order=h.naming_order,
         expected_filename=expected_filename(h, user),
+        required_questions=h.required_questions,
+        batch_prefixes=batch_prefixes(h, user) if h.required_questions else None,
         submission=SubmissionOut.model_validate(submission) if submission else None,
         submitted_count=count,
         total_count=total,
@@ -171,15 +188,22 @@ async def collection(db: AsyncSession, homework: Homework, user: User) -> Homewo
                 filename=s.filename if s else None,
                 size=s.size if s else None,
                 submitted_at=s.submitted_at if s else None,
+                files=s.files if s else None,
             )
             for u, s in rows
         ],
     )
 
 
+def valid_display_name(name: str) -> bool:
+    return len(name) <= 255 and not any(
+        char in '/\\:*?"<>|' or ord(char) < 32 or ord(char) == 127 for char in name
+    )
+
+
 def validate_filename(raw: str | None, expected: str) -> tuple[str, str]:
     name = unicodedata.normalize("NFC", raw or "")
-    if len(name) > 255 or any(c in '/\\:*?"<>|' or ord(c) < 32 or ord(c) == 127 for c in name):
+    if not valid_display_name(name):
         raise HTTPException(400, "文件名包含无效字符")
     ext = Path(name).suffix.lower()
     if not ext or ext not in ALLOWED_EXTS:
@@ -232,11 +256,27 @@ def unlink_old(relative: str) -> None:
 async def save_submission(
     db: AsyncSession, homework: Homework, user: User, file: UploadFile
 ) -> SubmissionOut:
+    if homework.required_questions:
+        raise HTTPException(400, "这项作业需要按题批量上传")
     name, ext = validate_filename(file.filename, expected_filename(homework, user))
     previous = await db.get(HomeworkSubmission, (homework.id, user.sid))
     previous_path = previous.storage_path if previous else None
     relative, size = await write_file(file, homework, ext)
+    return await commit_submission(db, homework, user, previous_path, name, relative, size)
+
+
+async def commit_submission(
+    db: AsyncSession,
+    homework: Homework,
+    user: User,
+    previous_path: str | None,
+    name: str,
+    relative: str,
+    size: int,
+    files: list[SubmittedFile] | None = None,
+) -> SubmissionOut:
     now = datetime.now(UTC)
+    metadata = [file.model_dump() for file in files] if files else None
     try:
         # Membership may have changed while a slow upload was in flight.
         current_class = await db.scalar(select(User.class_id).where(User.sid == user.sid))
@@ -250,6 +290,7 @@ async def save_submission(
                     filename=name,
                     storage_path=relative,
                     size=size,
+                    files=metadata,
                     submitted_at=now,
                 )
             )
@@ -262,7 +303,13 @@ async def save_submission(
                     HomeworkSubmission.sid == user.sid,
                     HomeworkSubmission.storage_path == previous_path,
                 )
-                .values(filename=name, storage_path=relative, size=size, submitted_at=now)
+                .values(
+                    filename=name,
+                    storage_path=relative,
+                    size=size,
+                    submitted_at=now,
+                    files=metadata,
+                )
             )
             if result.rowcount != 1:
                 raise HTTPException(409, "提交已更新。请刷新后重试")
@@ -277,7 +324,107 @@ async def save_submission(
         raise
     if previous_path:
         unlink_old(previous_path)
-    return SubmissionOut(filename=name, size=size, submitted_at=now)
+    return SubmissionOut(filename=name, size=size, submitted_at=now, files=files)
+
+
+async def save_batch(
+    db: AsyncSession, homework: Homework, user: User, uploads: list[UploadFile]
+) -> SubmissionOut:
+    required = homework.required_questions
+    if not required:
+        raise HTTPException(400, "这项作业只接受单文件")
+    if len(uploads) > len(required) or len(uploads) < 1:
+        raise HTTPException(400, f"请选择 {len(required)} 个压缩包，每题一个")
+    if any(file.size is None for file in uploads):
+        raise HTTPException(400, "无法读取文件大小，请重新选择")
+    if sum(file.size or 0 for file in uploads) > MAX_BATCH_BYTES:
+        raise HTTPException(413, "整批文件不能超过 45 MB")
+
+    prefixes = batch_prefixes(homework, user)
+    bundle_name = f"{prefixes[0]}-实验{homework.experiment_no}.zip"
+    if not valid_display_name(bundle_name) or any(
+        not valid_display_name(f"{prefixes[0]}{question}.zip") for question in required
+    ):
+        raise HTTPException(400, "班级或姓名无法组成有效文件名，请联系发布者")
+    filenames = {f"{prefix}{question}": question for prefix in prefixes for question in required}
+    candidates: dict[str, UploadFile] = {}
+    errors: list[str] = []
+    for file in uploads:
+        name = unicodedata.normalize("NFC", file.filename or "")
+        question = (
+            filenames.get(name[:-4])
+            if name[-4:].lower() == ".zip" and valid_display_name(name)
+            else None
+        )
+        if question is None:
+            errors.append(f"{name[:180]}：请按班级_学号_姓名Xiti章号_题号.zip 命名")
+        elif question in candidates:
+            errors.append(f"{question}：每题只能上传一个压缩包")
+        else:
+            candidates[question] = file
+    missing = [question for question in required if question not in candidates]
+    if missing:
+        errors.append("缺少：" + "、".join(missing))
+    if errors:
+        raise HTTPException(400, "\n".join(errors))
+
+    previous = await db.get(HomeworkSubmission, (homework.id, user.sid))
+    previous_path = previous.storage_path if previous else None
+    staged: list[tuple[str, SubmittedFile]] = []
+    relative = f"{homework.id}/{uuid4().hex}.zip"
+    target = private_path(relative)
+    try:
+        for question in required:
+            try:
+                path, size = await write_file(candidates[question], homework, ".zip")
+            except HTTPException as exc:
+                if exc.status_code >= 500:
+                    raise
+                errors.append(f"{question}：{exc.detail}")
+                continue
+            metadata = SubmittedFile(
+                filename=f"{prefixes[0]}{question}.zip", size=size, question=question, warnings=[]
+            )
+            staged.append((path, metadata))
+            try:
+                metadata.warnings = await run_in_threadpool(
+                    inspect_android_zip, private_path(path), question
+                )
+            except ValueError as exc:
+                errors.append(f"{question}：{exc}")
+        if errors:
+            raise HTTPException(400, "\n".join(errors))
+        await run_in_threadpool(pack_batch, target, staged)
+        bundle_size = target.stat().st_size
+    except OSError as exc:
+        unlink_old(relative)
+        if exc.errno == errno.ENOSPC:
+            raise HTTPException(507, "存储空间不足。请联系发布者") from exc
+        raise
+    except BaseException:
+        unlink_old(relative)
+        raise
+    finally:
+        for path, _ in staged:
+            unlink_old(path)
+    return await commit_submission(
+        db,
+        homework,
+        user,
+        previous_path,
+        bundle_name,
+        relative,
+        bundle_size,
+        [metadata for _, metadata in staged],
+    )
+
+
+def pack_batch(target: Path, staged: list[tuple[str, SubmittedFile]]) -> None:
+    with target.open("xb") as output:
+        target.chmod(0o600)
+        with zipfile.ZipFile(output, "w", compression=zipfile.ZIP_STORED) as archive:
+            for path, metadata in staged:
+                archive.write(private_path(path), arcname=metadata.filename)
 
 
 async def get_submission(db: AsyncSession, homework: Homework, sid: str) -> HomeworkSubmission:
@@ -311,12 +458,16 @@ def build_archive(records: list[HomeworkSubmission]) -> BinaryIO:
     try:
         with zipfile.ZipFile(output, "w", compression=zipfile.ZIP_STORED) as archive:
             for record in records:
-                with (
-                    open_submission(record) as source,
-                    archive.open(record.filename, "w") as target,
-                ):
-                    while chunk := source.read(1024 * 1024):
-                        target.write(chunk)
+                with open_submission(record) as source:
+                    if record.files:
+                        with zipfile.ZipFile(source) as bundle:
+                            for file in record.files:
+                                name = file["filename"]
+                                with bundle.open(name) as part, archive.open(name, "w") as target:
+                                    shutil.copyfileobj(part, target, length=1024 * 1024)
+                    else:
+                        with archive.open(record.filename, "w") as target:
+                            shutil.copyfileobj(source, target, length=1024 * 1024)
         output.seek(0)
         return output
     except BaseException:

@@ -74,6 +74,21 @@ async def upload_submission(
         await file.close()
 
 
+@router.put("/{homework_id}/submission/batch", response_model=SubmissionOut)
+async def upload_batch(
+    homework_id: str,
+    files: Annotated[list[UploadFile], File(min_length=1, max_length=12)],
+    user: CurrentUser,
+    db: Database,
+) -> SubmissionOut:
+    homework = await svc.get_homework(db, homework_id, classes.ensure_in_class(user))
+    try:
+        return await svc.save_batch(db, homework, user, files)
+    finally:
+        for file in files:
+            await file.close()
+
+
 @router.get("/{homework_id}/submissions", response_model=HomeworkRecordsOut)
 async def collection(homework_id: str, user: CurrentUser, db: Database) -> HomeworkRecordsOut:
     class_id = classes.ensure_in_class(user)

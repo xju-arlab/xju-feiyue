@@ -55,9 +55,11 @@ export function HomeworkRecords({ id, onClose }: Props) {
             <div className="hw-collection-rule">
               <span>文件命名规则</span>
               <span>
-                {data.homework.namingOrder === 'class-id-name'
-                  ? '班级-学号-姓名'
-                  : '班级-姓名-学号'}
+                {data.homework.requiredQuestions?.length
+                  ? '班级_学号_姓名XitiM_N.zip'
+                  : data.homework.namingOrder === 'class-id-name'
+                    ? '班级-学号-姓名'
+                    : '班级-姓名-学号'}
               </span>
               <span className="hw-collection-count">
                 {data.homework.submittedCount} / {data.homework.totalCount} 已提交
@@ -109,7 +111,7 @@ export function HomeworkRecords({ id, onClose }: Props) {
                             disabled={downloading}
                             onClick={() => void download(r.filename!, r.sid)}
                           >
-                            {r.filename}
+                            {r.files?.length ? `${r.files.length} 个压缩包` : r.filename}
                           </button>
                         ) : (
                           <span className="hw-muted">—</span>

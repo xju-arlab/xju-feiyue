@@ -23,13 +23,18 @@ export const getHomeworkRecords = (id: string) =>
   })
 export function uploadHomework(
   id: string,
-  file: File,
+  file: File | File[],
   onProgress: (p: UploadProgress) => void,
   signal: AbortSignal,
 ) {
   const form = new FormData()
-  form.append('file', file)
-  const path = `${base}/${id}/submission`
+  const batch = Array.isArray(file)
+  if (batch) {
+    for (const part of file) form.append('files', part)
+  } else {
+    form.append('file', file)
+  }
+  const path = `${base}/${id}/submission${batch ? '/batch' : ''}`
   if (isMockMode())
     return request({
       method: 'PUT',

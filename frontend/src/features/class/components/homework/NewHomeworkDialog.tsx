@@ -20,6 +20,7 @@ export function NewHomeworkDialog({ open, onOpenChange, className, courses }: Pr
   const [namingClass, setNamingClass] = useState(className)
   const [order, setOrder] = useState<HomeworkCreateIn['namingOrder']>('class-id-name')
   const [busy, setBusy] = useState(false)
+  const [batch, setBatch] = useState(false)
   const [error, setError] = useState('')
   const name = user?.name || user?.nickname || '姓名'
   const sid = user?.sid || '学号'
@@ -38,6 +39,20 @@ export function NewHomeworkDialog({ open, onOpenChange, className, courses }: Pr
       setError('请选择截止时间')
       return
     }
+    const questions = String(form.get('questions') ?? '')
+      .trim()
+      .split(/[\s,，、]+/)
+      .filter(Boolean)
+    if (
+      batch &&
+      (questions.length < 2 ||
+        questions.length > 12 ||
+        new Set(questions).size !== questions.length ||
+        questions.some((question) => !/^Xiti[1-9][0-9]{0,2}_[1-9][0-9]{0,2}$/.test(question)))
+    ) {
+      setError('请输入 2–12 个不同的题号，例如 Xiti2_1、Xiti2_2')
+      return
+    }
     setBusy(true)
     setError('')
     try {
@@ -48,6 +63,7 @@ export function NewHomeworkDialog({ open, onOpenChange, className, courses }: Pr
         dueAt: date.toISOString(),
         namingClass: namingClass.trim(),
         namingOrder: order,
+        requiredQuestions: batch ? questions : undefined,
       })
       await qc.invalidateQueries({ queryKey: homeworkKeys.all })
       onOpenChange(false)
@@ -107,25 +123,44 @@ export function NewHomeworkDialog({ open, onOpenChange, className, courses }: Pr
                 required
               />
             </label>
-            <fieldset>
-              <legend>文件命名规则</legend>
-              <div className="hw-rule-options">
-                {(['class-id-name', 'class-name-id'] as const).map((value) => (
-                  <label key={value}>
-                    <input
-                      type="radio"
-                      name="order"
-                      value={value}
-                      checked={order === value}
-                      onChange={() => setOrder(value)}
-                    />
-                    {value === 'class-id-name' ? '班级-学号-姓名' : '班级-姓名-学号'}
-                  </label>
-                ))}
-              </div>
-            </fieldset>
+            <label className="hw-batch-mode">
+              <input type="checkbox" checked={batch} onChange={(e) => setBatch(e.target.checked)} />
+              按题提交 Android 工程
+            </label>
+            {batch ? (
+              <label>
+                必交题号
+                <input
+                  name="questions"
+                  placeholder="Xiti2_1、Xiti2_2、Xiti2_4"
+                  required
+                  maxLength={180}
+                />
+              </label>
+            ) : (
+              <fieldset>
+                <legend>文件命名规则</legend>
+                <div className="hw-rule-options">
+                  {(['class-id-name', 'class-name-id'] as const).map((value) => (
+                    <label key={value}>
+                      <input
+                        type="radio"
+                        name="order"
+                        value={value}
+                        checked={order === value}
+                        onChange={() => setOrder(value)}
+                      />
+                      {value === 'class-id-name' ? '班级-学号-姓名' : '班级-姓名-学号'}
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
+            )}
             <p className="hw-rule-example">
-              示例 <span>{example}.pdf</span>
+              示例{' '}
+              <span>
+                {batch ? `${namingClass || className}_${sid}_${name}XitiM_N.zip` : `${example}.pdf`}
+              </span>
             </p>
           </div>
           {error && (

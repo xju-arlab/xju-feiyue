@@ -1,10 +1,17 @@
 import { z } from 'zod'
 
 export const NamingOrderSchema = z.enum(['class-id-name', 'class-name-id'])
+const SubmittedFileSchema = z.object({
+  filename: z.string(),
+  size: z.number().int().nonnegative(),
+  question: z.string(),
+  warnings: z.array(z.string()),
+})
 export const HomeworkSubmissionSchema = z.object({
   filename: z.string(),
   size: z.number().int().nonnegative(),
   submittedAt: z.string().datetime({ offset: true }),
+  files: z.array(SubmittedFileSchema).nullish(),
 })
 export const HomeworkSchema = z.object({
   id: z.string(),
@@ -15,6 +22,8 @@ export const HomeworkSchema = z.object({
   namingClass: z.string(),
   namingOrder: NamingOrderSchema,
   expectedFilename: z.string(),
+  requiredQuestions: z.array(z.string()).nullish(),
+  batchPrefixes: z.array(z.string()).nullish(),
   submission: HomeworkSubmissionSchema.nullable(),
   submittedCount: z.number().int().nonnegative(),
   totalCount: z.number().int().nonnegative(),
@@ -33,6 +42,7 @@ export const HomeworkRecordsSchema = z.object({
       filename: z.string().nullable(),
       size: z.number().nullable(),
       submittedAt: z.string().datetime({ offset: true }).nullable(),
+      files: z.array(SubmittedFileSchema).nullish(),
     }),
   ),
 })
@@ -45,4 +55,5 @@ export type HomeworkCreateIn = {
   dueAt: string
   namingClass: string
   namingOrder: z.infer<typeof NamingOrderSchema>
+  requiredQuestions?: string[] | undefined
 }
