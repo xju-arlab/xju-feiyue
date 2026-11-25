@@ -142,8 +142,8 @@ schools_overlay.py[DB4T]: F:为导师响应提供站内笔记数与收藏状态�
 schools_pinyin.py[KB6T]: F:构建导师全拼与首字母内存搜索索引 | R:code:backend/app/services/schools_query.py | A:PinyinIndex,get_pinyin_index | S:缓存绑定参考库mtime；纯中文查询交回FTS与LIKE
 schools_query.py[PB7L]: F:执行导师过滤、融合搜索、分页及详情多表聚合 | R:code:backend/app/services/schools_pinyin.py,code:backend/app/db/schools_engine.py | A:AdvisorFilters,SortSpec,query_advisor_rows,query_advisor_detail,query_schools_meta | S:FTS、LIKE和拼音命中取并集；unknown口碑包括NULL；所有用户值参数绑定
 uploads_common.py[CS8M]: F:提供上传限额、格式魔数校验、缩略图与安全名称处理 | R:code:backend/app/main.py | A:save_upload,sniff_magic,safe_display_name,make_thumbnail,normalize_ext | S:拒绝浏览器可执行扩展；任何失败删除部分文件；OOXML检验缓存至上限；生产下载头还依赖nginx
-homeworks.py[DB8L]: F:编排作业命名校验、单文件和整批保存、收件统计及导出 | R:code:backend/app/db/models.py,code:backend/app/services/classes.py,code:backend/app/services/homework_zip.py,code:backend/app/services/uploads_common.py | A:save_submission,save_batch,collection,build_archive | S:单包20MB、整批45MB；全部必交题通过才CAS替换；兼容样例连字符但导出统一下划线格式；批次仍按一人计数，导出按题展开
-homework_zip.py[DS7T]: F:检查单题Android工程ZIP结构、工程名和构建目录 | R:code:backend/app/services/homeworks.py | A:inspect_android_zip | S:不解包落盘，仅读取有大小限制的Gradle设置；app/build为硬错误，.gradle为提醒；拒绝路径异常、加密和符号链接
+homeworks.py[DB8L]: F:编排作业命名校验、单文件和整批保存、收件统计及导出 | R:code:backend/app/db/models.py,code:backend/app/services/classes.py,code:backend/app/services/homework_zip.py,code:backend/app/services/uploads_common.py | A:save_submission,save_batch,collection,build_archive | S:单包20MB、整批45MB；按账号真实姓名检查包名并汇总逐题错误，全部必交题通过才CAS替换；兼容样例连字符但导出统一下划线格式；批次按一人计数，导出按题展开
+homework_zip.py[DS7S]: F:校验单题Android工程ZIP的结构、工程名和姓名拼音包名 | R:code:backend/app/services/homeworks.py | A:inspect_android_zip,package_prefix | S:不解包落盘或执行Gradle；app/build拒收，.gradle仅提醒；姓名含中点跳过包名检查；可读配置大小有上限，缺namespace时检查Manifest的package
 
 ===/Users/winbeau/Developer/orgs/xju-feiyue/backend/scripts/===
 add_user.py[OI6M]: F:按学号交互或批量导入账号并分配班级 | R:code:backend/app/services/auth.py,code:backend/app/services/greeting.py | A:--sid,--name,--batch,--class-full,--class-short | S:已有用户保留密码，只更新姓名昵称与指定班级

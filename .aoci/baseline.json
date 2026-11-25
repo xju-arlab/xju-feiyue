@@ -1,7 +1,7 @@
 {
   "version": 1,
   "created_at": "2026-11-09T04:33:37Z",
-  "updated_at": "2026-11-23T17:54:28Z",
+  "updated_at": "2026-11-25T12:05:32Z",
   "files": {
     ".gitattributes": {
       "role": "index",
@@ -65,9 +65,9 @@
     },
     "aoci.code.txt": {
       "role": "index",
-      "sha256": "f0499ac4e8795f61395b95af233ff0d56fcb48c15589942d7b0f274a4a63c049",
-      "size": 170544,
-      "normalized_sha256": "f0499ac4e8795f61395b95af233ff0d56fcb48c15589942d7b0f274a4a63c049"
+      "sha256": "79dcfddaedafac9b35fcc6eba816dce36b32f94138fa6441c200ed64058ae1a2",
+      "size": 170652,
+      "normalized_sha256": "79dcfddaedafac9b35fcc6eba816dce36b32f94138fa6441c200ed64058ae1a2"
     },
     "aoci.meta.txt": {
       "role": "index",
@@ -660,15 +660,15 @@
     },
     "backend/app/services/homework_zip.py": {
       "role": "index",
-      "sha256": "bd64f3c17a68b7b7a39b9820e00d18fc63261a69d5236750d33cd46fd9f5330a",
-      "size": 3232,
-      "normalized_sha256": "bd64f3c17a68b7b7a39b9820e00d18fc63261a69d5236750d33cd46fd9f5330a"
+      "sha256": "52ba0dec05f5479def5ac3606b7655d8ad8e88f05c6526be7feb516c915a416a",
+      "size": 6782,
+      "normalized_sha256": "52ba0dec05f5479def5ac3606b7655d8ad8e88f05c6526be7feb516c915a416a"
     },
     "backend/app/services/homeworks.py": {
       "role": "index",
-      "sha256": "a580382478905c03aac92234a0e4a556f5f759acab90638c2be7ebd49af537b0",
-      "size": 18092,
-      "normalized_sha256": "a580382478905c03aac92234a0e4a556f5f759acab90638c2be7ebd49af537b0"
+      "sha256": "df25289c6ae35b817aba0ad0ca17a6a42dcd9d9489cb2dad7cc557280285b262",
+      "size": 18103,
+      "normalized_sha256": "df25289c6ae35b817aba0ad0ca17a6a42dcd9d9489cb2dad7cc557280285b262"
     },
     "backend/app/services/materials.py": {
       "role": "index",
@@ -833,9 +833,9 @@
     },
     "backend/app/tests/test_homeworks.py": {
       "role": "observe",
-      "sha256": "c047529c5a8bf29136509f509a4d3af37a43e0bcd0c2e8df44b4980f96ac3292",
-      "size": 15210,
-      "normalized_sha256": "c047529c5a8bf29136509f509a4d3af37a43e0bcd0c2e8df44b4980f96ac3292"
+      "sha256": "2c53213ba91e9d21d885699f6910e7a215bffaf6061e5e9944ae520dd17bd330",
+      "size": 17185,
+      "normalized_sha256": "2c53213ba91e9d21d885699f6910e7a215bffaf6061e5e9944ae520dd17bd330"
     },
     "backend/app/tests/test_image_upload.py": {
       "role": "observe",

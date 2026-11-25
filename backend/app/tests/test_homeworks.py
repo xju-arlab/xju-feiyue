@@ -12,6 +12,7 @@ from sqlalchemy import update
 from app.db.models import HomeworkSubmission, User
 from app.services import homeworks as svc
 from app.services.auth import create_access_token
+from app.services.homework_zip import inspect_android_zip
 from app.settings import settings
 
 ROOT = "/classes/me/homeworks"
@@ -30,12 +31,21 @@ def auth(sid="20240001001"):
     return {"Authorization": f"Bearer {create_access_token(sid)}"}
 
 
-def android_zip(question, *, build=False, cache=False):
+def android_zip(
+    question,
+    *,
+    build=False,
+    cache=False,
+    gradle='applicationId "chengyuanyi.ex2_7"',
+    manifest="<manifest/>",
+    kotlin=False,
+):
     output = io.BytesIO()
     with zipfile.ZipFile(output, "w") as archive:
         archive.writestr(f"{question}/settings.gradle", f'rootProject.name = "{question}"')
-        archive.writestr(f"{question}/app/build.gradle", "")
-        archive.writestr(f"{question}/app/src/main/AndroidManifest.xml", "<manifest/>")
+        gradle_path = "app/build.gradle.kts" if kotlin else "app/build.gradle"
+        archive.writestr(f"{question}/{gradle_path}", gradle)
+        archive.writestr(f"{question}/app/src/main/AndroidManifest.xml", manifest)
         if build:
             archive.writestr(f"{question}/app/build/generated/result.txt", "build")
         if cache:
@@ -77,6 +87,16 @@ async def test_android_batch_checks_all_questions_and_preserves_previous_set(cli
     rejected = await client.put(f"{path}/batch", headers=student, files=mismatched)
     assert rejected.status_code == 400 and "工程名应为 Xiti2_6" in rejected.json()["detail"]
 
+    wrong_package = android_zip(required[-1], gradle='applicationId "com.example.ex2_7"')
+    rejected = await client.put(
+        f"{path}/batch",
+        headers=student,
+        files=[*files[:-1], ("files", (names[-1], wrong_package))],
+    )
+    assert rejected.status_code == 400
+    assert "Xiti2_6" in rejected.json()["detail"]
+    assert "请把包名改成自己的 chengyuanyi.ex2_7" in rejected.json()["detail"]
+
     collection = await client.get(f"{ROOT}/{task['id']}/submissions", headers=auth())
     assert collection.json()["homework"]["submittedCount"] == 1
     record = next(item for item in collection.json()["records"] if item["sid"] == "20240001002")
@@ -86,6 +106,39 @@ async def test_android_batch_checks_all_questions_and_preserves_previous_set(cli
         assert archive.namelist() == filenames
         for name, (_, (_, original)) in zip(filenames, files, strict=True):
             assert archive.read(name) == original
+
+
+def test_android_package_checks_modern_and_legacy_project_names():
+    question = "Xiti2_1"
+    gradle = """
+        /*
+        applicationId = "someoneelse.ex2_7"
+        */
+        namespace = "zhaowenbiao.xitixx"
+        applicationId = "zhaowenbiao.ex2_7"
+    """
+    package = io.BytesIO(android_zip(question, gradle=gradle, kotlin=True))
+    assert inspect_android_zip(package, question, "赵文彪") == []
+
+    legacy = io.BytesIO(
+        android_zip(question, gradle="", manifest='<manifest package="zhaowenbiao.ex2_7"/>')
+    )
+    assert inspect_android_zip(legacy, question, "赵文彪") == []
+
+    wrong_namespace = io.BytesIO(
+        android_zip(question, gradle=gradle.replace("zhaowenbiao.xitixx", "someoneelse.xitixx"))
+    )
+    with pytest.raises(ValueError, match=r"namespace.*请把包名改成自己的 zhaowenbiao\.xitixx"):
+        inspect_android_zip(wrong_namespace, question, "赵文彪")
+
+
+def test_middle_dot_skips_only_the_package_check():
+    question = "Xiti2_1"
+    name = "测试·同学"
+    assert inspect_android_zip(io.BytesIO(android_zip(question, gradle="")), question, name) == []
+    archive = io.BytesIO(android_zip(question, gradle="", build=True))
+    with pytest.raises(ValueError, match="app/build"):
+        inspect_android_zip(archive, question, name)
 
 
 @pytest.fixture(autouse=True)

@@ -388,7 +388,7 @@ async def save_batch(
             staged.append((path, metadata))
             try:
                 metadata.warnings = await run_in_threadpool(
-                    inspect_android_zip, private_path(path), question
+                    inspect_android_zip, private_path(path), question, user.name
                 )
             except ValueError as exc:
                 errors.append(f"{question}：{exc}")
